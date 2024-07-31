@@ -1,0 +1,52 @@
+arazzo: 1.0.0
+info:
+    title: A Pact Publishing Workflow
+    summary: This workflow showcases how to publish pacts through a sequence of API calls
+    description: |
+        This workflow walks you through the steps of `publishing` pacts to a pact broker
+    version: 0.0.0
+sourceDescriptions:
+- name: pactBrokerDescription
+  url: https://github.com/pact-foundation/pact_broker/blob/master/pact_broker_oas.yaml
+  type: openapi
+
+workflows:
+- workflowId: publishPacts  
+  summary: Publish consumer contract to pact broker
+  description: This procedure lays out the steps to publish a consumer contract to a pact broker
+  inputs: 
+      type: object
+      properties:
+          pacticipantName:
+                  type: string
+                  minLength: 1
+          pacticipantVersionNumber:
+                  type: string
+                  minLength: 1
+          contracts:
+            type: array
+            items:
+              $ref: $sourceDescriptions.$pactBrokerDescription#/components/schemas/ConsumerContractToPublish
+  steps:
+  - stepId: contractsPublishStep
+    description: This step demonstrates the publish contracts step
+    operationId: pactBrokerDescription.contractsPublish
+    parameters:
+      # parameters to inject into the loginUser operation (parameter name must be resolvable at the referenced operation and the value is determined using {expression} syntax)
+      - name: pacticipantName
+        in: query
+        value: $inputs.pacticipantName
+      - name: pacticipantVersionNumber
+        in: query
+        value: $inputs.pacticipantVersionNumber
+      - name: contracts
+        in: query
+        value: $inputs.contracts
+    successCriteria:
+      # assertions to determine step was successful
+      - condition: $statusCode == 200
+    outputs:
+      # outputs from this step
+      notices: $response.notices
+  outputs:
+      available: $steps.contractsPublishStep.notices

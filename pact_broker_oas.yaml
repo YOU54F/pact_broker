@@ -3,9 +3,17 @@ info:
   version: "2"
   title: Pact Broker API
   description: The API for the Pact Broker application
+servers:
+  - url: ""
+
 paths:
   /contracts/publish:
     post:
+      security:
+        - {}  # if basic auth not provided
+        - basicAuth: []
+      summary: foo
+      operationId: contractsPublish
       description: "Publish consumer contracts with branch, tags and build URL"
       requestBody:
         required: true
@@ -79,6 +87,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/PublishConsumerContractConflictResponse'
 components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+      description: username:password. optional - only if setup on broker
   parameters:
     PageSize:
       name: page_size
