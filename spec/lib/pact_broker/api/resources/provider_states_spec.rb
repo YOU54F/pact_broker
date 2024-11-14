@@ -1,75 +1,95 @@
 require "pact_broker/api/resources/provider_states"
+require "pact_broker/application_context"
+require "pact_broker/pacts/provider_state_service"
 
 module PactBroker
   module Api
     module Resources
       describe ProviderStates do
         before do
-          # Delete this when the route has been added to the API
-          allow_any_instance_of(described_class).to receive(:application_context).and_return(PactBroker::ApplicationContext.default_application_context)
-          allow_any_instance_of(described_class).to receive(:provider_states_service).and_return(provider_states_service)
-          allow(provider_states_service).to receive(:find_by_uuid).and_return(provider_states)
-          allow(PactBroker::Api::Decorators::ProviderStatesDecorator).to receive(:new).and_return(decorator)
+          allow(PactBroker::Pacticipants::Service).to receive(:find_pacticipant_by_name).and_return(provider)
+          allow(PactBroker::Pacts::ProviderStateService).to receive(:list_provider_states).and_return(provider_states)
         end
 
-        let(:provider_states) { instance_double("PactBroker::Pacts::ProviderStates") }
-        let(:parsed_provider_states) { double("parsed provider_states") }
-        let(:provider_states_service) { class_double("PactBroker::Pacts::Service").as_stubbed_const }
-        let(:path) { "/provider-statess/#{uuid}" }
-        let(:uuid) { "12345678" }
-        let(:rack_headers) do
-          {
-            "HTTP_ACCEPT" => "application/hal+json"
-          }
-        end
-        let(:decorator) do
-          instance_double("PactBroker::Api::Decorators::ProviderStatesDecorator",
-            to_json: "response",
-            from_json: parsed_provider_states
-          )
-        end
+        let(:provider) { double("Example API") }
+        let(:path) { "/pacts/provider/Example%20API/provider-states" }
+        let(:json) { 
+          { "providerStates":
+          [
+            {"name":"an error occurs retrieving an alligator"},
+            {"name":"there is an alligator named Mary"},
+            {"name":"there is not an alligator named Mary"}
+          ]}.to_json 
+        }
 
-        # Delete this when the route has been added to the API - this is just here so that the generated
-        # spec can be run to see if it works.
-        let(:app) do
-          pact_api = Webmachine::Application.new do |app|
-            app.routes do
-              add ["provider-statess", :provider_states_uuid], PactBroker::Api::Resources::ProviderStates, { resource_name: "provider_states" }
-            end
-          end
-          pact_api.configure do |config|
-            config.adapter = :RackMapped
-          end
-
-          pact_api.adapter
+        let(:provider_states) do
+          [
+            PactBroker::Pacts::ProviderState.new(name: "there is an alligator named Mary", params: nil),
+            PactBroker::Pacts::ProviderState.new(name: "there is not an alligator named Mary", params: nil),
+            PactBroker::Pacts::ProviderState.new(name: "an error occurs retrieving an alligator", params: nil)
+          ]
         end
 
-        describe "GET" do
-          subject { get(path, nil, rack_headers) }
+        describe "GET - provider states where they exist" do
+          subject { get path; last_response }
 
           it "attempts to find the ProviderStates" do
-            expect(PactBroker::Pacts::Service).to receive(:find_by_uuid).with(uuid)
+            expect(PactBroker::Pacts::ProviderStateService).to receive(:list_provider_states)
             subject
           end
 
-          context "when the provider_states does not exist" do
-            let(:provider_states) { nil }
-
-            it { is_expected.to be_a_404_response }
+          it "returns a 200 response status" do
+            expect(subject.status).to eq 200
           end
 
-          context "when the ProviderStates exists" do
-            it "generates a JSON representation of the ProviderStates" do
-              expect(PactBroker::Api::Decorators::ProviderStatesDecorator).to receive(:new).with(provider_states)
-              expect(decorator).to receive(:to_json).with(user_options: hash_including(base_url: "http://example.org"))
-              subject
-            end
+          it "returns the correct JSON body" do
+            expect(subject.body).to eq json
+          end
 
-            it { is_expected.to be_a_hal_json_success_response }
+          it "returns the correct content type" do
+            expect(subject.headers["Content-Type"]).to include("application/hal+json")
+          end
+        end
+        describe "GET - provider states where do not exist" do
+          let(:provider_states) do
+            []
+          end
+          let(:json) { 
+            { "providerStates":
+            []}.to_json 
+          }
+  
+          subject { get path; last_response }
 
-            it "includes the JSON representation in the response body" do
-              expect(subject.body).to eq "response"
-            end
+          it "returns a 200 response status" do
+            expect(subject.status).to eq 200
+          end
+
+          it "returns the correct JSON body" do
+            expect(subject.body).to eq json
+          end
+
+          it "returns the correct content type" do
+            expect(subject.headers["Content-Type"]).to include("application/hal+json")
+          end
+        end
+        describe "GET - where provider does not exist" do
+
+          let(:provider) { nil }
+          let(:json) { {"error":"No provider with name 'Example API' found"}.to_json }
+
+          subject { get path; last_response }
+
+          it "returns a 404 response status" do
+            expect(subject.status).to eq 404
+          end
+
+          it "returns the correct JSON error body" do
+            expect(subject.body).to eq json
+          end
+
+          it "returns the correct content type" do
+            expect(subject.headers["Content-Type"]).to include("application/hal+json")
           end
         end
       end
