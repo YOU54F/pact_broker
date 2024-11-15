@@ -148,6 +148,9 @@ module PactBroker
         add ["released-versions", :uuid], Api::Resources::ReleasedVersion, { resource_name: "released_version" }
         add ["deployed-versions", :uuid], Api::Resources::DeployedVersion, { resource_name: "deployed_version" }
 
+        add ["secrets", :uuid], Api::Resources::Secret, { resource_name: "secret" }
+        add ["secrets"], Api::Resources::Secrets, { resource_name: "secrets" }
+
         add ["integrations"], Api::Resources::Integrations, {resource_name: "integrations"}
         add ["integrations", "provider", :provider_name, "consumer", :consumer_name], Api::Resources::Integration, {resource_name: "integration"}
         add ["metrics"], Api::Resources::Metrics, {resource_name: "metrics"}

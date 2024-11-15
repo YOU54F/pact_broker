@@ -34,6 +34,7 @@ group :test do
   gem "tzinfo", "~>2.0"
   gem "faraday-retry", "~>2.0"
   gem "openapi_first", "2.9.2" # pinned to specific version due to changelog volatility
+  gem "mutex_m"
 end
 
 group :pg, optional: true do
