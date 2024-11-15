@@ -398,6 +398,14 @@ module PactBroker
         "#{base_url}/released-versions/#{released_version.uuid}"
       end
 
+      def secret_url(secret, base_url = "")
+        "#{base_url}/secrets/#{secret.uuid}"
+      end
+
+      def secrets_url(base_url = "")
+        "#{base_url}/secrets"
+      end
+
       def hal_browser_url target_url, base_url = ""
         "#{base_url}/hal-browser/browser.html#" + target_url
       end

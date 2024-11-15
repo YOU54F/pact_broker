@@ -69,6 +69,10 @@ module PactBroker
       get_service(:webhook_trigger_service)
     end
 
+    def secret_service
+      get_service(:secret_service)
+    end
+
     def metrics_service
       get_service(:metrics_service)
     end
@@ -172,6 +176,11 @@ module PactBroker
       register_service(:webhook_trigger_service) do
         require "pact_broker/webhooks/trigger_service"
         Webhooks::TriggerService
+      end
+
+      register_service(:secret_service) do
+        require "pact_broker/secrets/service"
+        Secrets::Service
       end
 
       register_service(:environment_service) do

@@ -59,6 +59,10 @@ module PactBroker
       get_repository(:integration_repository)
     end
 
+    def secret_repository
+      get_repository(:secret_repository)
+    end
+
     # rubocop: disable Metrics/MethodLength
     def register_default_repositories
       register_repository(:pacticipant_repository) do
@@ -88,6 +92,11 @@ module PactBroker
       register_repository(:webhook_repository) do
         require "pact_broker/webhooks/repository"
         Webhooks::Repository.new
+      end
+
+      register_repository(:secret_repository) do
+        require "pact_broker/secrets/repository"
+        Secrets::Repository.new
       end
 
       register_repository(:verification_repository) do

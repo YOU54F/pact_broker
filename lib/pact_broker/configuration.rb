@@ -27,7 +27,7 @@ module PactBroker
 
     attr_accessor :database_connection
     attr_accessor :example_data_seeder
-    attr_accessor :html_pact_renderer, :version_parser, :sha_generator
+    attr_accessor :html_pact_renderer, :version_parser, :sha_generator, :secrets_encryption_key_finder
     attr_accessor :content_security_policy, :hal_browser_content_security_policy_overrides
     attr_accessor :api_error_reporters
     attr_reader :custom_logger
@@ -49,11 +49,13 @@ module PactBroker
     def self.default_configuration
       require "pact_broker/versions/parse_semantic_version"
       require "pact_broker/pacts/generate_sha"
+      require "pact_broker/secrets/environment_variable_encryption_key_finder"
 
       config = Configuration.new
       config.html_pact_renderer = default_html_pact_render
       config.version_parser = PactBroker::Versions::ParseSemanticVersion
       config.sha_generator = PactBroker::Pacts::GenerateSha
+      config.secrets_encryption_key_finder = PactBroker::Secrets::EnvironmentVariableEncryptionKeyFinder
       config.example_data_seeder = lambda do
         # Do the require in the lambda, not at the top of the file, because we need
         # the database connection to be made before loading any Sequel::Model classes.

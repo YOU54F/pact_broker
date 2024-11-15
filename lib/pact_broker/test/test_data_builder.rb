@@ -33,6 +33,8 @@ require "pact_broker/integrations/repository"
 require "pact_broker/contracts/service"
 require "pact_broker/contracts/contract_to_publish"
 require "pact_broker/contracts/contracts_to_publish"
+require "pact_broker/secrets/service"
+require "pact_broker/secrets/secret"
 
 require "ostruct"
 
@@ -540,6 +542,15 @@ module PactBroker
 
       def find_environment(environment_name)
         PactBroker::Deployments::EnvironmentService.find_by_name(environment_name)
+      end
+
+      def create_secret params = {}
+        unencrypted_secret = PactBroker::Secrets::UnencryptedSecret.new(
+          name: params[:name] || "name-#{model_counter}",
+          value: params[:name] || "value-#{model_counter}",
+        )
+        @secret = PactBroker::Secrets::Service.create(SecureRandom.urlsafe_base64, unencrypted_secret, nil)
+        self
       end
 
       def model_counter
