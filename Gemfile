@@ -33,6 +33,7 @@ group :test do
   gem "tzinfo", "~>2.0"
   gem "faraday-retry", "~>2.0"
   gem "openapi_first", "~>0.20"
+  gem "mutex_m"
 end
 
 group :pg, optional: true do

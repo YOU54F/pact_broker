@@ -83,6 +83,7 @@ en:
         consumer_name_in_content_mismatch: "consumer name in contract content ('%{consumer_name_in_content}') must match consumerName in contract params ('%{consumer_name}')"
         provider_name_in_content_mismatch: "provider name in contract content ('%{provider_name_in_content}') must match providerName in contract params ('%{provider_name}')"
         connection_encoding_not_utf8: "The Sequel connection encoding (%{encoding}) is strongly recommended to be \"utf8\". If you need to set it to %{encoding} for some particular reason, then disable this check by setting config.validate_database_connection_config = false"
+        encryption_key_not_configured: "The key for encrypting secrets has not been configured for this Pact Broker instance. Please see the configuration documentation."
         invalid_webhook_uuid: The UUID can only contain the characters A-Z, a-z, 0-9, _ and -, and must be 16 or more characters.
         pacticipant_not_found: No pacticipant with name '%{name}' found
         environment_name_must_be_unique: "name '%{name}' is already used by an existing environment."
