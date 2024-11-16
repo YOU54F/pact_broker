@@ -1,6 +1,11 @@
+require "pact_broker/repositories"
+require "pact_broker/repositories/scopes"
+
 module PactBroker
   module Webhooks
     class PactAndVerificationParameters
+      include PactBroker::Repositories
+
       PACT_URL = "pactbroker.pactUrl"
       VERIFICATION_RESULT_URL = "pactbroker.verificationResultUrl"
       CONSUMER_VERSION_NUMBER = "pactbroker.consumerVersionNumber"
@@ -75,6 +80,12 @@ module PactBroker
           BUILD_URL => build_url,
           CURRENTLY_DEPLOYED_PROVIDER_VERSION_NUMBER => currently_deployed_provider_version_number
         }
+
+        secret_repository.find_all.each do |secret|
+          @hash["secret.#{secret.name}"] = secret.value
+        end
+
+        @hash
       end
 
       private
