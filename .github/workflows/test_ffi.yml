@@ -15,4 +15,4 @@ jobs:
         with:
           bundler-cache: true
       - name: Verify pacts
-        run: "bundle exec rake pact:ffi"
+        run: "bundle exec rake pact:verify:ffi"
