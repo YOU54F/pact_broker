@@ -79,15 +79,15 @@ RSpec.describe "Verify consumers for Pact Broker", :pact do
   }
 
   before_state_setup do
-    PactBroker::TestDatabase.drop_objects
-    PactBroker::TestDatabase.migrate
-  end
-
-  after_state_teardown do
-    PactBroker::TestDatabase.migrate
     PactBroker::TestDatabase.truncate
   end
 
+  after_state_teardown do
+    PactBroker::TestDatabase.truncate
+  end
+
+  # TODO: scope provider states for consumer names?
+  # Pact.provider_states_for "Pact Broker Client" do
   provider_state "an environment with name test exists" do
     set_up do
       TestDataBuilder.new
@@ -258,6 +258,9 @@ RSpec.describe "Verify consumers for Pact Broker", :pact do
     set_up do
       require "pact_broker/pacts/service"
       allow(PactBroker::Pacts::Service).to receive(:create_or_update_pact).and_raise("an error")
+    end
+    tear_down do
+      allow(PactBroker::Pacts::Service).to receive(:create_or_update_pact).and_call_original
     end
   end
 

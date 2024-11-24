@@ -21,8 +21,3 @@ task :ci => ["db:prepare:test", :boot, :spec]
 task :boot do
   require File.join(File.dirname(__FILE__), "config/boot")
 end
-
-RSpec::Core::RakeTask.new("pact:verify:ffi") do |task|
-  task.pattern = "spec/pact/consumers/*_spec.rb"
-  task.rspec_opts = ["-t pact"]
-end

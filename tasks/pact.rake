@@ -14,3 +14,10 @@ namespace :pact do
   task "verify:at" => :prepare
   task "verify:dev" => :prepare
 end
+
+require "rspec/core/rake_task"
+RSpec::Core::RakeTask.new("pact:verify:ffi") do |task|
+  ENV["SIMPLECOV_COMMAND_NAME"] = "pact:verify:ffi"
+  task.pattern = "spec/pact/consumers/*_spec.rb"
+  task.rspec_opts = ["-t pact"]
+end
