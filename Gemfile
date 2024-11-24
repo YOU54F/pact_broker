@@ -19,9 +19,15 @@ end
 group :test do
   gem "simplecov", :require => false
   gem "pact", "~>1.14"
+  if ENV["X_PACT_DEVELOPMENT"] == "true"
+    gem "sbmt-pact", path: "../sbmt-pact"
+  else
+    gem "sbmt-pact", git: "https://github.com/YOU54F/sbmt-pact.git", branch: "feat/pact-ruby"
+  end
+  gem "rspec-mocks"
+  gem "fakefs", "~>0.4"
   gem "rspec-pact-matchers", "~>0.1"
   gem "bundler-audit", "~>0.4"
-  gem "fakefs", "~>0.4"
   gem "webmock", "~>3.9"
   gem "rspec", "~>3.0"
   gem "rspec-its", "~>1.2"
@@ -43,6 +49,3 @@ group :mysql, optional: true do
   gem "mysql2", "~>0.5"
 end
 
-if ENV["X_PACT_DEVELOPMENT"] == "true"
-  gem "pact-support", path: "../pact-support"
-end

@@ -73,4 +73,6 @@ Gem::Specification.new do |gem|
   gem.add_runtime_dependency "anyway_config", "~> 2.1"
   gem.add_runtime_dependency "request_store", "~> 1.5"
   gem.add_runtime_dependency "moments", "~> 0.2"
+  gem.add_runtime_dependency "csv"
+  gem.add_runtime_dependency "mutex_m"
 end
