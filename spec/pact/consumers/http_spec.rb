@@ -33,13 +33,12 @@ RSpec.describe "Verify consumers for Pact Broker", :pact do
 
     # Pact Sources
 
-    # Local pacts from a directory
-    # Default is File.expand_path('../../../spec/internal/pacts', __dir__)
-    
+    # 1. Local pacts from a directory
+
+    # Default is pacts directory in the current working directory
     # pact_dir: File.expand_path('../../../../consumer/spec/internal/pacts', __dir__),
     
-    
-    # Broker pacts
+    # 2. Broker based pacts
 
     # Broker credentials
   
@@ -50,31 +49,36 @@ RSpec.describe "Verify consumers for Pact Broker", :pact do
     # Remote pact via a uri, traditionally triggered via webhooks
     # when a pact that requires verification is published
   
-    # can be set via PACT_URL env var
-    pact_uri: File.expand_path("../../../pacts/pact.json", __dir__),
+    # 2a. Webhook triggered pacts
+    # Can be a local file or a remote URL
+    # Most used via webhooks
+    # Can be set via PACT_URL env var
+    # pact_uri: File.expand_path("../../../pacts/pact.json", __dir__),
     # pact_uri: "https://raw.githubusercontent.com/pact-foundation/pact_broker-client/master/spec/pacts/pact_broker_client-pact_broker.json",
     # pact_uri: "http://localhost:9292/pacts/provider/Pact%20Broker/consumer/Pact%20Broker%20Client/version/96532124f3a53a499276c69ff2df785b8377588e",
     
-    # to dynamically fetch pacts from a broker
+    # 2b. Dynamically fetched pacts from broker
+
+    # i. Set the broker url
     # broker_url: "http://localhost:9292", # can be set via PACT_BROKER_URL env var
 
-    # these are the default consumer_selectors from the broker verification endpoint
-    # if you don't set them via consumer_selectors in ruby
-    # consumer_selectors: [{"deployedOrReleased" => true, "mainBranch" => true, "matchingBranch" => true}],
+    # ii. Set the consumer version selectors 
+    # Consumer version selectors
+    # The pact broker will return the following pacts by default, if no selectors are specified
+    # For the recommended setup, you dont _actually_ need to specify these selectors in ruby
+    # consumer_version_selectors: [{"deployedOrReleased" => true},{"mainBranch" => true},{"matchingBranch" => true}],
  
-    # addition dynamic selection verification options
- 
-    # enable_pending: true,
-    # include_wip_pacts_since: "2021-01-01",
-  
+    # iii. Set additional dynamic selection verification options
+    # additional dynamic selection verification options
+    enable_pending: true,
+    include_wip_pacts_since: "2021-01-01",
 
     # Publish verification results to the broker
-
-    # publish_verification_results: ENV['PACT_PUBLISH_VERIFICATION_RESULTS'] == 'true',
-    # provider_version: `git rev-parse HEAD`.strip,
-    # provider_version_branch: `git rev-parse --abbrev-ref HEAD`.strip,
-    # provider_version_tags: [`git rev-parse --abbrev-ref HEAD`.strip],
-    # provider_build_uri: "YOUR CI URL HERE",
+    publish_verification_results: ENV["PACT_PUBLISH_VERIFICATION_RESULTS"] == "true",
+    provider_version: `git rev-parse HEAD`.strip,
+    provider_version_branch: `git rev-parse --abbrev-ref HEAD`.strip,
+    provider_version_tags: [`git rev-parse --abbrev-ref HEAD`.strip],
+    # provider_build_uri: "YOUR CI URL HERE - must be a valid url",
     
   }
 
