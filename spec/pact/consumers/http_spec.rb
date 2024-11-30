@@ -29,7 +29,7 @@ RSpec.describe "Verify consumers for Pact Broker", :pact do
   
     log_level: :info,
     
-    # fail_if_no_pacts_found: true,
+    fail_if_no_pacts_found: true,
 
     # Pact Sources
 
@@ -54,7 +54,7 @@ RSpec.describe "Verify consumers for Pact Broker", :pact do
     # Most used via webhooks
     # Can be set via PACT_URL env var
     # pact_uri: File.expand_path("../../../pacts/pact.json", __dir__),
-    # pact_uri: "https://raw.githubusercontent.com/pact-foundation/pact_broker-client/master/spec/pacts/pact_broker_client-pact_broker.json",
+    pact_uri: "https://raw.githubusercontent.com/YOU54F/pact_broker-client/refs/heads/sbmt-pact/spec/pacts/Pact%20Broker%20Client%20Ffi-Pact%20Broker.json",
     # pact_uri: "http://localhost:9292/pacts/provider/Pact%20Broker/consumer/Pact%20Broker%20Client/version/96532124f3a53a499276c69ff2df785b8377588e",
     
     # 2b. Dynamically fetched pacts from broker

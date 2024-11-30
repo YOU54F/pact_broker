@@ -56,6 +56,6 @@ Pact.service_provider "Pact Broker" do
   end
 
   honours_pact_with "Pact Broker Client" do
-    pact_uri "https://raw.githubusercontent.com/pact-foundation/pact_broker-client/master/spec/pacts/pact_broker_client-pact_broker.json"
+    pact_uri "https://raw.githubusercontent.com/YOU54F/pact_broker-client/refs/heads/sbmt-pact/spec/pacts/pact_broker_client-pact_broker.json"
   end
 end
