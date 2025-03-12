@@ -1,3 +1,5 @@
+require "pact_broker/secrets/secret"
+
 module PactBroker
   module Secrets
     class Repository
@@ -22,7 +24,19 @@ module PactBroker
       end
 
       def find_all
-        Secret.order(:name).collect{ | secret | UnencryptedSecret.new(secret.to_hash) }
+        Secret.order(:name).collect do |secret|
+          decrypted_secret = secret.to_hash
+          decrypted_secret[:value] = secret.value
+          UnencryptedSecret.new(decrypted_secret)
+        end
+      end
+
+      def find_by_name(name)
+        Secret.where(name: name).collect do |secret|
+          decrypted_secret = secret.to_hash
+          decrypted_secret[:value] = secret.value
+          UnencryptedSecret.new(decrypted_secret)
+        end
       end
 
       def find_by_uuid(uuid)

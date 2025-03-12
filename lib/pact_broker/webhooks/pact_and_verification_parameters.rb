@@ -1,6 +1,11 @@
+require "pact_broker/repositories"
+require "pact_broker/repositories/scopes"
+
 module PactBroker
   module Webhooks
     class PactAndVerificationParameters
+      include PactBroker::Repositories
+
       PACT_URL = "pactbroker.pactUrl"
       VERIFICATION_RESULT_URL = "pactbroker.verificationResultUrl"
       CONSUMER_VERSION_NUMBER = "pactbroker.consumerVersionNumber"
@@ -52,7 +57,9 @@ module PactBroker
         @base_url = webhook_context.fetch(:base_url)
       end
 
+      # rubocop:disable Metrics/CyclomaticComplexity
       def to_hash
+      # rubocop:enable Metrics/CyclomaticComplexity: "",
         @hash ||= {
           PACT_URL => pact ? PactBroker::Api::PactBrokerUrls.pact_version_url_with_webhook_metadata(pact, base_url) : "",
           VERIFICATION_RESULT_URL => verification_url,
@@ -75,6 +82,12 @@ module PactBroker
           BUILD_URL => build_url,
           CURRENTLY_DEPLOYED_PROVIDER_VERSION_NUMBER => currently_deployed_provider_version_number
         }
+
+        secret_repository.find_all.each do |secret|
+          @hash["secret.#{secret.name}"] = secret.value
+        end   
+
+        @hash
       end
 
       private
