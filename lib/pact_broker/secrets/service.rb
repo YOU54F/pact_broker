@@ -1,3 +1,4 @@
+require "pact_broker/repositories"
 require "securerandom"
 require "pact_broker/secrets/secret"
 

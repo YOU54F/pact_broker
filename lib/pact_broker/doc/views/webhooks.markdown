@@ -130,6 +130,7 @@ The following variables may be used in the request path, parameters or body, and
 * `${pactbroker.gitlabVerificationStatus}`: the verification status using the correct keywords for posting to the the [Gitlab Commits API](https://docs.gitlab.com/ee/api/commits.html#post-the-build-status-to-a-commit).
 * `${pactbroker.verificationResultUrl}`: the URL to the relevant verification result.
 * `${pactbroker.providerVersionDescriptions}`: The descriptions of the provider version(s) for which the contract_requiring_verification_published webhook has been triggered. Only populated for the contract_requiring_verification_published event.
+* `${secret.<secretName>}` - Dynamically substitute a stored secret. Replace `<secretName>` with the name of the secret. Must be created beforehand.
 
 Example usage:
 
