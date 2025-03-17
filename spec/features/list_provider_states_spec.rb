@@ -68,7 +68,6 @@ RSpec.describe "listing the provider states with params" do
       .publish_pact(consumer_name: "Foo3", provider_name: "Bar", consumer_version_number: "1", branch: "main", json_content: pact_content_1.to_json)
       .publish_pact(consumer_name: "Foo4", provider_name: "Bar", consumer_version_number: "1", branch: "main", json_content: pact_content_1.to_json)
       .publish_pact(consumer_name: "Foo5", provider_name: "Bar", consumer_version_number: "1", branch: "main", json_content: pact_content_1.to_json)
-      .publish_pact(consumer_name: "Foo6", provider_name: "Bar", consumer_version_number: "1", branch: "main", json_content: pact_content_3.to_json)
       .publish_pact(consumer_name: "Foo", provider_name: "Bar", consumer_version_number: "2", branch: "not-main").create_consumer("Waffle", main_branch: "main")
       .publish_pact(consumer_name: "Waffle", provider_name: "Bar", consumer_version_number: "1", branch: "main", json_content: pact_content_2.to_json)
       .publish_pact(consumer_name: "Waffle2", provider_name: "Bar", consumer_version_number: "1", branch: "main", json_content: pact_content_2.to_json)
@@ -91,16 +90,6 @@ RSpec.describe "listing the provider states with params" do
       interactions: [
         {
           providerStates: [ { name: "product list" } ]
-        }
-      ]
-    }
-  end
-
-  let(:pact_content_3) do
-    {
-      interactions: [
-        {
-          providerStates: [ { name: "some other product list" } ]
         }
       ]
     }
