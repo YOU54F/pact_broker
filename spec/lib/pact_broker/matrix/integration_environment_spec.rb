@@ -34,7 +34,7 @@ module PactBroker
 
           let(:selectors) do
             [
-              UnresolvedSelector.new(pacticipant_name: "Foo", pacticipant_version_number: "1"),
+              UnresolvedSelector.new(application_name: "Foo", application_version_number: "1"),
             ]
           end
 
@@ -55,7 +55,7 @@ module PactBroker
 
           let(:selectors) do
             [
-              UnresolvedSelector.new(pacticipant_name: "Foo", pacticipant_version_number: "1"),
+              UnresolvedSelector.new(application_name: "Foo", application_version_number: "1"),
             ]
           end
 
@@ -74,7 +74,7 @@ module PactBroker
 
           let(:selectors) do
             [
-              UnresolvedSelector.new(pacticipant_name: "Foo", pacticipant_version_number: "1"),
+              UnresolvedSelector.new(application_name: "Foo", application_version_number: "1"),
             ]
           end
 
@@ -93,7 +93,7 @@ module PactBroker
 
           let(:selectors) do
             [
-              UnresolvedSelector.new(pacticipant_name: "Bar", pacticipant_version_number: "2"),
+              UnresolvedSelector.new(application_name: "Bar", application_version_number: "2"),
             ]
           end
 
@@ -115,13 +115,13 @@ module PactBroker
               .create_deployed_version_for_consumer_version(environment_name: "prod", target: "2")
           end
 
-          let(:selectors) { [ UnresolvedSelector.new(pacticipant_name: "Bar", pacticipant_version_number: "10") ]}
+          let(:selectors) { [ UnresolvedSelector.new(application_name: "Bar", application_version_number: "10") ]}
           let(:options) { { environment_name: "prod" } }
 
           it "knows that there are multiple versions of the consumer in production" do
             subject
-            expect(subject.resolved_selectors.select { |s| s.pacticipant_name == "Bar" }.collect(&:one_of_many?)).to eq [false]
-            expect(subject.resolved_selectors.select { |s| s.pacticipant_name == "Foo" }.collect(&:one_of_many?)).to eq [true, true]
+            expect(subject.resolved_selectors.select { |s| s.application_name == "Bar" }.collect(&:one_of_many?)).to eq [false]
+            expect(subject.resolved_selectors.select { |s| s.application_name == "Foo" }.collect(&:one_of_many?)).to eq [true, true]
           end
 
           context "when a verification for the latest prod version is missing" do
@@ -153,13 +153,13 @@ module PactBroker
               .create_deployed_version_for_provider_version(environment_name: "prod", target: "2")
           end
 
-          let(:selectors) { [ UnresolvedSelector.new(pacticipant_name: "Foo", pacticipant_version_number: "2") ]}
+          let(:selectors) { [ UnresolvedSelector.new(application_name: "Foo", application_version_number: "2") ]}
           let(:options) { { environment_name: "prod" } }
 
           it "knows that there are multiple versions of the provider in production" do
             subject
-            expect(subject.resolved_selectors.select { |s| s.pacticipant_name == "Foo" }.collect(&:one_of_many?)).to eq [false]
-            expect(subject.resolved_selectors.select { |s| s.pacticipant_name == "Bar" }.collect(&:one_of_many?)).to eq [true, true]
+            expect(subject.resolved_selectors.select { |s| s.application_name == "Foo" }.collect(&:one_of_many?)).to eq [false]
+            expect(subject.resolved_selectors.select { |s| s.application_name == "Bar" }.collect(&:one_of_many?)).to eq [true, true]
           end
 
           context "when a verification for the latest prod version is missing" do

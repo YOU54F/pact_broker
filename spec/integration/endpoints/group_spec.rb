@@ -1,4 +1,4 @@
-describe "/groups/{pacticipant-name}" do
+describe "/groups/{application-name}" do
 
   let(:app) { PactBroker::API }
 

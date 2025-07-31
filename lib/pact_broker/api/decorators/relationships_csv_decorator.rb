@@ -14,8 +14,8 @@ module PactBroker
           hash = {}
 
           @index_items.each do | index_item |
-            hash[index_item.consumer.id] ||= pacticipant_array(index_item.consumer, hash.size + 1)
-            hash[index_item.provider.id] ||= pacticipant_array(index_item.provider, hash.size + 1)
+            hash[index_item.consumer.id] ||= application_array(index_item.consumer, hash.size + 1)
+            hash[index_item.provider.id] ||= application_array(index_item.provider, hash.size + 1)
             hash[index_item.consumer.id] << index_item.provider.id
           end
 
@@ -35,8 +35,8 @@ module PactBroker
         end
         # rubocop: enable Metrics/CyclomaticComplexity
 
-        def pacticipant_array pacticipant, order
-          [pacticipant.id, pacticipant.name, 1, 1, 0, order]
+        def application_array application, order
+          [application.id, application.name, 1, 1, 0, order]
         end
 
         private

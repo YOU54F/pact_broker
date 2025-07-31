@@ -10,8 +10,8 @@ describe "Get matrix for consumer and provider" do
   let(:params) do
     {
       q: [
-        { pacticipant: "Consumer", version: "1.0.0" },
-        { pacticipant: "Provider", version: "4.5.6" }
+        { application: "Consumer", version: "1.0.0" },
+        { application: "Provider", version: "4.5.6" }
       ]
     }
   end

@@ -3,9 +3,9 @@ require "pact_broker/labels/service"
 module PactBroker
   module Labels
     describe Service do
-      let(:pacticipant_name) { "foo" }
+      let(:application_name) { "foo" }
       let(:label_name) { "ios" }
-      let(:options) { { pacticipant_name: pacticipant_name, label_name: label_name } }
+      let(:options) { { application_name: application_name, label_name: label_name } }
       let(:pagination_options) { { page_number: 1, page_size: 1 } }
 
       describe ".get_all_unique_labels" do
@@ -23,7 +23,7 @@ module PactBroker
         # Naughty integration test... didn't seem much point unit testing this
         it "creates the new tag" do
           expect(subject.name).to eq label_name
-          expect(subject.pacticipant.name).to eq pacticipant_name
+          expect(subject.application.name).to eq application_name
         end
       end
 

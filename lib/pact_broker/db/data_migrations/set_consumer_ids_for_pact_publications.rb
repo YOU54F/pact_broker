@@ -7,7 +7,7 @@ module PactBroker
         def self.call connection
           if columns_exist?(connection)
             query = "UPDATE pact_publications
-                    SET consumer_id = (SELECT pacticipant_id
+                    SET consumer_id = (SELECT application_id
                       FROM versions
                       WHERE id = pact_publications.consumer_version_id)
                     WHERE consumer_id is null"
@@ -19,7 +19,7 @@ module PactBroker
           column_exists?(connection, :pact_publications, :consumer_id) &&
             column_exists?(connection, :pact_publications, :id) &&
             column_exists?(connection, :versions, :id) &&
-            column_exists?(connection, :versions, :pacticipant_id)
+            column_exists?(connection, :versions, :application_id)
         end
 
         def self.column_exists?(connection, table, column)

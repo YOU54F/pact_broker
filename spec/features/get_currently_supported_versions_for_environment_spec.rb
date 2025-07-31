@@ -29,8 +29,8 @@ RSpec.describe "Get currently supported versions for environment" do
   end
 
   context "with query params" do
-    context "with a pacticipant name and version" do
-      let(:query_params) { { pacticipant: "Bar", version: "4" } }
+    context "with a application name and version" do
+      let(:query_params) { { application: "Bar", version: "4" } }
 
       it "returns a list of matching released versions" do
         expect(response_body_hash[:_embedded][:releasedVersions].size).to eq 1
@@ -38,8 +38,8 @@ RSpec.describe "Get currently supported versions for environment" do
       end
     end
 
-    context "with pacticipant name and no version" do
-      let(:query_params) { { pacticipant: "Bar" } }
+    context "with application name and no version" do
+      let(:query_params) { { application: "Bar" } }
 
       it "returns a list of matching released versions" do
         expect(response_body_hash[:_embedded][:releasedVersions].size).to eq 2
@@ -47,7 +47,7 @@ RSpec.describe "Get currently supported versions for environment" do
     end
 
     context "with no matching versions" do
-      let(:query_params) { { pacticipant: "waffle" } }
+      let(:query_params) { { application: "waffle" } }
 
       it "returns an emtpy list" do
         expect(response_body_hash[:_embedded][:releasedVersions]).to eq []

@@ -34,9 +34,9 @@ module PactBroker
           head_tag_names: head_tag_names
         )}
         let(:head_tag_names) { ["prod"] }
-        let(:consumer) { instance_double(PactBroker::Domain::Pacticipant, name: "A Consumer")}
-        let(:provider) { instance_double(PactBroker::Domain::Pacticipant, name: "A Provider")}
-        let(:consumer_version) { instance_double(PactBroker::Domain::Version, number: "1234", pacticipant: consumer)}
+        let(:consumer) { instance_double(PactBroker::Domain::Application, name: "A Consumer")}
+        let(:provider) { instance_double(PactBroker::Domain::Application, name: "A Provider")}
+        let(:consumer_version) { instance_double(PactBroker::Domain::Version, number: "1234", application: consumer)}
         let(:metadata) { "abcd" }
         let(:decorator) { ExtendedPactDecorator.new(pact) }
         let(:json) { decorator.to_json(user_options: { base_url: base_url, metadata: metadata }) }
@@ -46,7 +46,7 @@ module PactBroker
           expect(subject[:_embedded][:tags].first).to include name: "prod", latest: true
           # Can't seem to stub the verification_publication_url method on the TagDecorator
           expect(subject[:_embedded][:tags].first[:_links][:'pb:latest-pact'][:href]).to eq "http://example.org/pacts/provider/A%20Provider/consumer/A%20Consumer/latest/prod"
-          expect(subject[:_embedded][:tags].first[:_links][:self][:href]).to eq "http://example.org/pacticipants/A%20Consumer/versions/1234/tags/prod"
+          expect(subject[:_embedded][:tags].first[:_links][:self][:href]).to eq "http://example.org/applications/A%20Consumer/versions/1234/tags/prod"
         end
 
         it "includes the pact contents under the contract key" do

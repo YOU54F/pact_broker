@@ -19,7 +19,7 @@ module PactBroker
       end
 
       def create verification, provider_version_number, pact_version
-        version = version_repository.find_by_pacticipant_id_and_number_or_create(pact_version.provider_id, provider_version_number)
+        version = version_repository.find_by_application_id_and_number_or_create(pact_version.provider_id, provider_version_number)
         verification.pact_version_id = pact_version.id
         verification.provider_version = version
         verification.provider_id = pact_version.provider_id
@@ -39,7 +39,7 @@ module PactBroker
         params = {
           pact_version_id: verification.pact_version_id,
           provider_version_id: verification.provider_version_id,
-          provider_id: verification.provider_version.pacticipant_id,
+          provider_id: verification.provider_version.application_id,
           verification_id: verification.id,
           consumer_id: verification.consumer_id,
           created_at: verification.created_at
@@ -108,8 +108,8 @@ module PactBroker
       # belonging to the version with the largest consumer_version_order.
 
       def find_latest_verification_for consumer_name, provider_name, consumer_version_tag = nil
-        consumer = pacticipant_repository.find_by_name!(consumer_name)
-        provider = pacticipant_repository.find_by_name!(provider_name)
+        consumer = application_repository.find_by_name!(consumer_name)
+        provider = application_repository.find_by_name!(provider_name)
         join_cols = {
           Sequel[:lp][:pact_version_id] => Sequel[:verifications][:pact_version_id],
           Sequel[:lp][:consumer_id] => consumer.id,
@@ -134,8 +134,8 @@ module PactBroker
 
       def find_latest_verification_for_tags consumer_name, provider_name, consumer_version_tag, provider_version_tag
         view_name = PactBroker::Domain::Verification.table_name
-        consumer = pacticipant_repository.find_by_name!(consumer_name)
-        provider = pacticipant_repository.find_by_name!(provider_name)
+        consumer = application_repository.find_by_name!(consumer_name)
+        provider = application_repository.find_by_name!(provider_name)
 
         consumer_tag_filter = Sequel.name_like(Sequel.qualify(:consumer_tags, :name), consumer_version_tag)
         provider_tag_filter = Sequel.name_like(Sequel.qualify(:provider_tags, :name), provider_version_tag)
@@ -164,8 +164,8 @@ module PactBroker
       end
 
       def delete_all_verifications_between(consumer_name, options)
-        consumer = pacticipant_repository.find_by_name!(consumer_name)
-        provider = pacticipant_repository.find_by_name!(options.fetch(:and))
+        consumer = application_repository.find_by_name!(consumer_name)
+        provider = application_repository.find_by_name!(options.fetch(:and))
         scope_for(PactBroker::Domain::Verification).where(provider: provider, consumer: consumer).delete
       end
     end

@@ -23,7 +23,7 @@ module PactBroker
       def self.set_semantic_order(new_version)
         order_set = false
 
-        PactBroker::Domain::Version.for_update.where(pacticipant_id: new_version.pacticipant_id).exclude(order: nil).reverse(:order).each do | existing_version |
+        PactBroker::Domain::Version.for_update.where(application_id: new_version.application_id).exclude(order: nil).reverse(:order).each do | existing_version |
           if new_version_after_existing_version? new_version, existing_version
             set_order_after_existing_version_order new_version, existing_version
             order_set = true

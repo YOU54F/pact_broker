@@ -7,8 +7,8 @@ module PactBroker
         include_context "stubbed services"
 
         before do
-          allow(pacticipant_service).to receive(:find_pacticipant_by_name).with("Foo").and_return(consumer)
-          allow(pacticipant_service).to receive(:find_pacticipant_by_name).with("Bar").and_return(provider)
+          allow(application_service).to receive(:find_application_by_name).with("Foo").and_return(consumer)
+          allow(application_service).to receive(:find_application_by_name).with("Bar").and_return(provider)
         end
 
         let(:path) { "/pacts/provider/Bar/consumer/Foo/tag/prod" }

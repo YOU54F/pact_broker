@@ -67,12 +67,12 @@
           "name": "Pact between Foo (3e1f00a04) and Bar"
         },
         "pb:consumer": {
-          "href": "https://pact-broker/pacticipants/Foo",
+          "href": "https://pact-broker/applications/Foo",
           "title": "Consumer",
           "name": "Foo"
         },
         "pb:provider": {
-          "href": "https://pact-broker/pacticipants/Bar",
+          "href": "https://pact-broker/applications/Bar",
           "title": "Provider",
           "name": "Bar"
         }

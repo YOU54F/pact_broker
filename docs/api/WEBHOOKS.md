@@ -59,12 +59,12 @@ Body:
     "pb:consumer": {
       "title": "Consumer",
       "name": "Foo",
-      "href": "https://pact-broker/pacticipants/Foo"
+      "href": "https://pact-broker/applications/Foo"
     },
     "pb:provider": {
       "title": "Provider",
       "name": "Bar",
-      "href": "https://pact-broker/pacticipants/Bar"
+      "href": "https://pact-broker/applications/Bar"
     },
     "pb:pact-webhooks": {
       "title": "All webhooks for consumer Foo and provider Bar",
@@ -541,12 +541,12 @@ Body:
       "name": "Pact between Foo (3e1f00a04) and Bar"
     },
     "pb:consumer": {
-      "href": "https://pact-broker/pacticipants/Foo",
+      "href": "https://pact-broker/applications/Foo",
       "title": "Consumer",
       "name": "Foo"
     },
     "pb:provider": {
-      "href": "https://pact-broker/pacticipants/Bar",
+      "href": "https://pact-broker/applications/Bar",
       "title": "Provider",
       "name": "Bar"
     }

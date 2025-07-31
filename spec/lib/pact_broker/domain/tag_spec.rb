@@ -3,7 +3,7 @@ require "pact_broker/domain/tag"
 module PactBroker
   module Domain
     describe Tag do
-      describe "#latest_tags_for_pacticipant_ids_and_tag_names" do
+      describe "#latest_tags_for_application_ids_and_tag_names" do
         before do
           td.create_consumer("bar")
             .create_consumer_version("1", tag_names: ["dev", "prod"])
@@ -13,20 +13,20 @@ module PactBroker
             .create_consumer_version("3")
         end
 
-        let(:foo) { td.find_pacticipant("foo") }
+        let(:foo) { td.find_application("foo") }
         let(:foo_version_1) { td.find_version("foo", "1") }
         let(:foo_version_2) { td.find_version("foo", "2") }
 
-        subject { Tag.latest_tags_for_pacticipant_ids_and_tag_names([foo.id], ["dev", "prod"]).order(:name).all }
+        subject { Tag.latest_tags_for_application_ids_and_tag_names([foo.id], ["dev", "prod"]).order(:name).all }
 
-        it "returns the latest tag grouped by pacticipant id and tag name" do
+        it "returns the latest tag grouped by application id and tag name" do
           expect(subject.size).to eq 2
-          expect(subject.first).to have_attributes(version_id: foo_version_2.id, pacticipant_id: foo.id)
-          expect(subject.last).to have_attributes(version_id: foo_version_1.id, pacticipant_id: foo.id)
+          expect(subject.first).to have_attributes(version_id: foo_version_2.id, application_id: foo.id)
+          expect(subject.last).to have_attributes(version_id: foo_version_1.id, application_id: foo.id)
         end
       end
 
-      describe "#latest_tags_for_pacticipant_ids" do
+      describe "#latest_tags_for_application_ids" do
         before do
           td.create_consumer("foo")
             .create_consumer_version("1")
@@ -42,9 +42,9 @@ module PactBroker
             .create_consumer_version_tag("test")
         end
 
-        it "returns the latest tags for the given pacticipant ids" do
-          pacticipant = PactBroker::Domain::Pacticipant.order(:id).first
-          tags = Tag.latest_tags_for_pacticipant_ids([pacticipant.id]).all
+        it "returns the latest tags for the given application ids" do
+          application = PactBroker::Domain::Application.order(:id).first
+          tags = Tag.latest_tags_for_application_ids([application.id]).all
           expect(tags.collect(&:name).sort).to eq %w{bloop dev prod}
           expect(tags.find{ |t| t.name == "dev" }.version.number).to eq "3"
           expect(tags.find{ |t| t.name == "prod" }.version.number).to eq "1"
@@ -70,7 +70,7 @@ module PactBroker
             .create_consumer_version_tag("test")
         end
 
-        it "returns the tags that belong to the most recent version with that tag/pacticipant" do
+        it "returns the tags that belong to the most recent version with that tag/application" do
           tags = Tag.latest_tags.all
           expect(tags.collect(&:name).sort).to eq %w{bloop dev prod test}
           expect(tags.find{ |t| t.name == "dev" }.version.number).to eq "3"
@@ -81,7 +81,7 @@ module PactBroker
         end
       end
 
-      describe "latest_for_pacticipant?" do
+      describe "latest_for_application?" do
         before do
           # Foo v1 Bar1
           # Foo v1 Bar2
@@ -94,10 +94,10 @@ module PactBroker
             .create_consumer_version_tag("dev")
         end
 
-        it "returns true if there are no other tags with that name for that pacticipant for a later version" do
-          version_1 = PactBroker::Versions::Repository.new.find_by_pacticipant_name_and_number("Foo", "1")
-          expect(version_1.tags.find { |t| t.name == "prod" }.latest_for_pacticipant?).to be true
-          expect(version_1.tags.find { |t| t.name == "dev" }.latest_for_pacticipant?).to be false
+        it "returns true if there are no other tags with that name for that application for a later version" do
+          version_1 = PactBroker::Versions::Repository.new.find_by_application_name_and_number("Foo", "1")
+          expect(version_1.tags.find { |t| t.name == "prod" }.latest_for_application?).to be true
+          expect(version_1.tags.find { |t| t.name == "dev" }.latest_for_application?).to be false
         end
       end
 

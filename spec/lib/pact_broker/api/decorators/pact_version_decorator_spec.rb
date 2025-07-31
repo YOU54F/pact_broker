@@ -23,13 +23,13 @@ module PactBroker
           consumer_version: consumer_version,
           consumer_version_number: "1234",
           name: "pact_name")}
-        let(:consumer) { instance_double(PactBroker::Domain::Pacticipant, name: "Consumer") }
-        let(:provider) { instance_double(PactBroker::Domain::Pacticipant, name: "Provider") }
+        let(:consumer) { instance_double(PactBroker::Domain::Application, name: "Consumer") }
+        let(:provider) { instance_double(PactBroker::Domain::Application, name: "Provider") }
         let(:consumer_version) do
           instance_double(PactBroker::Domain::Version,
             number: "1234",
             branch: "main",
-            pacticipant: consumer,
+            application: consumer,
             build_url: "http://build"
           )
         end
@@ -48,7 +48,7 @@ module PactBroker
         end
 
         it "includes a link to the version" do
-          expect(subject[:_embedded][:consumerVersion][:_links][:self][:href]).to eq "http://example.org/pacticipants/Consumer/versions/1234"
+          expect(subject[:_embedded][:consumerVersion][:_links][:self][:href]).to eq "http://example.org/applications/Consumer/versions/1234"
         end
 
         it "includes timestamps" do

@@ -8,7 +8,7 @@ If you need to use this API, consider calling the `/can-i-deploy` resource inste
 
 ## Matrix selectors and options
 
-Selectors are the way we specify which pacticipants and versions we want to view the matrix for. The best way to understand them is to imagine that we start with a Matrix table that contains the pacts/verification results for every consumer and provider in the Pact Broker.
+Selectors are the way we specify which applications and versions we want to view the matrix for. The best way to understand them is to imagine that we start with a Matrix table that contains the pacts/verification results for every consumer and provider in the Pact Broker.
 
 | Consumer | Consumer version | Provider | Provider version | Success |
 |----------|------------------|----------|------------------|---------|
@@ -18,7 +18,7 @@ Selectors are the way we specify which pacticipants and versions we want to view
 
 To specify that we wanted to see all the rows between Foo and Bar, our selectors would be:
 
-`{"pacticipant": "Foo"}` and `{"pacticipant": "Bar"}`.
+`{"application": "Foo"}` and `{"application": "Bar"}`.
 
 This would return:
 
@@ -29,7 +29,7 @@ This would return:
 
 To specify that we wanted to see the results for Foo v1 and Bar v3, our selectors would be:
 
-`{"pacticipant": "Foo", "version": "1"}` and `{"pacticipant": "Bar", "version": "3"}`.
+`{"application": "Foo", "version": "1"}` and `{"application": "Bar", "version": "3"}`.
 
 This would return:
 
@@ -50,7 +50,7 @@ The overwritten revisions are not useful for determining whether or not we are s
 
 Putting the selectors and the options together, to specify that we wanted to see the *latest* results for Foo v1 and Bar v3, our selectors would be:
 
-`{"pacticipant": "Foo", "version": "1"}` and `{"pacticipant": "Bar", "version": "3"}` and our options would be `{"latestby": "cvpv"}`.
+`{"application": "Foo", "version": "1"}` and `{"application": "Bar", "version": "3"}` and our options would be `{"latestby": "cvpv"}`.
 
 This would return:
 
@@ -72,7 +72,7 @@ Version 1 of Foo has been tagged prod, while versions 3 and 4 of Bar have been t
 
 To determine if Foo v2 can be deployed with the latest prod version of Bar, our selectors would be:
 
-`{"pacticipant": "Foo", "version": "2"}` and `{"pacticipant": "Bar", tag: "prod", latest: true}` and our options would be `{"latestby": "cvpv"}`.
+`{"application": "Foo", "version": "2"}` and `{"application": "Bar", tag: "prod", latest: true}` and our options would be `{"latestby": "cvpv"}`.
 
 Using the dataset above, this query would return:
 
@@ -85,10 +85,10 @@ Imagine that Foo added another provider (and may add more in the future). It wou
 
 To determine if Foo v2 can be deployed with the latest prod versions of all its integration partners, our selectors would be:
 
-`{"pacticipant": "Foo", "version": "2"}` and our options would be `{ "tag": "prod", latest: true, latestby: "cvp"}`. (Note the change in `latestby` from "cvpv" to "cvp". The reasons why this is the case are beyond the scope of this document.)
+`{"application": "Foo", "version": "2"}` and our options would be `{ "tag": "prod", latest: true, latestby: "cvp"}`. (Note the change in `latestby` from "cvpv" to "cvp". The reasons why this is the case are beyond the scope of this document.)
 
 
-If Foo was a mobile client, and Bar was its provider, we might want to know if a particular version of Bar was compatible with _all_ the production versions of Foo. To do this, we drop the `"latest": true` from Foo's selector, like so: `{"pacticipant": "Foo", "tag": "prod"}` and `{"pacticipant": "Bar", version: "3"}`. Using the dataset from above, this query would return the following rows:
+If Foo was a mobile client, and Bar was its provider, we might want to know if a particular version of Bar was compatible with _all_ the production versions of Foo. To do this, we drop the `"latest": true` from Foo's selector, like so: `{"application": "Foo", "tag": "prod"}` and `{"application": "Bar", version: "3"}`. Using the dataset from above, this query would return the following rows:
 
 | Consumer | Consumer version | Provider | Provider version | Success |
 |----------|------------------|----------|------------------|---------|

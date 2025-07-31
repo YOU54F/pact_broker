@@ -16,7 +16,7 @@ module PactBroker
 
         link :consumer do | context |
           {
-            href: pacticipant_url(context[:base_url], OpenStruct.new(name: context[:consumer_name])),
+            href: application_url(context[:base_url], OpenStruct.new(name: context[:consumer_name])),
             title: "Consumer",
             name: context[:consumer_name]
           }
@@ -24,7 +24,7 @@ module PactBroker
 
         link :provider do | context |
           {
-            href: pacticipant_url(context[:base_url], OpenStruct.new(name: context[:provider_name])),
+            href: application_url(context[:base_url], OpenStruct.new(name: context[:provider_name])),
             title: "Provider",
             name: context[:provider_name]
           }

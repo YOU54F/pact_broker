@@ -6,8 +6,8 @@ Sequel.migration do
       Sequel[:p][:id].as(:provider_id), Sequel[:p][:name].as(:provider_name),
       Sequel[:pacts][:json_content]).
       join(:versions, {:id => :version_id}, {:table_alias => :cv, implicit_qualifier: :pacts}).
-      join(:pacticipants, {:id => :pacticipant_id}, {:table_alias => :c, implicit_qualifier: :cv}).
-      join(:pacticipants, {:id => :provider_id}, {:table_alias => :p, implicit_qualifier: :pacts}))
+      join(:applications, {:id => :application_id}, {:table_alias => :c, implicit_qualifier: :cv}).
+      join(:applications, {:id => :provider_id}, {:table_alias => :p, implicit_qualifier: :pacts}))
 
     create_view(:latest_pact_consumer_version_orders,
       "select provider_id, consumer_id, max(consumer_version_order) as latest_consumer_version_order

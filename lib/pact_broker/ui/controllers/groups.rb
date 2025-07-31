@@ -27,16 +27,16 @@ module PactBroker
         end
 
         def locals(overrides)
-          pacticipant = pacticipant_service.find_pacticipant_by_name(params[:name])
+          application = application_service.find_application_by_name(params[:name])
           {
             csv_path: "#{base_url}/groups/#{ERB::Util.url_encode(params[:name])}.csv",
-            max_pacticipants: PactBroker.configuration.network_diagram_max_pacticipants,
-            pacticipant_name: params[:name],
-            repository_url: pacticipant&.repository_url,
+            max_applications: PactBroker.configuration.network_diagram_max_applications,
+            application_name: params[:name],
+            repository_url: application&.repository_url,
             base_url: base_url,
-            pacticipant: pacticipant,
-            details_url: "#{base_url}/pacticipants/#{ERB::Util.url_encode(params[:name])}",
-            network_url: "#{base_url}/pacticipants/#{ERB::Util.url_encode(params[:name])}/network?maxPacticipants=#{PactBroker.configuration.network_diagram_max_pacticipants}"
+            application: application,
+            details_url: "#{base_url}/applications/#{ERB::Util.url_encode(params[:name])}",
+            network_url: "#{base_url}/applications/#{ERB::Util.url_encode(params[:name])}/network?maxApplications=#{PactBroker.configuration.network_diagram_max_applications}"
           }.merge(overrides)
         end
       end

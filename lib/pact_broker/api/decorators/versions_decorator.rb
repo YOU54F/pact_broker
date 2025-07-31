@@ -23,16 +23,16 @@ module PactBroker
         link :self do | user_options |
           {
             href: user_options.fetch(:request_url),
-            title: user_options[:resource_title] || "All application versions of #{user_options[:pacticipant_name]}"
+            title: user_options[:resource_title] || "All application versions of #{user_options[:application_name]}"
           }
         end
 
         include PaginationLinks
 
-        link :'pb:pacticipant' do | user_options |
+        link :'pb:application' do | user_options |
           {
-            href: pacticipant_url(user_options[:base_url], OpenStruct.new(name: user_options[:pacticipant_name])),
-            title: user_options[:pacticipant_name]
+            href: application_url(user_options[:base_url], OpenStruct.new(name: user_options[:application_name])),
+            title: user_options[:application_name]
           }
         end
 
@@ -45,10 +45,10 @@ module PactBroker
           end
         end
 
-        link :pacticipant do | user_options |
+        link :application do | user_options |
           {
-            href: pacticipant_url(user_options[:base_url], OpenStruct.new(name: user_options[:pacticipant_name])),
-            title: "Deprecated - please use pb:pacticipant"
+            href: application_url(user_options[:base_url], OpenStruct.new(name: user_options[:application_name])),
+            title: "Deprecated - please use pb:application"
           }
         end
 

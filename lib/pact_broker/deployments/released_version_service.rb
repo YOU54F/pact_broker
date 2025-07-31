@@ -20,7 +20,7 @@ module PactBroker
         released_version = ReleasedVersion.new(
           uuid: uuid_for_new_released_version,
           version: version,
-          pacticipant_id: version.pacticipant_id,
+          application_id: version.application_id,
           environment: environment
         ).insert_ignore
         # Can't reproduce it in a test, but am getting a "Attempt to update object did not result in a single row modification"
@@ -31,12 +31,12 @@ module PactBroker
         released_version
       end
 
-      def self.find_currently_supported_versions_for_environment(environment, pacticipant_name: nil, pacticipant_version_number: nil)
+      def self.find_currently_supported_versions_for_environment(environment, application_name: nil, application_version_number: nil)
         query = ReleasedVersion
           .currently_supported
           .for_environment(environment)
-        query = query.for_pacticipant_name(pacticipant_name) if pacticipant_name
-        query = query.for_pacticipant_version_number(pacticipant_version_number) if pacticipant_version_number
+        query = query.for_application_name(application_name) if application_name
+        query = query.for_application_version_number(application_version_number) if application_version_number
         query.all
       end
 
@@ -50,10 +50,10 @@ module PactBroker
         released_version.record_support_ended
       end
 
-      def self.find_currently_supported_versions_for_pacticipant(pacticipant)
+      def self.find_currently_supported_versions_for_application(application)
         scope_for(ReleasedVersion)
           .currently_supported
-          .where(pacticipant_id: pacticipant.id)
+          .where(application_id: application.id)
           .eager(:version)
           .eager(:environment)
           .order(:created_at, :id)

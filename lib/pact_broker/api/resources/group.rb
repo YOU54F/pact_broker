@@ -17,7 +17,7 @@ module PactBroker
         end
 
         def resource_exists?
-          pacticipant
+          application
         end
 
         def to_csv
@@ -35,12 +35,12 @@ module PactBroker
         private
 
         def group
-          @group ||= group_service.find_group_containing(pacticipant, max_pacticipants: max_pacticipants)
+          @group ||= group_service.find_group_containing(application, max_applications: max_applications)
         end
 
-        def max_pacticipants
-          if request.query["maxPacticipants"]&.integer?
-            request.query["maxPacticipants"].to_i
+        def max_applications
+          if request.query["maxApplications"]&.integer?
+            request.query["maxApplications"].to_i
           end
         end
       end

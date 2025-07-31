@@ -1,7 +1,7 @@
 Sequel.migration do
   change do
     alter_table(:pact_publications) do
-      add_foreign_key(:consumer_id, :pacticipants)
+      add_foreign_key(:consumer_id, :applications)
       add_index(:consumer_id, name: "pact_publications_consumer_id_index")
     end
 

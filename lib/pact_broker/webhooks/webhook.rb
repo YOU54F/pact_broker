@@ -1,7 +1,7 @@
 require "pact_broker/dataset"
 require "pact_broker/domain/webhook"
 require "pact_broker/webhooks/webhook_request_template"
-require "pact_broker/domain/pacticipant"
+require "pact_broker/domain/application"
 
 module PactBroker
   module Webhooks
@@ -10,8 +10,8 @@ module PactBroker
       plugin :serialization, :json, :headers
       plugin :timestamps, update_on_create: true
 
-      associate(:many_to_one, :provider, :class => "PactBroker::Domain::Pacticipant", :key => :provider_id, :primary_key => :id)
-      associate(:many_to_one, :consumer, :class => "PactBroker::Domain::Pacticipant", :key => :consumer_id, :primary_key => :id)
+      associate(:many_to_one, :provider, :class => "PactBroker::Domain::Application", :key => :provider_id, :primary_key => :id)
+      associate(:many_to_one, :consumer, :class => "PactBroker::Domain::Application", :key => :consumer_id, :primary_key => :id)
       one_to_many :events, :class => "PactBroker::Webhooks::WebhookEvent", :reciprocal => :webhook
 
       dataset_module do
@@ -166,13 +166,13 @@ module PactBroker
       def webhook_consumer
         return if consumer.nil? && consumer_label.nil?
 
-        Domain::WebhookPacticipant.new(name: consumer&.name, label: consumer_label)
+        Domain::WebhookApplication.new(name: consumer&.name, label: consumer_label)
       end
 
       def webhook_provider
         return if provider.nil? && provider_label.nil?
 
-        Domain::WebhookPacticipant.new(name: provider&.name, label: provider_label)
+        Domain::WebhookApplication.new(name: provider&.name, label: provider_label)
       end
 
       def match_all?(name)
@@ -213,8 +213,8 @@ end
 #  consumer_label_exclusion | (consumer_id IS NULL OR consumer_id IS NOT NULL AND consumer_label IS NULL)
 #  provider_label_exclusion | (provider_id IS NULL OR provider_id IS NOT NULL AND provider_label IS NULL)
 # Foreign key constraints:
-#  fk_webhooks_consumer | (consumer_id) REFERENCES pacticipants(id)
-#  fk_webhooks_provider | (provider_id) REFERENCES pacticipants(id)
+#  fk_webhooks_consumer | (consumer_id) REFERENCES applications(id)
+#  fk_webhooks_provider | (provider_id) REFERENCES applications(id)
 # Referenced By:
 #  triggered_webhooks | triggered_webhooks_webhook_id_fkey | (webhook_id) REFERENCES webhooks(id)
 #  webhook_events     | webhook_events_webhook_id_fkey     | (webhook_id) REFERENCES webhooks(id) ON DELETE CASCADE

@@ -25,7 +25,7 @@ module PactBroker
             .create_integration
         end
 
-        subject { Integration.select_all_qualified.filter_by_pacticipant(query_string).all }
+        subject { Integration.select_all_qualified.filter_by_application(query_string).all }
 
         context "with a filter matching the consumer" do
           let(:query_string) { "oo" }
@@ -65,7 +65,7 @@ module PactBroker
         context "with a filter that does not match" do
           let(:query_string) { "x" }
 
-          subject { Integration.select_all_qualified.filter_by_pacticipant(query_string) }
+          subject { Integration.select_all_qualified.filter_by_application(query_string) }
 
           it "returns nil" do
             expect(subject).to eq nil

@@ -6,7 +6,7 @@ module PactBroker
       def initialize
         consumer = OpenStruct.new(name: "placeholder-consumer", labels: [OpenStruct.new(name: "placeholder-consumer-label")])
         @provider = OpenStruct.new(name: "placeholder-provider", labels: [OpenStruct.new(name: "placeholder-provider-label")])
-        @consumer_version = OpenStruct.new(number: "gggghhhhjjjjkkkkllll66667777888899990000", pacticipant: consumer)
+        @consumer_version = OpenStruct.new(number: "gggghhhhjjjjkkkkllll66667777888899990000", application: consumer)
         @consumer_version_number = @consumer_version.number
         @created_at = DateTime.now
         @revision_number = 1

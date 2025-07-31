@@ -1,12 +1,12 @@
 require "spec/support/test_data_builder"
 
 describe "Get versions" do
-  let(:path) { "/pacticipants/Consumer/versions" }
+  let(:path) { "/applications/Consumer/versions" }
   let(:last_response_body) { JSON.parse(subject.body, symbolize_names: true) }
 
   subject { get(path) }
 
-  context "when the pacticipant exists" do
+  context "when the application exists" do
     before do
       td.create_consumer("Consumer")
         .create_consumer_version("1.0.0")
@@ -42,7 +42,7 @@ describe "Get versions" do
     end
   end
 
-  context "when the pacticipant does not exist" do
+  context "when the application does not exist" do
     it "returns a 404 response" do
       expect(subject).to be_a_404_response
     end

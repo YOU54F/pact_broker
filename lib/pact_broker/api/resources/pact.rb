@@ -1,6 +1,6 @@
 require "cgi"
 require "pact_broker/api/resources/base_resource"
-require "pact_broker/api/resources/pacticipant_resource_methods"
+require "pact_broker/api/resources/application_resource_methods"
 require "pact_broker/api/decorators/pact_decorator"
 require "pact_broker/api/decorators/extended_pact_decorator"
 require "pact_broker/messages"
@@ -17,7 +17,7 @@ module PactBroker
     module Resources
       class Pact < BaseResource
         include EventMethods
-        include PacticipantResourceMethods
+        include ApplicationResourceMethods
         include PactResourceMethods
         include WebhookExecutionMethods
         include PactBroker::Messages
@@ -54,7 +54,7 @@ module PactBroker
         def is_conflict?
           merge_conflict = request.patch? && resource_exists? && Pacts::Merger.conflict?(pact.json_content, pact_params.json_content)
 
-          potential_duplicate_pacticipants?(pact_params.pacticipant_names) || merge_conflict || disallowed_modification?
+          potential_duplicate_applications?(pact_params.application_names) || merge_conflict || disallowed_modification?
         end
 
         def malformed_request?

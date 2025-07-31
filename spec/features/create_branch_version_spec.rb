@@ -1,5 +1,5 @@
 describe "Creating a branch version" do
-  let(:path) { "/pacticipants/Foo/branches/main/versions/1234" }
+  let(:path) { "/applications/Foo/branches/main/versions/1234" }
   let(:headers) { { "CONTENT_TYPE" => "application/json" } }
   let(:response_body) { JSON.parse(subject.body, symbolize_names: true) }
 
@@ -28,7 +28,7 @@ describe "Creating a branch version" do
   end
 
   context "with a percentage in the version number" do
-    let(:path) { "/pacticipants/foo/branches/main/versions/%25DATE%25_%25TIME%25" }
+    let(:path) { "/applications/foo/branches/main/versions/%25DATE%25_%25TIME%25" }
 
     it "returns a 201 response" do
       expect(subject.status).to be 201

@@ -45,7 +45,7 @@ module PactBroker
         end
 
         context "when method called with filter_options" do
-          context "when query_string is like pacticipant name" do
+          context "when query_string is like application name" do
             let(:query_string) { "oo" }
 
             it "returns the matching integration" do
@@ -53,7 +53,7 @@ module PactBroker
             end
           end
 
-          context "when query_string is not matching pacticipant name" do
+          context "when query_string is not matching application name" do
             let(:query_string) { "x" }
 
             it "returns empty array" do
@@ -69,15 +69,15 @@ module PactBroker
             td.create_consumer("A")
               .create_provider("B")
               .create_integration
-              .create_pacticipant("C")
-              .create_pacticipant("D")
+              .create_application("C")
+              .create_application("D")
           end
         end
 
         let(:objects_with_consumer_and_provider) do
           [
-            double("i1", consumer: td.find_pacticipant("A"), provider: td.find_pacticipant("B")),
-            double("i2", consumer: td.find_pacticipant("C"), provider: td.find_pacticipant("D"))
+            double("i1", consumer: td.find_application("A"), provider: td.find_application("B")),
+            double("i2", consumer: td.find_application("C"), provider: td.find_application("D"))
           ]
         end
 
@@ -153,7 +153,7 @@ module PactBroker
 
           it "updates all the integrations for the provider" do
             subject
-            integrations = Integration.select_all_qualified.including_pacticipant_id(bar.id)
+            integrations = Integration.select_all_qualified.including_application_id(bar.id)
             expect(integrations.first.contract_data_updated_at).to be_date_time(now)
             expect(integrations.last.contract_data_updated_at).to be_date_time(now)
           end
@@ -180,8 +180,8 @@ module PactBroker
 
         let(:objects_with_consumer_and_provider) do
           [
-            OpenStruct.new(consumer: td.find_pacticipant("Foo1"), provider: td.find_pacticipant("Bar1")),
-            OpenStruct.new(consumer: td.find_pacticipant("Foo2"), provider: td.find_pacticipant("Bar2"))
+            OpenStruct.new(consumer: td.find_application("Foo1"), provider: td.find_application("Bar1")),
+            OpenStruct.new(consumer: td.find_application("Foo2"), provider: td.find_application("Bar2"))
           ]
         end
 

@@ -56,12 +56,12 @@
         "pb:consumer": {
           "title": "Consumer",
           "name": "Foo",
-          "href": "https://pact-broker/pacticipants/Foo"
+          "href": "https://pact-broker/applications/Foo"
         },
         "pb:provider": {
           "title": "Provider",
           "name": "Bar",
-          "href": "https://pact-broker/pacticipants/Bar"
+          "href": "https://pact-broker/applications/Bar"
         },
         "pb:pact-webhooks": {
           "title": "All webhooks for consumer Foo and provider Bar",

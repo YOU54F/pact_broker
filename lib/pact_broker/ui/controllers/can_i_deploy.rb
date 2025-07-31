@@ -15,9 +15,9 @@ module PactBroker
         include PactBroker::Services
         include PactBroker::UI::Helpers::MatrixHelper
 
-        get "/:pacticipant_name/latest-version/:tag/can-i-deploy/to/:environment_tag" do
-          # selector and options must be in sync with lib/pact_broker/api/resources/can_i_deploy_pacticipant_version_by_tag_to_tag_badge.rb
-          selectors = [ PactBroker::Matrix::UnresolvedSelector.new(pacticipant_name: params[:pacticipant_name], latest: true, tag: params[:tag]) ]
+        get "/:application_name/latest-version/:tag/can-i-deploy/to/:environment_tag" do
+          # selector and options must be in sync with lib/pact_broker/api/resources/can_i_deploy_application_version_by_tag_to_tag_badge.rb
+          selectors = [ PactBroker::Matrix::UnresolvedSelector.new(application_name: params[:application_name], latest: true, tag: params[:tag]) ]
           options = { latestby: "cvp", limit: 100, tag: params[:to] }
           result = matrix_service.find(selectors, options)
           lines = PactBroker::UI::ViewDomain::MatrixLines.new(result, base_url: base_url)

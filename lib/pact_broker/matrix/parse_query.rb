@@ -64,8 +64,8 @@ module PactBroker
 
       def self.parse_selector(i)
         p = PactBroker::Matrix::UnresolvedSelector.new
-        p.pacticipant_name = i["pacticipant"] if i["pacticipant"] && i["pacticipant"] != ""
-        p.pacticipant_version_number = i["version"] if i["version"] && i["version"] != ""
+        p.application_name = i["application"] if i["application"] && i["application"] != ""
+        p.application_version_number = i["version"] if i["version"] && i["version"] != ""
         p.latest = true if i["latest"] == "true"
         p.branch = i["branch"] if i["branch"] && i["branch"] != ""
         p.tag = i["tag"] if i["tag"] && i["tag"] != ""

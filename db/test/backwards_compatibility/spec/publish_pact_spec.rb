@@ -28,7 +28,7 @@ describe "Code version #{CODE_VERSION} running against database version #{DATABA
   end
 
   describe "tagging a consumer version" do
-    let(:path) { "/pacticipants/Foo/versions/#{CONSUMER_VERSION}/tags/#{TAG}"}
+    let(:path) { "/applications/Foo/versions/#{CONSUMER_VERSION}/tags/#{TAG}"}
     subject { put path, nil, {"content-type" => "application/json" }; last_response  }
 
     it "returns a success status" do

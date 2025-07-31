@@ -9,9 +9,9 @@ module PactBroker
 
         include PactBroker::Api::PactBrokerUrls
 
-        def initialize branch_version, pacticipant_name
+        def initialize branch_version, application_name
           @branch_version = branch_version
-          @pacticipant_name = pacticipant_name
+          @application_name = application_name
         end
 
         def name
@@ -20,9 +20,9 @@ module PactBroker
 
         def tooltip
           if branch_version.latest?
-            "This is the latest version of #{pacticipant_name} from branch \"#{branch_version.branch_name}\"."
+            "This is the latest version of #{application_name} from branch \"#{branch_version.branch_name}\"."
           else
-            "This version of #{pacticipant_name} is from branch \"#{branch_version.branch_name}\". A more recent version from this branch exists."
+            "This version of #{application_name} is from branch \"#{branch_version.branch_name}\". A more recent version from this branch exists."
           end
         end
 
@@ -32,7 +32,7 @@ module PactBroker
 
         private
 
-        attr_reader :branch_version, :pacticipant_name
+        attr_reader :branch_version, :application_name
       end
     end
   end

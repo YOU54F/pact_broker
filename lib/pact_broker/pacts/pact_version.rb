@@ -13,8 +13,8 @@ module PactBroker
 
       one_to_many(:pact_publications, reciprocal: :pact_version)
       one_to_many(:verifications, reciprocal: :verification, order: :id, class: "PactBroker::Domain::Verification")
-      many_to_one(:provider, class: "PactBroker::Domain::Pacticipant", key: :provider_id, primary_key: :id)
-      many_to_one(:consumer, class: "PactBroker::Domain::Pacticipant", key: :consumer_id, primary_key: :id)
+      many_to_one(:provider, class: "PactBroker::Domain::Application", key: :provider_id, primary_key: :id)
+      many_to_one(:consumer, class: "PactBroker::Domain::Application", key: :consumer_id, primary_key: :id)
       many_to_many(:consumer_versions,
         class: "PactBroker::Domain::Version",
         join_table: :pact_publications,
@@ -120,7 +120,7 @@ module PactBroker
 
       def select_provider_tags_with_successful_verifications_from_another_branch_from_before_this_branch_created(tags)
         tags.select do | tag |
-          first_tag_with_name = PactBroker::Domain::Tag.where(pacticipant_id: provider_id, name: tag).order(:created_at).first
+          first_tag_with_name = PactBroker::Domain::Tag.where(application_id: provider_id, name: tag).order(:created_at).first
 
           verifications_join = {
             Sequel[:verifications][:pact_version_id] => Sequel[:pact_versions][:id],
@@ -178,7 +178,7 @@ module PactBroker
       end
 
       def any_successful_verifications_from_another_branch_from_before_this_branch_created?(branch_name)
-        branch = PactBroker::Versions::Branch.where(pacticipant_id: provider_id, name: branch_name).single_record
+        branch = PactBroker::Versions::Branch.where(application_id: provider_id, name: branch_name).single_record
 
         verifications_join = {
           Sequel[:verifications][:pact_version_id] => Sequel[:pact_versions][:id],
@@ -214,8 +214,8 @@ end
 #  pact_versions_pkey   | PRIMARY KEY btree (id)
 #  unq_pvc_con_prov_sha | UNIQUE btree (consumer_id, provider_id, sha)
 # Foreign key constraints:
-#  pact_versions_consumer_id_fkey | (consumer_id) REFERENCES pacticipants(id)
-#  pact_versions_provider_id_fkey | (provider_id) REFERENCES pacticipants(id)
+#  pact_versions_consumer_id_fkey | (consumer_id) REFERENCES applications(id)
+#  pact_versions_provider_id_fkey | (provider_id) REFERENCES applications(id)
 # Referenced By:
 #  latest_pact_publication_ids_for_consumer_versions            | latest_pact_publication_ids_for_consumer_v_pact_version_id_fkey | (pact_version_id) REFERENCES pact_versions(id) ON DELETE CASCADE
 #  latest_verification_id_for_pact_version_and_provider_version | latest_v_id_for_pv_and_pv_pact_version_id_fk                    | (pact_version_id) REFERENCES pact_versions(id) ON DELETE CASCADE

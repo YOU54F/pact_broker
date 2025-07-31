@@ -3,7 +3,7 @@ require "pact_broker/versions/branch_repository"
 module PactBroker
   module Versions
     describe BranchRepository do
-      describe "find_all_branches_for_pacticipant" do
+      describe "find_all_branches_for_application" do
         before do
           td.create_consumer("Other")
             .create_consumer_version("1", branch: "blah")
@@ -21,16 +21,16 @@ module PactBroker
         let(:filter_options) { {} }
         let(:pagination_options) { {} }
         let(:eager_load_associations) { [] }
-        let(:pacticipant) { td.and_return(:pacticipant) }
+        let(:application) { td.and_return(:application) }
 
-        subject { BranchRepository.new.find_all_branches_for_pacticipant(pacticipant, filter_options, pagination_options, eager_load_associations) }
+        subject { BranchRepository.new.find_all_branches_for_application(application, filter_options, pagination_options, eager_load_associations) }
 
         it "does not eager load the associations" do
-          expect(subject.first.associations[:pacticipant]).to be_nil
+          expect(subject.first.associations[:application]).to be_nil
         end
 
         context "with no options" do
-          it "returns all the branches for the pacticipant starting with the most recent" do
+          it "returns all the branches for the application starting with the most recent" do
             expect(subject.size).to eq 3
             expect(subject.first.name).to eq "feat/bar"
             expect(subject.last.name).to eq "main"
@@ -54,10 +54,10 @@ module PactBroker
         end
 
         context "with eager_load_associations" do
-          let(:eager_load_associations) { [:pacticipant] }
+          let(:eager_load_associations) { [:application] }
 
           it "eager loads the associations" do
-            expect(subject.first.associations[:pacticipant]).to_not be_nil
+            expect(subject.first.associations[:application]).to_not be_nil
           end
         end
       end
@@ -72,7 +72,7 @@ module PactBroker
             .create_consumer_version("1", branch: "main")
         end
 
-        let(:branch) { BranchRepository.new.find_branch(pacticipant_name: "foo", branch_name: "main") }
+        let(:branch) { BranchRepository.new.find_branch(application_name: "foo", branch_name: "main") }
 
         subject { BranchRepository.new.delete_branch(branch) }
 
@@ -105,16 +105,16 @@ module PactBroker
             .create_consumer_version("1", branch: "main")
         end
 
-        let(:pacticipant) { td.find_pacticipant("foo") }
+        let(:application) { td.find_application("foo") }
 
-        subject { BranchRepository.new.count_branches_to_delete(pacticipant, exclude: ["foo"]) }
+        subject { BranchRepository.new.count_branches_to_delete(application, exclude: ["foo"]) }
 
         it "returns a count of the number of branches that will be deleted" do
           expect(subject).to eq 3
         end
       end
 
-      describe "delete_branches_for_pacticipant" do
+      describe "delete_branches_for_application" do
         before do
           td.create_consumer("foo")
             .create_consumer_version("1", branch: "main")
@@ -126,13 +126,13 @@ module PactBroker
             .create_consumer_version("1", branch: "main")
         end
 
-        let(:pacticipant) { td.find_pacticipant("foo") }
+        let(:application) { td.find_application("foo") }
 
-        subject { BranchRepository.new.delete_branches_for_pacticipant(pacticipant, exclude: ["foo"]) }
+        subject { BranchRepository.new.delete_branches_for_application(application, exclude: ["foo"]) }
 
         it "deletes all the branches except for the excluded ones and the main branch" do
           subject
-          expect(Branch.where(pacticipant: pacticipant).collect(&:name)).to contain_exactly("foo", "main")
+          expect(Branch.where(application: application).collect(&:name)).to contain_exactly("foo", "main")
         end
       end
 
@@ -148,9 +148,9 @@ module PactBroker
             .create_consumer_version("1", branch: "main")
         end
 
-        let(:pacticipant) { td.find_pacticipant("foo") }
+        let(:application) { td.find_application("foo") }
 
-        subject { BranchRepository.new.remaining_branches_after_future_deletion(pacticipant, exclude: ["foo"]) }
+        subject { BranchRepository.new.remaining_branches_after_future_deletion(application, exclude: ["foo"]) }
 
         it "returns the branches that will not be deleted" do
           expect(subject).to contain_exactly(have_attributes(name: "main"), have_attributes(name: "foo"))

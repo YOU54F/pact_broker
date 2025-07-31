@@ -14,7 +14,7 @@ module PactBroker
           Sequel[:providers][:main_branch] => Sequel[:branch_versions][:branch_name]
         }
         max_verification_id_for_pact_version =  PactBroker::Verifications::LatestVerificationIdForPactVersionAndProviderVersion
-                                                  .join(:pacticipants, providers_join, { table_alias: :providers })
+                                                  .join(:applications, providers_join, { table_alias: :providers })
                                                   .join(:branch_versions, branch_versions_join)
                                                   .select(Sequel.function(:max, :verification_id))
                                                   .where(pact_version_id: id)

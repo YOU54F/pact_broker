@@ -5,13 +5,13 @@ Sequel.migration do
       .join(:pact_versions, {id: :pact_version_id})
       .each do | line |
         version = from(:versions)
-          .where(number: line[:provider_version], pacticipant_id: line[:provider_id]).single_record
+          .where(number: line[:provider_version], application_id: line[:provider_id]).single_record
         version_id = if version
                        version[:id]
                      else
                        from(:versions).insert(
                          number: line[:provider_version],
-                         pacticipant_id: line[:provider_id],
+                         application_id: line[:provider_id],
                          created_at: line[:created_at],
                          updated_at: line[:created_at]
                        )

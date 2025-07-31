@@ -19,7 +19,7 @@ module PactBroker
           let(:application_context) { PactBroker::ApplicationContext.default_application_context(before_resource: before_resource, after_resource: after_resource) }
           let(:request) { double("request", uri: URI("http://example.org"), path_info: path_info, body: body).as_null_object }
           let(:body) { "{}" }
-          let(:path_info) { { pacticipant_name: "foo", pacticipant_version_number: "1" } }
+          let(:path_info) { { application_name: "foo", application_version_number: "1" } }
           let(:response) { double("response").as_null_object }
           let(:resource) { resource_class.new(request, response) }
           let(:before_resource) { double("before_resource", call: nil) }

@@ -55,7 +55,7 @@ module PactBroker
 
         link :'pb:consumer' do | context |
           {
-            href: pacticipant_url(context[:base_url], fake_consumer(context)),
+            href: application_url(context[:base_url], fake_consumer(context)),
             title: "Consumer",
             name: context[:consumer_name]
           }
@@ -63,7 +63,7 @@ module PactBroker
 
         link :'pb:provider' do | context |
           {
-            href: pacticipant_url(context[:base_url], fake_provider(context)),
+            href: application_url(context[:base_url], fake_provider(context)),
             title: "Provider",
             name: context[:provider_name]
           }

@@ -32,9 +32,9 @@ module PactBroker
       # @return [Array<PactBroker::Matrix::Integration>]
       def find_integrations_for_specified_selectors(resolved_specified_selectors, infer_selectors_for_integrations)
         if infer_selectors_for_integrations || resolved_specified_selectors.size == 1
-          find_integrations_involving_any_specfied_selectors(resolved_specified_selectors).sort_by(&:pacticipant_names)
+          find_integrations_involving_any_specfied_selectors(resolved_specified_selectors).sort_by(&:application_names)
         else
-          find_integrations_between_specified_selectors(resolved_specified_selectors).sort_by(&:pacticipant_names)
+          find_integrations_between_specified_selectors(resolved_specified_selectors).sort_by(&:application_names)
         end
       end
 
@@ -44,13 +44,13 @@ module PactBroker
       # @param [Array<PactBroker::Matrix::ResolvedSelector>] resolved_specified_selectors
       # @return [Array<PactBroker::Matrix::Integration>]
       def find_integrations_between_specified_selectors(resolved_specified_selectors)
-        specified_pacticipant_names = resolved_specified_selectors.collect(&:pacticipant_name)
+        specified_application_names = resolved_specified_selectors.collect(&:application_name)
         IntegrationRow
           .distinct_integrations_between_given_selectors(resolved_specified_selectors)
           .all
           .collect(&:to_hash)
           .collect do | integration_hash |
-            required = is_a_row_for_this_integration_required?(specified_pacticipant_names, integration_hash[:consumer_name])
+            required = is_a_row_for_this_integration_required?(specified_application_names, integration_hash[:consumer_name])
             Integration.from_hash(integration_hash.merge(required: required))
           end
       end
@@ -87,7 +87,7 @@ module PactBroker
         end
       end
 
-      # Returns a list of *potential* integrations for the pacticipants in the selectors, where the pacticipant is a provider.
+      # Returns a list of *potential* integrations for the applications in the selectors, where the application is a provider.
       # Can't tell from the verifications table if a particular provider version has a consumer, as that is determined
       # by what is deployed to the environment, not what is verified. By looking in the integration table, we can identify
       # what consumers *may* be present in the target environment.
@@ -96,7 +96,7 @@ module PactBroker
       # @return [Array<PactBroker::Matrix::Integration>]
       def integrations_where_specified_selector_is_provider(resolved_specified_selectors)
         integrations_involving_specified_providers = PactBroker::Integrations::Integration
-                                                      .where(provider_id: resolved_specified_selectors.collect(&:pacticipant_id))
+                                                      .where(provider_id: resolved_specified_selectors.collect(&:application_id))
                                                       .eager(:consumer, :provider)
                                                       .all
 
@@ -121,12 +121,12 @@ module PactBroker
           .collect { | duplicate_integrations | duplicate_integrations.find(&:required?) || duplicate_integrations.first }
       end
 
-      # If a specified pacticipant is a consumer, then its provider is required to be deployed
+      # If a specified application is a consumer, then its provider is required to be deployed
       # to the same environment before the consumer can be deployed.
-      # If a specified pacticipant is a provider only, then it may be deployed
+      # If a specified application is a provider only, then it may be deployed
       # without the consumer being present, but cannot break an existing consumer.
-      def is_a_row_for_this_integration_required?(specified_pacticipant_names, consumer_name)
-        specified_pacticipant_names.include?(consumer_name)
+      def is_a_row_for_this_integration_required?(specified_application_names, consumer_name)
+        specified_application_names.include?(consumer_name)
       end
     end
   end

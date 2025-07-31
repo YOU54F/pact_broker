@@ -28,7 +28,7 @@ module PactBroker
         end
 
         def provider_name_url
-          hal_browser_url(pacticipant_url_from_params({ pacticipant_name: provider_name }, base_url), base_url)
+          hal_browser_url(application_url_from_params({ application_name: provider_name }, base_url), base_url)
         end
 
         def consumer_name
@@ -36,7 +36,7 @@ module PactBroker
         end
 
         def consumer_name_url
-          hal_browser_url(pacticipant_url_from_params({ pacticipant_name: consumer_name }, base_url), base_url)
+          hal_browser_url(application_url_from_params({ application_name: consumer_name }, base_url), base_url)
         end
 
         def pact_version_sha
@@ -73,7 +73,7 @@ module PactBroker
         end
 
         def consumer_version_number_url
-          params = { pacticipant_name: consumer_name, version_number: consumer_version_number }
+          params = { application_name: consumer_name, version_number: consumer_version_number }
           hal_browser_url(version_url_from_params(params, base_url), base_url)
         end
 
@@ -90,7 +90,7 @@ module PactBroker
         end
 
         def provider_version_number_url
-          params = { pacticipant_name: provider_name, version_number: provider_version_number }
+          params = { application_name: provider_name, version_number: provider_version_number }
           hal_browser_url(version_url_from_params(params, base_url), base_url)
         end
 
@@ -112,14 +112,14 @@ module PactBroker
           @line.consumer_version_tags
             .select(&:latest?)
             .sort_by(&:created_at)
-            .collect{ | tag | MatrixTag.new(tag.to_hash.merge(pacticipant_name: consumer_name, version_number: consumer_version_number)) }
+            .collect{ | tag | MatrixTag.new(tag.to_hash.merge(application_name: consumer_name, version_number: consumer_version_number)) }
         end
 
         def other_consumer_version_tags
           @line.consumer_version_tags
             .reject(&:latest?)
             .sort_by(&:created_at)
-            .collect{ | tag | MatrixTag.new(tag.to_hash.merge(pacticipant_name: consumer_name, version_number: consumer_version_number)) }
+            .collect{ | tag | MatrixTag.new(tag.to_hash.merge(application_name: consumer_name, version_number: consumer_version_number)) }
         end
 
         def consumer_versions_in_environments
@@ -140,14 +140,14 @@ module PactBroker
           @line.provider_version_tags
             .select(&:latest?)
             .sort_by(&:created_at)
-            .collect{ | tag | MatrixTag.new(tag.to_hash.merge(pacticipant_name: provider_name, version_number: provider_version_number)) }
+            .collect{ | tag | MatrixTag.new(tag.to_hash.merge(application_name: provider_name, version_number: provider_version_number)) }
         end
 
         def other_provider_version_tags
           @line.provider_version_tags
             .reject(&:latest?)
             .sort_by(&:created_at)
-            .collect{ | tag | MatrixTag.new(tag.to_hash.merge(pacticipant_name: provider_name, version_number: provider_version_number)) }
+            .collect{ | tag | MatrixTag.new(tag.to_hash.merge(application_name: provider_name, version_number: provider_version_number)) }
         end
 
         def orderable_fields
@@ -221,11 +221,11 @@ module PactBroker
 
         attr_reader :line
 
-        def branch_tooltip(pacticipant_name, branch, latest)
+        def branch_tooltip(application_name, branch, latest)
           if latest
-            "This is the latest version of #{pacticipant_name} from branch \"#{branch}\"."
+            "This is the latest version of #{application_name} from branch \"#{branch}\"."
           else
-            "A more recent version of #{pacticipant_name} from branch \"#{branch}\" exists."
+            "A more recent version of #{application_name} from branch \"#{branch}\" exists."
           end
         end
 

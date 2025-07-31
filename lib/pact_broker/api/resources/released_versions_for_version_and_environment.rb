@@ -68,7 +68,7 @@ module PactBroker
         end
 
         def version
-          @version ||= version_service.find_by_pacticipant_name_and_number(identifier_from_path)
+          @version ||= version_service.find_by_application_name_and_number(identifier_from_path)
         end
 
         def environment
@@ -94,7 +94,7 @@ module PactBroker
         end
 
         def title
-          "Released versions for #{pacticipant.display_name} version #{pacticipant_version_number} in #{environment.display_name}"
+          "Released versions for #{application.display_name} version #{application_version_number} in #{environment.display_name}"
         end
       end
     end

@@ -14,11 +14,11 @@ module PactBroker
             .create_verification(provider_version: "2", number: 3, success: true, branch: "dev")
         end
         
-        let(:pacticipant_name_param) { "B" }
+        let(:application_name_param) { "B" }
         
-        subject { Service.can_i_merge(pacticipant_name: pacticipant_name_param) }
+        subject { Service.can_i_merge(application_name: application_name_param) }
   
-        context "for pacticipant that has verification on it's main branch" do
+        context "for application that has verification on it's main branch" do
           let(:options) {
             {
               latest: true,
@@ -29,7 +29,7 @@ module PactBroker
           
           let(:unresolved_selectors) {
             [
-              PactBroker::Matrix::UnresolvedSelector.new(pacticipant_name: "B", pacticipant_version_number: "1")
+              PactBroker::Matrix::UnresolvedSelector.new(application_name: "B", application_version_number: "1")
             ]
           }
     
@@ -62,31 +62,31 @@ module PactBroker
           end
         end
 
-        context "when the pacticipant does not exist" do
-          let(:selectors) { [{ pacticipant_name: "Foo", pacticipant_version_number: "1" }] }
+        context "when the application does not exist" do
+          let(:selectors) { [{ application_name: "Foo", application_version_number: "1" }] }
 
           it "returns error messages" do
-            expect(subject.first).to eq "Pacticipant Foo not found"
+            expect(subject.first).to eq "Application Foo not found"
           end
         end
 
-        context "when the pacticipant name is not specified" do
-          let(:selectors) { [{ pacticipant_name: nil, pacticipant_version_number: "1" }] }
+        context "when the application name is not specified" do
+          let(:selectors) { [{ application_name: nil, application_version_number: "1" }] }
 
           it "returns error messages" do
-            expect(subject.first).to eq "Please specify the pacticipant name"
+            expect(subject.first).to eq "Please specify the application name"
           end
         end
 
-        context "when the pacticipant version is not specified" do
+        context "when the application version is not specified" do
           before do
-            td.create_pacticipant("Foo")
+            td.create_application("Foo")
               .create_version("1")
-              .create_pacticipant("Bar")
+              .create_application("Bar")
               .create_version("2")
           end
 
-          let(:selectors) { [ UnresolvedSelector.new(pacticipant_name: "Foo", pacticipant_version_number: nil ), UnresolvedSelector.new(pacticipant_name: "Bar", pacticipant_version_number: nil) ] }
+          let(:selectors) { [ UnresolvedSelector.new(application_name: "Foo", application_version_number: nil ), UnresolvedSelector.new(application_name: "Bar", application_version_number: nil) ] }
 
           it "returns no error messages" do
             expect(subject).to eq []
@@ -95,14 +95,14 @@ module PactBroker
 
         context "when the latest_tag is used instead of a version" do
           before do
-            td.create_pacticipant("Foo")
+            td.create_application("Foo")
               .create_version("1")
               .create_tag("prod")
-              .create_pacticipant("Bar")
+              .create_application("Bar")
               .create_version("2")
           end
 
-          let(:selectors) { [ UnresolvedSelector.new(pacticipant_name: "Foo", latest_tag: "prod"), UnresolvedSelector.new(pacticipant_name: "Bar", pacticipant_version_number: "2")] }
+          let(:selectors) { [ UnresolvedSelector.new(application_name: "Foo", latest_tag: "prod"), UnresolvedSelector.new(application_name: "Bar", application_version_number: "2")] }
 
           context "when there is a version for the tag" do
             it "returns no error messages" do
@@ -113,14 +113,14 @@ module PactBroker
 
         context "when the latest is used as well as a version" do
           before do
-            td.create_pacticipant("Foo")
+            td.create_application("Foo")
               .create_version("1")
               .create_tag("prod")
-              .create_pacticipant("Bar")
+              .create_application("Bar")
               .create_version("2")
           end
 
-          let(:selectors) { [ UnresolvedSelector.new(pacticipant_name: "Foo", pacticipant_version_number: "1", latest: true), UnresolvedSelector.new(pacticipant_name: "Bar", pacticipant_version_number: "2")] }
+          let(:selectors) { [ UnresolvedSelector.new(application_name: "Foo", application_version_number: "1", latest: true), UnresolvedSelector.new(application_name: "Bar", application_version_number: "2")] }
 
           it "returns an error message" do
             expect(subject).to eq ["A version number and latest flag cannot both be specified for Foo"]
@@ -202,17 +202,17 @@ module PactBroker
           end
         end
 
-        context "when a pacticipant to ignore is missing a name" do
-          let(:selectors) { [UnresolvedSelector.new(pacticipant_name: "Foo", pacticipant_version_number: "1")] }
+        context "when a application to ignore is missing a name" do
+          let(:selectors) { [UnresolvedSelector.new(application_name: "Foo", application_version_number: "1")] }
 
           let(:options) do
             {
-              ignore_selectors: [UnresolvedSelector.new(pacticipant_version_number: "1")]
+              ignore_selectors: [UnresolvedSelector.new(application_version_number: "1")]
             }
           end
 
           it "returns an error message" do
-            expect(subject.last).to include "Please specify the pacticipant name to ignore"
+            expect(subject.last).to include "Please specify the application name to ignore"
           end
         end
 

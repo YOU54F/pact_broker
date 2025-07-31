@@ -13,10 +13,10 @@ module PactBroker
       associate(:many_to_one, :version, :class => "PactBroker::Domain::Version", :key => :version_id, :primary_key => :id)
 
       # The tag for the latest version that has a tag with a matching name
-      many_to_one :head_tag, read_only: true, key: [:name, :pacticipant_id],
+      many_to_one :head_tag, read_only: true, key: [:name, :application_id],
         class: Tag,
         dataset: lambda {
-          Tag.where(name: name, pacticipant_id: pacticipant_id)
+          Tag.where(name: name, application_id: application_id)
             .order(Sequel.desc(:version_order))
             .limit(1)
         },
@@ -29,11 +29,11 @@ module PactBroker
           join(:pact_publications, { Sequel[:tags][:version_id] => Sequel[:pact_publications][:consumer_version_id] } )
         end
 
-        def for(pacticipant_name, version_number, tag_name)
+        def for(application_name, version_number, tag_name)
           where(
             version_id: PactBroker::Domain::Version.select(:id).where(
               number: version_number,
-              pacticipant_id: PactBroker::Domain::Pacticipant.select(:id).where_name_like(:name, pacticipant_name)
+              application_id: PactBroker::Domain::Application.select(:id).where_name_like(:name, application_name)
             ),
             name: tag_name
           ).single_record
@@ -42,25 +42,25 @@ module PactBroker
         def latest_tags
           Tag
             .select_all_qualified
-            .max_group_by(:version_order, [:pacticipant_id, :name])
+            .max_group_by(:version_order, [:application_id, :name])
         end
 
         # Does NOT care about whether or not there is a pact publication
         # for the version
-        def latest_tags_for_pacticipant_ids(pacticipant_ids)
+        def latest_tags_for_application_ids(application_ids)
           Tag
             .select_all_qualified
-            .max_group_by(:version_order, [:pacticipant_id, :name]) do | ds |
-              ds.where(Sequel[:tags][:pacticipant_id] => pacticipant_ids)
+            .max_group_by(:version_order, [:application_id, :name]) do | ds |
+              ds.where(Sequel[:tags][:application_id] => application_ids)
             end
         end
 
-        def latest_tags_for_pacticipant_ids_and_tag_names(pacticipant_ids, tag_names)
+        def latest_tags_for_application_ids_and_tag_names(application_ids, tag_names)
           Tag
             .select_all_qualified
-            .max_group_by(:version_order, [:pacticipant_id, :name]) do | ds |
+            .max_group_by(:version_order, [:application_id, :name]) do | ds |
               ds.where(Sequel[:tags][:name] => tag_names)
-                .where(Sequel[:tags][:pacticipant_id] => pacticipant_ids)
+                .where(Sequel[:tags][:application_id] => application_ids)
             end
         end
 
@@ -69,7 +69,7 @@ module PactBroker
           lp = :latest_pact_publication_ids_for_consumer_versions
           tags_versions_join = {
             Sequel[:tags][:version_id] => Sequel[:versions][:id],
-            Sequel[:versions][:pacticipant_id] => consumer_id
+            Sequel[:versions][:application_id] => consumer_id
           }
 
           versions_pact_publications_join = {
@@ -77,10 +77,10 @@ module PactBroker
             Sequel[lp][:consumer_id] => consumer_id
           }
           # head tags for this consumer
-          # the latest tag, pacticipant_id, version order
+          # the latest tag, application_id, version order
           # for versions that have a pact publication
           Tag
-            .select_group(Sequel[:tags][:name], Sequel[:versions][:pacticipant_id])
+            .select_group(Sequel[:tags][:name], Sequel[:versions][:application_id])
             .select_append{ max(order).as(latest_consumer_version_order) }
             .join(:versions, tags_versions_join)
             .join(lp, versions_pact_publications_join)
@@ -98,7 +98,7 @@ module PactBroker
             Tag.join(:pact_publications, tag_pp_join) do
               Sequel[:tags][:version_order] > tag.version_order
             end
-            .where(pacticipant_id: pact_publication.consumer_id)
+            .where(application_id: pact_publication.consumer_id)
             .limit(1)
             .empty?
           end
@@ -113,26 +113,26 @@ module PactBroker
             self.version_order = version.order
           end
 
-          if self.pacticipant_id.nil?
-            if version.pacticipant_id
-              self.pacticipant_id = version.pacticipant_id
-            elsif version&.pacticipant&.id
-              self.pacticipant_id = version.pacticipant.id
+          if self.application_id.nil?
+            if version.application_id
+              self.application_id = version.application_id
+            elsif version&.application&.id
+              self.application_id = version.application.id
             end
           end
         end
 
-        if version_order.nil? || pacticipant_id.nil?
-          raise PactBroker::Error.new("Need to set version_order and pacticipant_id for tags now")
+        if version_order.nil? || application_id.nil?
+          raise PactBroker::Error.new("Need to set version_order and application_id for tags now")
         end
       end
       # rubocop: enable Metrics/CyclomaticComplexity
 
-      def latest_for_pacticipant?
+      def latest_for_application?
         head_tag == self
       end
 
-      alias_method :latest?, :latest_for_pacticipant?
+      alias_method :latest?, :latest_for_application?
 
       def latest_for_pact_publication?(pact_publication)
         tag_pp_join = {
@@ -145,7 +145,7 @@ module PactBroker
         Tag.join(:pact_publications, tag_pp_join) do
           Sequel[:tags][:version_order] > own_version_order
         end
-        .where(pacticipant_id: pact_publication.consumer_id)
+        .where(application_id: pact_publication.consumer_id)
         .limit(1)
         .empty?
       end
@@ -154,8 +154,8 @@ module PactBroker
         name <=> other.name
       end
 
-      def pacticipant
-        version.pacticipant
+      def application
+        version.application
       end
     end
   end
@@ -168,13 +168,13 @@ end
 #  version_id     | integer                     |
 #  created_at     | timestamp without time zone | NOT NULL
 #  updated_at     | timestamp without time zone | NOT NULL
-#  pacticipant_id | integer                     |
+#  application_id | integer                     |
 #  version_order  | integer                     |
 # Indexes:
 #  tags_pk                                           | PRIMARY KEY btree (version_id, name)
 #  ndx_tag_name                                      | btree (name)
-#  tags_pacticipant_id_index                         | btree (pacticipant_id)
-#  tags_pacticipant_id_name_version_order_desc_index | btree (pacticipant_id, name, version_order DESC)
+#  tags_application_id_index                         | btree (application_id)
+#  tags_application_id_name_version_order_desc_index | btree (application_id, name, version_order DESC)
 #  tags_version_id_index                             | btree (version_id)
 #  tags_version_order_index                          | btree (version_order)
 # Foreign key constraints:

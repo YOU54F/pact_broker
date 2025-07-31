@@ -16,7 +16,7 @@ module PactBroker
       include PactBroker::Logging
 
       MIGRATIONS = [
-          DataMigrations::SetPacticipantIdsForVerifications,
+          DataMigrations::SetApplicationIdsForVerifications,
           DataMigrations::SetConsumerIdsForPactPublications,
           DataMigrations::SetLatestVersionSequenceValue,
           DataMigrations::SetWebhooksEnabled,
@@ -24,7 +24,7 @@ module PactBroker
           DataMigrations::SetCreatedAtForLatestPactPublications,
           DataMigrations::SetCreatedAtForLatestVerifications,
           DataMigrations::SetExtraColumnsForTags,
-          DataMigrations::SetPacticipantDisplayName,
+          DataMigrations::SetApplicationDisplayName,
           DataMigrations::SetWebhookUuid,
           DataMigrations::SetConsumerVersionOrderForPactPublications,
           DataMigrations::CreateBranches,

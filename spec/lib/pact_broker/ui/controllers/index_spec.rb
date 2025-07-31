@@ -104,8 +104,8 @@ module PactBroker
                 end
               end
 
-              context "when it is NOT blank and the pacticipant name exists" do
-                it "returns the pacticipant which matches the query" do
+              context "when it is NOT blank and the application name exists" do
+                it "returns the application which matches the query" do
                   get "/", { search: "app" }
 
                   expect(last_response.body).to include("Example App")
@@ -113,7 +113,7 @@ module PactBroker
                 end
               end
 
-              context "when it is NOT blank but the pacticipant name does NOT exist" do
+              context "when it is NOT blank but the application name does NOT exist" do
                 it "returns no pacts" do
                   get "/", { search: "does not exist" }
 

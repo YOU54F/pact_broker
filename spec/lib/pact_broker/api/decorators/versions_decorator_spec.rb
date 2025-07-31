@@ -9,7 +9,7 @@ module PactBroker
           allow_any_instance_of(VersionsDecorator::VersionInCollectionDecorator).to receive(:version_url).and_return("version_url")
         end
 
-        let(:options) { { request_url: "http://versions?foo=bar", base_url: "http://example.org", pacticipant_name: "Consumer", resource_url: "http://versions" } }
+        let(:options) { { request_url: "http://versions?foo=bar", base_url: "http://example.org", application_name: "Consumer", resource_url: "http://versions" } }
         let(:versions) { [] }
         let(:decorator) { VersionsDecorator.new(versions) }
         let(:json) { decorator.to_json(user_options: options) }

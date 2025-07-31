@@ -7,10 +7,10 @@ module PactBroker
         extend Helpers
 
         def self.call(connection)
-          if columns_exist?(connection, :tags, [:version_id, :pacticipant_id]) &&
-              columns_exist?(connection, :versions, [:id, :pacticipant_id])
-            connection[:tags].where(pacticipant_id: nil).update(
-              pacticipant_id: connection[:versions].select(:pacticipant_id)
+          if columns_exist?(connection, :tags, [:version_id, :application_id]) &&
+              columns_exist?(connection, :versions, [:id, :application_id])
+            connection[:tags].where(application_id: nil).update(
+              application_id: connection[:versions].select(:application_id)
                                 .where(Sequel[:versions][:id] => Sequel[:tags][:version_id])
             )
           end

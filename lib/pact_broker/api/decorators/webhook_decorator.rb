@@ -1,12 +1,12 @@
 require_relative "base_decorator"
-require "pact_broker/domain/webhook_pacticipant"
+require "pact_broker/domain/webhook_application"
 require "pact_broker/api/decorators/webhook_request_template_decorator"
 require "pact_broker/api/decorators/timestamps"
 require "pact_broker/webhooks/webhook_request_template"
 require "pact_broker/webhooks/webhook_event"
-require "pact_broker/api/decorators/basic_pacticipant_decorator"
-require_relative "pact_pacticipant_decorator"
-require_relative "pacticipant_decorator"
+require "pact_broker/api/decorators/basic_application_decorator"
+require_relative "pact_application_decorator"
+require_relative "application_decorator"
 
 module PactBroker
   module Api
@@ -20,12 +20,12 @@ module PactBroker
 
         property :description, getter: lambda { |represented:, **| represented.display_description }
 
-        property :consumer, class: Domain::WebhookPacticipant, default: nil do
+        property :consumer, class: Domain::WebhookApplication, default: nil do
           property :name
           property :label
         end
 
-        property :provider, class: Domain::WebhookPacticipant, default: nil do
+        property :provider, class: Domain::WebhookApplication, default: nil do
           property :name
           property :label
         end
@@ -56,7 +56,7 @@ module PactBroker
             {
               title: "Consumer",
               name: represented.consumer.name,
-              href: pacticipant_url(options.fetch(:base_url), represented.consumer)
+              href: application_url(options.fetch(:base_url), represented.consumer)
             }
           end
         end
@@ -66,7 +66,7 @@ module PactBroker
             {
               title: "Consumers by label",
               name: represented.consumer.label,
-              href: pacticipants_with_label_url(options.fetch(:base_url), represented.consumer.label)
+              href: applications_with_label_url(options.fetch(:base_url), represented.consumer.label)
             }
           end
         end
@@ -76,7 +76,7 @@ module PactBroker
             {
               title: "Provider",
               name: represented.provider.name,
-              href: pacticipant_url(options.fetch(:base_url), represented.provider)
+              href: application_url(options.fetch(:base_url), represented.provider)
             }
           end
         end
@@ -86,7 +86,7 @@ module PactBroker
             {
               title: "Providers by label",
               name: represented.provider.label,
-              href: pacticipants_with_label_url(options.fetch(:base_url), represented.provider.label)
+              href: applications_with_label_url(options.fetch(:base_url), represented.provider.label)
             }
           end
         end

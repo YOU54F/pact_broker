@@ -1,5 +1,5 @@
 -- Deletes all verifications and pact publications that are older than 60 days,
--- and cleans up orphan pacticipant versions and their tags.
+-- and cleans up orphan application versions and their tags.
 -- Also removes webhook execution history.
 
 DELETE FROM webhook_executions;

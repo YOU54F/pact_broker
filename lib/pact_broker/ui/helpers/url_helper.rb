@@ -11,8 +11,8 @@ module PactBroker
           "#{base_url}/dashboard/provider/#{provider_name}/consumer/#{consumer_name}"
         end
 
-        def group_url pacticipant_name, base_url = ""
-          "#{base_url}/pacticipants/#{ERB::Util.url_encode(pacticipant_name)}"
+        def group_url application_name, base_url = ""
+          "#{base_url}/applications/#{ERB::Util.url_encode(application_name)}"
         end
 
         def matrix_url consumer_name, provider_name, base_url = ""
@@ -23,8 +23,8 @@ module PactBroker
           query = {
             q:
             [
-              { pacticipant: consumer_name, version: consumer_version_number },
-              { pacticipant: provider_name }
+              { application: consumer_name, version: consumer_version_number },
+              { application: provider_name }
             ],
             latestby: "cvpv"
           }

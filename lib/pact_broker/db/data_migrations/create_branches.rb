@@ -43,21 +43,21 @@ module PactBroker
             .exclude(branch: nil)
             .left_outer_join(:branch_versions, branch_versions_join)
             .where(Sequel[:branch_versions][:branch_name] => nil)
-            .order(:pacticipant_id, :order)
+            .order(:application_id, :order)
         end
 
         def self.create_branch_version(connection, version)
           branch_values = {
             name: version[:branch],
-            pacticipant_id: version[:pacticipant_id],
+            application_id: version[:application_id],
             created_at: version[:created_at],
             updated_at: version[:created_at]
           }
           connection[:branches].insert_ignore.insert(branch_values)
-          branch_id = connection[:branches].select(:id).where(pacticipant_id: version[:pacticipant_id], name: version[:branch]).single_record[:id]
+          branch_id = connection[:branches].select(:id).where(application_id: version[:application_id], name: version[:branch]).single_record[:id]
 
           branch_version_values = {
-            pacticipant_id: version[:pacticipant_id],
+            application_id: version[:application_id],
             version_id: version[:id],
             version_order: version[:order],
             branch_id: branch_id,
@@ -75,7 +75,7 @@ module PactBroker
 
           if connection[:branch_heads].where(branch_id: branch_id).empty?
             branch_head_values = {
-              pacticipant_id: latest_branch_version[:pacticipant_id],
+              application_id: latest_branch_version[:application_id],
               branch_id: branch_id,
               branch_version_id: latest_branch_version[:id],
               version_id: latest_branch_version[:version_id],

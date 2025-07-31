@@ -31,7 +31,7 @@ module PactBroker
             provider_name: bar.name,
             provider_id: bar.id,
             success: row_1_success,
-            pacticipant_names: [foo.name, bar.name],
+            application_names: [foo.name, bar.name],
             verification: verification_1
           )
         end
@@ -49,7 +49,7 @@ module PactBroker
             provider_name: baz.name,
             provider_id: baz.id,
             success: true,
-            pacticipant_names: [foo.name, baz.name],
+            application_names: [foo.name, baz.name],
             verification: verification_2
           )
         end
@@ -75,22 +75,22 @@ module PactBroker
         let(:resolved_selectors) do
           [
             ResolvedSelector.new(
-              pacticipant_id: foo.id,
-              pacticipant_name: foo.name,
-              pacticipant_version_number: foo_version.number,
-              pacticipant_version_id: foo_version.id
+              application_id: foo.id,
+              application_name: foo.name,
+              application_version_number: foo_version.number,
+              application_version_id: foo_version.id
             ),
             ResolvedSelector.new(
-              pacticipant_id: bar.id,
-              pacticipant_name: bar.name,
-              pacticipant_version_number: bar_version.number,
-              pacticipant_version_id: bar_version.id
+              application_id: bar.id,
+              application_name: bar.name,
+              application_version_number: bar_version.number,
+              application_version_id: bar_version.id
             ),
             ResolvedSelector.new(
-             pacticipant_id: baz.id,
-             pacticipant_name: baz.name,
-             pacticipant_version_number: baz_version.number,
-             pacticipant_version_id: baz_version.id
+             application_id: baz.id,
+             application_name: baz.name,
+             application_version_number: baz_version.number,
+             application_version_id: baz_version.id
             )
           ]
         end
@@ -147,7 +147,7 @@ module PactBroker
           its(:counts) { is_expected.to eq success: 1, failed: 0, unknown: 1 }
 
           context "when that row is ignored" do
-            let(:resolved_ignore_selectors) { [instance_double("PactBroker::Matrix::ResolvedSelector", pacticipant_or_version_does_not_exist?: false).as_null_object] }
+            let(:resolved_ignore_selectors) { [instance_double("PactBroker::Matrix::ResolvedSelector", application_or_version_does_not_exist?: false).as_null_object] }
             let(:rows) { [row_2] }
             let(:ignored_rows) { [row_1] }
 
@@ -166,7 +166,7 @@ module PactBroker
           its(:counts) { is_expected.to eq success: 1, failed: 1, unknown: 0 }
 
           context "when that row is ignored" do
-            let(:resolved_ignore_selectors) { [instance_double("PactBroker::Matrix::ResolvedSelector", pacticipant_or_version_does_not_exist?: false).as_null_object] }
+            let(:resolved_ignore_selectors) { [instance_double("PactBroker::Matrix::ResolvedSelector", application_or_version_does_not_exist?: false).as_null_object] }
             let(:rows) { [row_2] }
             let(:ignored_rows) { [row_1] }
 
@@ -235,16 +235,16 @@ module PactBroker
           # so the "add inferred selectors" code in the Matrix::Repository has not run
           # AND the pact has not been verified
           # eg.
-          # bundle exec bin/pact-broker can-i-deploy --broker-base-url http://localhost:9292 --pacticipant Foo --version 1.1.0
+          # bundle exec bin/pact-broker can-i-deploy --broker-base-url http://localhost:9292 --application Foo --version 1.1.0
           let(:rows) { [row_1] }
           let(:row_1_success) { nil }
 
           let(:dummy_selector) do
             ResolvedSelector.new(
-              pacticipant_id: bar.id,
-              pacticipant_name: bar.name,
-              pacticipant_version_id: bar_version.id,
-              pacticipant_version_number: bar_version.number,
+              application_id: bar.id,
+              application_name: bar.name,
+              application_version_id: bar_version.id,
+              application_version_number: bar_version.number,
               latest: nil,
               tag: nil,
               branch: nil,
@@ -267,70 +267,70 @@ module PactBroker
           its(:reasons) { is_expected.to eq [PactNotEverVerifiedByProvider.new(resolved_selectors.first, dummy_selector)] }
         end
 
-        context "when there are ignore selectors that don't match any pacticipant or version" do
-          let(:resolved_ignore_selectors) { [instance_double("PactBroker::Matrix::ResolvedSelector", pacticipant_or_version_does_not_exist?: true).as_null_object] }
+        context "when there are ignore selectors that don't match any application or version" do
+          let(:resolved_ignore_selectors) { [instance_double("PactBroker::Matrix::ResolvedSelector", application_or_version_does_not_exist?: true).as_null_object] }
 
           its(:reasons) { is_expected.to eq [IgnoreSelectorDoesNotExist.new(resolved_ignore_selectors.first), PactBroker::Matrix::Successful.new] }
         end
 
-        context "when there are no specified selectors with a pacticipant version number" do
+        context "when there are no specified selectors with a application version number" do
           let(:resolved_selectors) do
             [
               ResolvedSelector.new(
-                pacticipant_id: foo.id,
-                pacticipant_name: foo.name,
-                pacticipant_version_number: foo_version.number,
-                pacticipant_version_id: foo_version.id,
+                application_id: foo.id,
+                application_name: foo.name,
+                application_version_number: foo_version.number,
+                application_version_id: foo_version.id,
                 type: :specified,
                 original_selector: { latest: true, tag: "asdf" }
               )
             ]
           end
 
-          its(:reasons) { is_expected.to include SelectorWithoutPacticipantVersionNumberSpecified.new }
+          its(:reasons) { is_expected.to include SelectorWithoutApplicationVersionNumberSpecified.new }
         end
 
-        context "when there are only pacticipant names specified" do
+        context "when there are only application names specified" do
           let(:resolved_selectors) do
             [
               ResolvedSelector.new(
-                pacticipant_id: foo.id,
-                pacticipant_name: foo.name,
-                pacticipant_version_number: nil,
-                pacticipant_version_id: nil,
+                application_id: foo.id,
+                application_name: foo.name,
+                application_version_number: nil,
+                application_version_id: nil,
                 type: :specified,
-                original_selector: { pacticipant_name: foo.name }
+                original_selector: { application_name: foo.name }
               ),
               ResolvedSelector.new(
-                pacticipant_id: bar.id,
-                pacticipant_name: bar.name,
-                pacticipant_version_number: nil,
-                pacticipant_version_id: nil,
+                application_id: bar.id,
+                application_name: bar.name,
+                application_version_number: nil,
+                application_version_id: nil,
                 type: :specified,
-                original_selector: { pacticipant_name: bar.name }
+                original_selector: { application_name: bar.name }
               )
             ]
           end
 
-          its(:reasons) { is_expected.to_not include SelectorWithoutPacticipantVersionNumberSpecified.new }
+          its(:reasons) { is_expected.to_not include SelectorWithoutApplicationVersionNumberSpecified.new }
         end
 
         context "when there is no to tag or environment specified and there was only one specified selector" do
           let(:resolved_selectors) do
             [
               ResolvedSelector.new(
-                pacticipant_id: foo.id,
-                pacticipant_name: foo.name,
-                pacticipant_version_number: foo_version.number,
-                pacticipant_version_id: foo_version.id,
+                application_id: foo.id,
+                application_name: foo.name,
+                application_version_number: foo_version.number,
+                application_version_id: foo_version.id,
                 type: :specified,
                 original_selector: {}
               ),
               ResolvedSelector.new(
-                pacticipant_id: bar.id,
-                pacticipant_name: bar.name,
-                pacticipant_version_number: bar_version.number,
-                pacticipant_version_id: bar_version.id,
+                application_id: bar.id,
+                application_name: bar.name,
+                application_version_number: bar_version.number,
+                application_version_id: bar_version.id,
                 type: :inferred,
                 original_selector: {}
               )
@@ -345,18 +345,18 @@ module PactBroker
             let(:resolved_selectors) do
               [
                 ResolvedSelector.new(
-                  pacticipant_id: foo.id,
-                  pacticipant_name: foo.name,
-                  pacticipant_version_number: foo_version.number,
-                  pacticipant_version_id: foo_version.id,
+                  application_id: foo.id,
+                  application_name: foo.name,
+                  application_version_number: foo_version.number,
+                  application_version_id: foo_version.id,
                   type: :specified,
                   original_selector: {}
                 ),
                 ResolvedSelector.new(
-                  pacticipant_id: bar.id,
-                  pacticipant_name: bar.name,
-                  pacticipant_version_number: bar_version.number,
-                  pacticipant_version_id: bar_version.id,
+                  application_id: bar.id,
+                  application_name: bar.name,
+                  application_version_number: bar_version.number,
+                  application_version_id: bar_version.id,
                   type: :specified,
                   original_selector: {}
                 )

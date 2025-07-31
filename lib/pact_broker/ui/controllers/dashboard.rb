@@ -27,15 +27,15 @@ module PactBroker
           }.compact
           error_messages = []
 
-          consumer = pacticipant_service.find_pacticipant_by_name(params[:consumer_name])
-          provider = pacticipant_service.find_pacticipant_by_name(params[:provider_name])
+          consumer = application_service.find_application_by_name(params[:consumer_name])
+          provider = application_service.find_application_by_name(params[:provider_name])
 
           if !consumer
-            error_messages << "No pacticipant found with name #{consumer_name}"
+            error_messages << "No application found with name #{consumer_name}"
           end
 
           if !provider
-            error_messages << "No pacticipant found with name #{provider_name}"
+            error_messages << "No application found with name #{provider_name}"
           end
 
           index_items = if consumer && provider

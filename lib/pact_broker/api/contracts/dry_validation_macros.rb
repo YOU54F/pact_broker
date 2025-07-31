@@ -26,8 +26,8 @@ Dry::Validation.register_macro(:valid_version_number) do
   PactBroker::Api::Contracts::DryValidationMethods.validate_version_number(value, key)
 end
 
-Dry::Validation.register_macro(:pacticipant_with_name_exists) do
-  PactBroker::Api::Contracts::DryValidationMethods.validate_pacticipant_with_name_exists(value, key)
+Dry::Validation.register_macro(:application_with_name_exists) do
+  PactBroker::Api::Contracts::DryValidationMethods.validate_application_with_name_exists(value, key)
 end
 
 Dry::Validation.register_macro(:environment_with_name_exists) do

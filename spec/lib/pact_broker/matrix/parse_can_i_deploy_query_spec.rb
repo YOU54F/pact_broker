@@ -6,7 +6,7 @@ module PactBroker
       describe ".call" do
         let(:params) do
           {
-            pacticipant: "foo",
+            application: "foo",
             version: "1",
             environment: "prod"
           }
@@ -25,28 +25,28 @@ module PactBroker
           its([:environment_name]) { is_expected.to eq "prod" }
           its([:ignore_selectors]) { is_expected.to eq [] }
 
-          context "with pacticipants to ignore" do
+          context "with applications to ignore" do
             before do
               params[:ignore] = ["foo", "bar", {"a" => "b"}]
             end
 
             its([:ignore_selectors]) do
               is_expected.to eq [
-                PactBroker::Matrix::UnresolvedSelector.new(pacticipant_name: "foo"),
-                PactBroker::Matrix::UnresolvedSelector.new(pacticipant_name: "bar")
+                PactBroker::Matrix::UnresolvedSelector.new(application_name: "foo"),
+                PactBroker::Matrix::UnresolvedSelector.new(application_name: "bar")
               ]
             end
           end
 
-          context "with pacticipant selectors to ignore" do
+          context "with application selectors to ignore" do
             before do
-              params[:ignore] = [{ pacticipant: "foo" }, { pacticipant: "bar", version: "2" }]
+              params[:ignore] = [{ application: "foo" }, { application: "bar", version: "2" }]
             end
 
             its([:ignore_selectors]) do
               is_expected.to eq [
-                PactBroker::Matrix::UnresolvedSelector.new(pacticipant_name: "foo"),
-                PactBroker::Matrix::UnresolvedSelector.new(pacticipant_name: "bar", pacticipant_version_number: "2")
+                PactBroker::Matrix::UnresolvedSelector.new(application_name: "foo"),
+                PactBroker::Matrix::UnresolvedSelector.new(application_name: "bar", application_version_number: "2")
               ]
             end
           end
@@ -54,7 +54,7 @@ module PactBroker
           context "with a tag" do
             let(:params) do
               {
-                pacticipant: "foo",
+                application: "foo",
                 version: "1",
                 to: "prod"
               }
@@ -69,7 +69,7 @@ module PactBroker
         describe "parsed_selectors" do
           subject { parsed_selectors }
 
-          it { is_expected.to eq [PactBroker::Matrix::UnresolvedSelector.new(pacticipant_name: "foo", pacticipant_version_number: "1")] }
+          it { is_expected.to eq [PactBroker::Matrix::UnresolvedSelector.new(application_name: "foo", application_version_number: "1")] }
         end
       end
     end

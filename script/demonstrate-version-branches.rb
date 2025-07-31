@@ -21,10 +21,10 @@ begin
       provider_version: "1",
       success: true
     )
-    .can_i_deploy(pacticipant: "bar-provider", version: "1", to: "prod")
-    .deploy_to_prod(pacticipant: "bar-provider", version: "1")
-    .can_i_deploy(pacticipant: "foo-consumer", version: "1", to: "prod")
-    .deploy_to_prod(pacticipant: "foo-consumer", version: "1")
+    .can_i_deploy(application: "bar-provider", version: "1", to: "prod")
+    .deploy_to_prod(application: "bar-provider", version: "1")
+    .can_i_deploy(application: "foo-consumer", version: "1", to: "prod")
+    .deploy_to_prod(application: "foo-consumer", version: "1")
 
 rescue StandardError => e
   puts "#{e.class} #{e.message}"

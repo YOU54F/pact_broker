@@ -24,9 +24,9 @@ module PactBroker
         # @return <Array>
         def self.eager_load_associations
           [
-            :pacticipant,
+            :application,
             :pact_publications,
-            { branch_versions: [:version, :branch_head, { branch: :pacticipant }] },
+            { branch_versions: [:version, :branch_head, { branch: :application }] },
             { tags: :head_tag }
           ]
         end
@@ -40,23 +40,23 @@ module PactBroker
           }
         end
 
-        link :'pb:pacticipant' do | options |
+        link :'pb:application' do | options |
           {
-            title: "Pacticipant",
-            name: represented.pacticipant.name,
-            href: pacticipant_url(options.fetch(:base_url), represented.pacticipant)
+            title: "Application",
+            name: represented.application.name,
+            href: application_url(options.fetch(:base_url), represented.application)
           }
         end
 
         link :'pb:tag' do | options |
           {
             href: version_url(options.fetch(:base_url), represented) + "/tags/{tag}",
-            title: "Get, create or delete a tag for this pacticipant version",
+            title: "Get, create or delete a tag for this application version",
             templated: true
           }
         end
 
-        link :'pb:latest-verification-results-where-pacticipant-is-consumer' do | options |
+        link :'pb:latest-verification-results-where-application-is-consumer' do | options |
           {
             title: "Latest verification results for consumer version",
             href: latest_verifications_for_consumer_version_url(represented, options.fetch(:base_url))

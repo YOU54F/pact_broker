@@ -21,7 +21,7 @@ module PactBroker
         end
 
         it "behaves like a Row, except quicker" do
-          a_id = MatrixRow.db[:pacticipants].where(name: "A").select(:id).single_record[:id]
+          a_id = MatrixRow.db[:applications].where(name: "A").select(:id).single_record[:id]
           rows = MatrixRow.default_scope.where(consumer_id: a_id).eager(:consumer).eager(:verification).all
           expect(rows.first.consumer).to be rows.last.consumer
           expect(rows.first.verification).to_not be nil

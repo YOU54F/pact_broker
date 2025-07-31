@@ -64,8 +64,8 @@ module PactBroker
         def hash_for_row(line, base_url)
           provider = OpenStruct.new(name: line.provider_name)
           consumer = OpenStruct.new(name: line.consumer_name)
-          consumer_version = OpenStruct.new(number: line.consumer_version_number, pacticipant: consumer)
-          provider_version = line.provider_version_number ? OpenStruct.new(number: line.provider_version_number, pacticipant: provider) : nil
+          consumer_version = OpenStruct.new(number: line.consumer_version_number, application: consumer)
+          provider_version = line.provider_version_number ? OpenStruct.new(number: line.provider_version_number, application: provider) : nil
           line_hash(consumer, provider, consumer_version, provider_version, line, base_url)
         end
 
@@ -98,7 +98,7 @@ module PactBroker
             },
             _links: {
               self: {
-                href: pacticipant_url(base_url, consumer)
+                href: application_url(base_url, consumer)
               }
             }
           }
@@ -140,7 +140,7 @@ module PactBroker
             version: nil,
             _links: {
               self: {
-                href: pacticipant_url(base_url, provider)
+                href: application_url(base_url, provider)
               }
             }
           }

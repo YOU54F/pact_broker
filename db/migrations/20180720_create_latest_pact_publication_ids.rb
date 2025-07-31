@@ -9,9 +9,9 @@ Sequel.migration do
     # consumer version, and when that happens, this row will cascade delete.
 
     create_table(:latest_pact_publication_ids_for_consumer_versions, charset: "utf8") do
-      foreign_key :consumer_id, :pacticipants, null: false, on_delete: :cascade # redundant, but speeds up queries by removing need for extra join
+      foreign_key :consumer_id, :applications, null: false, on_delete: :cascade # redundant, but speeds up queries by removing need for extra join
       foreign_key :consumer_version_id, :versions, null: false, on_delete: :cascade
-      foreign_key :provider_id, :pacticipants, null: false, on_delete: :cascade
+      foreign_key :provider_id, :applications, null: false, on_delete: :cascade
       foreign_key :pact_publication_id, :pact_publications, null: false, on_delete: :cascade, unique: true
       foreign_key :pact_version_id, :pact_versions, null: false, on_delete: :cascade
       index [:provider_id, :consumer_version_id], unique: true, name: "unq_latest_ppid_prov_conver"

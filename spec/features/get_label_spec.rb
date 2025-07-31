@@ -2,15 +2,15 @@ describe "Get a label" do
 
   before do
     TestDataBuilder.new
-      .create_pacticipant("foo")
+      .create_application("foo")
       .create_label("ios")
       .create_label("consumer")
-      .create_pacticipant("bar")
+      .create_application("bar")
       .create_label("ios")
       .create_label("consumer")
   end
 
-  let(:path) { "/pacticipants/foo/labels/ios" }
+  let(:path) { "/applications/foo/labels/ios" }
   let(:response_body_hash) { JSON.parse(subject.body, symbolize_names: true) }
   let(:expected_response_body) { {name: "ios"} }
 

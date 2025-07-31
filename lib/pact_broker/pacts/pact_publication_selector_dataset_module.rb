@@ -4,7 +4,7 @@ module PactBroker
       # rubocop: disable Metrics/CyclomaticComplexity
       def for_provider_and_consumer_version_selector provider, selector
         query = for_provider(provider)
-        query = query.for_consumer(PactBroker::Domain::Pacticipant.find_by_name(selector.consumer)) if selector.consumer
+        query = query.for_consumer(PactBroker::Domain::Application.find_by_name(selector.consumer)) if selector.consumer
         query = query.for_currently_deployed_versions(selector.environment_name) if selector.currently_deployed?
         query = query.for_currently_supported_versions(selector.environment_name) if selector.currently_supported?
         query = query.for_consumer_version_tag(selector.tag) if selector.all_for_tag?
@@ -39,7 +39,7 @@ module PactBroker
         end
 
         query
-          .join(:pacticipants, consumers_join, { table_alias: :consumers })
+          .join(:applications, consumers_join, { table_alias: :consumers })
           .join(:branch_heads, branch_heads_join)
           .remove_overridden_revisions_from_complete_query
       end

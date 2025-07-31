@@ -1,6 +1,6 @@
 Pact.provider_states_for "Pact Broker Client" do
 
-  provider_state "the pb:pacticipant-version and pb:environments relations exist in the index resource" do
+  provider_state "the pb:application-version and pb:environments relations exist in the index resource" do
     no_op
   end
 
@@ -11,7 +11,7 @@ Pact.provider_states_for "Pact Broker Client" do
     end
   end
 
-  provider_state "version 5556b8149bf8bac76bc30f50a8a2dd4c22c85f30 of pacticipant Foo exists with a test environment available for deployment" do
+  provider_state "version 5556b8149bf8bac76bc30f50a8a2dd4c22c85f30 of application Foo exists with a test environment available for deployment" do
     set_up do
       TestDataBuilder.new
         .create_consumer("Foo")
@@ -20,11 +20,11 @@ Pact.provider_states_for "Pact Broker Client" do
     end
   end
 
-  provider_state "version 5556b8149bf8bac76bc30f50a8a2dd4c22c85f30 of pacticipant Foo does not exist" do
+  provider_state "version 5556b8149bf8bac76bc30f50a8a2dd4c22c85f30 of application Foo does not exist" do
     no_op
   end
 
-  provider_state "version 5556b8149bf8bac76bc30f50a8a2dd4c22c85f30 of pacticipant Foo exists with 2 environments that aren't test available for deployment" do
+  provider_state "version 5556b8149bf8bac76bc30f50a8a2dd4c22c85f30 of application Foo exists with 2 environments that aren't test available for deployment" do
     set_up do
       TestDataBuilder.new
         .create_consumer("Foo")

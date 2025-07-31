@@ -32,7 +32,7 @@ module PactBroker
             run PactBroker::UI::Controllers::Index
           end
 
-          map "/pacticipants" do
+          map "/applications" do
             run PactBroker::UI::Controllers::Groups
           end
 
@@ -45,7 +45,7 @@ module PactBroker
             run PactBroker::UI::Controllers::Matrix
           end
 
-          map "/pacticipants/" do
+          map "/applications/" do
             use PathInfoFixer
             run PactBroker::UI::Controllers::CanIDeploy
           end

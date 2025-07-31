@@ -1,4 +1,4 @@
-requests_which_are_exected_to_have_no_policy_record_or_pacticipant:
+requests_which_are_exected_to_have_no_policy_record_or_application:
   - index GET
   - can_i_deploy GET
   - dashboard GET
@@ -12,9 +12,9 @@ requests_which_are_exected_to_have_no_policy_record_or_pacticipant:
   - labels GET
   - matrix GET
   - metrics GET
-  - pacticipants GET
-  - pacticipants POST
-  - pacticipants_for_label GET
+  - applications GET
+  - applications POST
+  - applications_for_label GET
   - latest_pacts GET
   - relationships GET
   - error_test GET

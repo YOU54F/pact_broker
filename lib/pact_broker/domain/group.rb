@@ -10,8 +10,8 @@ module PactBroker
         Group === other && super
       end
 
-      def include_pacticipant? pacticipant
-        any? { | index_item | index_item.include? pacticipant }
+      def include_application? application
+        any? { | index_item | index_item.include? application }
       end
 
     end

@@ -13,9 +13,9 @@ module PactBroker
       def metrics
         {
           interactions: interactions_counts,
-          pacticipants: {
-            count: PactBroker::Domain::Pacticipant.count,
-            withMainBranchSetCount: PactBroker::Domain::Pacticipant.with_main_branch_set.count
+          applications: {
+            count: PactBroker::Domain::Application.count,
+            withMainBranchSetCount: PactBroker::Domain::Application.with_main_branch_set.count
           },
           integrations: {
             count: PactBroker::Pacts::PactPublication.select(:consumer_id, :provider_id).distinct.count
@@ -42,7 +42,7 @@ module PactBroker
           verificationResultsPerPactVersion: {
             distribution: verification_distribution
           },
-          pacticipantVersions: {
+          applicationVersions: {
             count: PactBroker::Domain::Version.count,
             withUserCreatedBranchCount: PactBroker::Domain::Version.with_user_created_branch.count,
             withBranchCount: PactBroker::Domain::Version.with_branch.count,
@@ -54,7 +54,7 @@ module PactBroker
           tags: {
             count: PactBroker::Domain::Tag.count,
             distinctCount: PactBroker::Domain::Tag.select(:name).distinct.count,
-            distinctWithPacticipantCount: PactBroker::Domain::Tag.join(:versions, { id: :version_id }).select_group(:name, Sequel[:versions][:pacticipant_id]).count
+            distinctWithApplicationCount: PactBroker::Domain::Tag.join(:versions, { id: :version_id }).select_group(:name, Sequel[:versions][:application_id]).count
           },
           triggeredWebhooks: {
             count: PactBroker::Webhooks::TriggeredWebhook.count

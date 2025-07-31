@@ -11,12 +11,12 @@ module PactBroker
           latestby: "cvp"
         }
 
-        if params[:pacticipant].is_a?(String)
-          selector.pacticipant_name = params[:pacticipant]
+        if params[:application].is_a?(String)
+          selector.application_name = params[:application]
         end
 
         if params[:version].is_a?(String)
-          selector.pacticipant_version_number = params[:version]
+          selector.application_version_number = params[:version]
         end
 
         if params[:to].is_a?(String)
@@ -31,9 +31,9 @@ module PactBroker
         if params[:ignore].is_a?(Array)
           options[:ignore_selectors] = params[:ignore].collect do | param |
             if param.is_a?(String)
-              PactBroker::Matrix::UnresolvedSelector.new(pacticipant_name: param)
-            elsif param.is_a?(Hash) && param.key?(:pacticipant)
-              PactBroker::Matrix::UnresolvedSelector.new({ pacticipant_name: param[:pacticipant], pacticipant_version_number: param[:version] }.compact)
+              PactBroker::Matrix::UnresolvedSelector.new(application_name: param)
+            elsif param.is_a?(Hash) && param.key?(:application)
+              PactBroker::Matrix::UnresolvedSelector.new({ application_name: param[:application], application_version_number: param[:version] }.compact)
             end
           end.compact
         else

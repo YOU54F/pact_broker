@@ -44,8 +44,8 @@ module PactBroker
         )
       end
 
-      def find_for_consumer_and_provider(pacticipant_1_name, pacticipant_2_name)
-        selectors = [ UnresolvedSelector.new(pacticipant_name: pacticipant_1_name), UnresolvedSelector.new(pacticipant_name: pacticipant_2_name)]
+      def find_for_consumer_and_provider(application_1_name, application_2_name)
+        selectors = [ UnresolvedSelector.new(application_name: application_1_name), UnresolvedSelector.new(application_name: application_2_name)]
         options = { latestby: "cvpv" }
         find(selectors, options)
       end
@@ -58,7 +58,7 @@ module PactBroker
 
       # If the user has specified --to TAG or --to-environment ENVIRONMENT in the CLI
       # (or nothing, which to defaults to latest=true - "with the latest version of the other integrated applications")
-      # we need to work out what the integrations are between the specified selectors and the other pacticipant versions
+      # we need to work out what the integrations are between the specified selectors and the other application versions
       # in the target environment/branches/tags.
       # @param [Hash] options the matrix options
       # @return [Boolean]

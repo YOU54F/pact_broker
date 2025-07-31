@@ -82,7 +82,7 @@ module PactBroker
 
     class VerificationFailedWithRow < ErrorReasonWithTwoSelectors; end
 
-    # The specified pacticipant version does not exist
+    # The specified application version does not exist
     class SpecifiedVersionDoesNotExist < ErrorReason
       attr_reader :selector
 
@@ -139,7 +139,7 @@ module PactBroker
       end
     end
 
-    class SelectorWithoutPacticipantVersionNumberSpecified < Warning
+    class SelectorWithoutApplicationVersionNumberSpecified < Warning
       def selectors
         []
       end

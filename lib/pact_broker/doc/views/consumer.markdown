@@ -4,4 +4,4 @@ Allowed methods: `GET`, `PATCH`, `DELETE`
 
 The application that initiates the HTTP request.
 
-See [Pacticipant](/doc/pacticipants) for more information.
+See [Application](/doc/applications) for more information.

@@ -4,22 +4,22 @@ module PactBroker
   module Matrix
     describe ParseQuery do
       describe ".call" do
-        let(:query) { "q[][pacticipant]=Foo&q[][version]=1.2.3&q[][pacticipant]=Bar&q[][version]=9.9.9" }
+        let(:query) { "q[][application]=Foo&q[][version]=1.2.3&q[][application]=Bar&q[][version]=9.9.9" }
 
         subject { ParseQuery.call(query) }
 
-        it "extracts the pacticipant names and respective versions" do
+        it "extracts the application names and respective versions" do
           expect(subject.first).to eq([
-            PactBroker::Matrix::UnresolvedSelector.new(pacticipant_name: "Foo", pacticipant_version_number: "1.2.3"),
-            PactBroker::Matrix::UnresolvedSelector.new(pacticipant_name: "Bar", pacticipant_version_number: "9.9.9")
+            PactBroker::Matrix::UnresolvedSelector.new(application_name: "Foo", application_version_number: "1.2.3"),
+            PactBroker::Matrix::UnresolvedSelector.new(application_name: "Bar", application_version_number: "9.9.9")
           ])
         end
 
         context "with spaces" do
-          let(:query) { "q[][pacticipant]=Name%20With%20Spaces&q[][version]=1%202" }
+          let(:query) { "q[][application]=Name%20With%20Spaces&q[][version]=1%202" }
 
           it "works" do
-            expect(subject.first).to eq [{pacticipant_name: "Name With Spaces", pacticipant_version_number: "1 2"}]
+            expect(subject.first).to eq [{application_name: "Name With Spaces", application_version_number: "1 2"}]
           end
         end
 
@@ -78,15 +78,15 @@ module PactBroker
         end
 
         context "when latest is true" do
-          let(:query) { "q[][pacticipant]=Foo&q[][latest]=true" }
+          let(:query) { "q[][application]=Foo&q[][latest]=true" }
 
           it "returns a selector with latest true" do
-            expect(subject.first).to eq [{ pacticipant_name: "Foo", latest: true }]
+            expect(subject.first).to eq [{ application_name: "Foo", latest: true }]
           end
         end
 
         context "when global latest is true" do
-          let(:query) { "q[][pacticipant]=Foo&latest=true" }
+          let(:query) { "q[][application]=Foo&latest=true" }
 
           it "returns options with latest true" do
             expect(subject.last).to include latest: true
@@ -94,18 +94,18 @@ module PactBroker
         end
 
         context "when latest is not true" do
-          let(:query) { "q[][pacticipant]=Foo&q[][latest]=false" }
+          let(:query) { "q[][application]=Foo&q[][latest]=false" }
 
           it "returns a selector with no latest key" do
-            expect(subject.first).to eq [{ pacticipant_name: "Foo" }]
+            expect(subject.first).to eq [{ application_name: "Foo" }]
           end
         end
 
         context "when there is a tag" do
-          let(:query) { "q[][pacticipant]=Foo&q[][tag]=prod" }
+          let(:query) { "q[][application]=Foo&q[][tag]=prod" }
 
           it "returns a selector with a tag" do
-            expect(subject.first).to eq [{ pacticipant_name: "Foo", tag: "prod" }]
+            expect(subject.first).to eq [{ application_name: "Foo", tag: "prod" }]
           end
         end
 
@@ -118,18 +118,18 @@ module PactBroker
         end
 
         context "when there are ignored selectors" do
-          let(:query) { "q[][pacticipant]=Foo&q[][tag]=prod&ignore[][pacticipant]=Bar&ignore[][pacticipant]=Waffle&ignore[][version]=1" }
+          let(:query) { "q[][application]=Foo&q[][tag]=prod&ignore[][application]=Bar&ignore[][application]=Waffle&ignore[][version]=1" }
 
-          it "sets the pacticipants to ignore" do
+          it "sets the applications to ignore" do
             expect(subject.last[:ignore_selectors]).to eq [
-              PactBroker::Matrix::UnresolvedSelector.new(pacticipant_name: "Bar"),
-              PactBroker::Matrix::UnresolvedSelector.new(pacticipant_name: "Waffle", pacticipant_version_number: "1")
+              PactBroker::Matrix::UnresolvedSelector.new(application_name: "Bar"),
+              PactBroker::Matrix::UnresolvedSelector.new(application_name: "Waffle", application_version_number: "1")
             ]
           end
         end
 
         context "when the ignored selectors isn't a hash" do
-          let(:query) { "q[][pacticipant]=Foo&q[][tag]=prod&ignore=1" }
+          let(:query) { "q[][application]=Foo&q[][tag]=prod&ignore=1" }
 
           it "sets an empty array" do
             expect(subject.last[:ignore_selectors]).to eq []

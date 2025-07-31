@@ -38,8 +38,8 @@ end
 #  webhook_executions_pact_publication_id_index  | btree (pact_publication_id)
 #  webhook_executions_triggered_webhook_id_index | btree (triggered_webhook_id)
 # Foreign key constraints:
-#  webhook_executions_consumer_id_fkey          | (consumer_id) REFERENCES pacticipants(id)
+#  webhook_executions_consumer_id_fkey          | (consumer_id) REFERENCES applications(id)
 #  webhook_executions_pact_publication_id_fkey  | (pact_publication_id) REFERENCES pact_publications(id)
-#  webhook_executions_provider_id_fkey          | (provider_id) REFERENCES pacticipants(id)
+#  webhook_executions_provider_id_fkey          | (provider_id) REFERENCES applications(id)
 #  webhook_executions_triggered_webhook_id_fkey | (triggered_webhook_id) REFERENCES triggered_webhooks(id)
 #  webhook_executions_webhook_id_fkey           | (webhook_id) REFERENCES webhooks(id)

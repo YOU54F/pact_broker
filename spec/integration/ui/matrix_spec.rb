@@ -26,8 +26,8 @@ describe "UI matrix" do
     end
   end
 
-  describe "with query params, for the latest tagged versions of two pacticipants" do
-    subject { get("/matrix?q%5B%5Dpacticipant=Foo&q%5B%5Dtag=ctag&q%5B%5Dlatest=true&q%5B%5Dpacticipant=Bar&q%5B%5Dtag=ptag&q%5B%5Dlatest=true&latestby=cvpv&limit=100") }
+  describe "with query params, for the latest tagged versions of two applications" do
+    subject { get("/matrix?q%5B%5Dapplication=Foo&q%5B%5Dtag=ctag&q%5B%5Dlatest=true&q%5B%5Dapplication=Bar&q%5B%5Dtag=ptag&q%5B%5Dlatest=true&latestby=cvpv&limit=100") }
 
     it "returns a page with a badge" do
       expect(subject.body).to include "/matrix/provider/Bar/latest/ptag/consumer/Foo/latest/ctag/badge.svg"

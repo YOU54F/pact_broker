@@ -9,8 +9,8 @@ require "pact_broker/webhooks/webhook_execution_result"
 require "pact_broker/pacts/repository"
 require "pact_broker/pacts/service"
 require "pact_broker/pacts/content"
-require "pact_broker/pacticipants/repository"
-require "pact_broker/pacticipants/service"
+require "pact_broker/applications/repository"
+require "pact_broker/applications/service"
 require "pact_broker/versions/repository"
 require "pact_broker/versions/service"
 require "pact_broker/tags/repository"
@@ -19,7 +19,7 @@ require "pact_broker/tags/service"
 require "pact_broker/domain"
 require "pact_broker/versions/repository"
 require "pact_broker/pacts/repository"
-require "pact_broker/pacticipants/repository"
+require "pact_broker/applications/repository"
 require "pact_broker/verifications/repository"
 require "pact_broker/verifications/service"
 require "pact_broker/tags/repository"
@@ -43,7 +43,7 @@ module PactBroker
       include PactBroker::Services
       using PactBroker::StringRefinements
 
-      attr_reader :pacticipant
+      attr_reader :application
       attr_reader :consumer
       attr_reader :provider
       attr_reader :consumer_version
@@ -146,32 +146,32 @@ module PactBroker
         self
       end
 
-      # Create a pacticipant and version
+      # Create a application and version
       # Does NOT rely on previous state
-      # @param [String] pacticipant_name
-      # @param [String] pacticipant_version
-      def create_version_with_hierarchy pacticipant_name, pacticipant_version
-        pacticipant = pacticipant_service.create(:name => pacticipant_name)
-        version = PactBroker::Domain::Version.create(:number => pacticipant_version, :pacticipant => pacticipant)
+      # @param [String] application_name
+      # @param [String] application_version
+      def create_version_with_hierarchy application_name, application_version
+        application = application_service.create(:name => application_name)
+        version = PactBroker::Domain::Version.create(:number => application_version, :application => application)
         @version = PactBroker::Domain::Version.find(id: version.id) # Get version with populated order
         self
       end
 
-      def create_tag_with_hierarchy pacticipant_name, pacticipant_version, tag_name
-        create_version_with_hierarchy pacticipant_name, pacticipant_version
+      def create_tag_with_hierarchy application_name, application_version, tag_name
+        create_version_with_hierarchy application_name, application_version
         PactBroker::Domain::Tag.create(name: tag_name, version: @version)
         self
       end
 
-      def create_pacticipant pacticipant_name, params = {}
+      def create_application application_name, params = {}
         params.delete(:comment)
         version_to_create = params.delete(:version)
 
-        repository_url = "https://github.com/#{params[:repository_namespace] || "example-organization"}/#{params[:repository_name] || pacticipant_name}"
-        merged_params = { name: pacticipant_name, repository_url: repository_url }.merge(params)
-        @pacticipant = PactBroker::Domain::Pacticipant.create(merged_params)
+        repository_url = "https://github.com/#{params[:repository_namespace] || "example-organization"}/#{params[:repository_name] || application_name}"
+        merged_params = { name: application_name, repository_url: repository_url }.merge(params)
+        @application = PactBroker::Domain::Application.create(merged_params)
 
-        version = create_pacticipant_version(version_to_create, @pacticipant) if version_to_create
+        version = create_application_version(version_to_create, @application) if version_to_create
         main_branch = params[:main_branch]
         PactBroker::Versions::BranchVersionRepository.new.add_branch(version, main_branch) if version && main_branch
 
@@ -180,21 +180,21 @@ module PactBroker
 
       def create_consumer consumer_name = "Consumer #{model_counter}", params = {}
         params.delete(:comment)
-        create_pacticipant consumer_name, params
-        @consumer = @pacticipant
+        create_application consumer_name, params
+        @consumer = @application
         self
       end
 
       def use_consumer consumer_name, params = {}
         params.delete(:comment)
-        @consumer = PactBroker::Domain::Pacticipant.find(:name => consumer_name)
+        @consumer = PactBroker::Domain::Application.find(:name => consumer_name)
         self
       end
 
       def create_provider provider_name = "Provider #{model_counter}", params = {}
         params.delete(:comment)
-        create_pacticipant provider_name, params
-        @provider = @pacticipant
+        create_application provider_name, params
+        @provider = @application
         self
       end
 
@@ -207,38 +207,38 @@ module PactBroker
       end
 
       def use_provider provider_name
-        @provider = PactBroker::Domain::Pacticipant.find(:name => provider_name)
+        @provider = PactBroker::Domain::Application.find(:name => provider_name)
         self
       end
 
       def create_version version_number = "1.0.#{model_counter}", params = {}
-        @version = create_pacticipant_version(version_number, pacticipant, params)
+        @version = create_application_version(version_number, application, params)
         self
       end
 
       def create_consumer_version version_number = "1.0.#{model_counter}", params = {}
-        @consumer_version = create_pacticipant_version(version_number, consumer, params)
+        @consumer_version = create_application_version(version_number, consumer, params)
         self
       end
 
       def create_provider_version version_number = "1.0.#{model_counter}", params = {}
-        @provider_version = create_pacticipant_version(version_number, provider, params)
+        @provider_version = create_application_version(version_number, provider, params)
         self
       end
 
       def use_consumer_version version_number
-        @consumer_version = PactBroker::Domain::Version.where(pacticipant_id: @consumer.id, number: version_number).single_record
+        @consumer_version = PactBroker::Domain::Version.where(application_id: @consumer.id, number: version_number).single_record
         self
       end
 
       def use_provider_version version_number
-        @provider_version = PactBroker::Domain::Version.where(pacticipant_id: @provider.id, number: version_number).single_record
+        @provider_version = PactBroker::Domain::Version.where(application_id: @provider.id, number: version_number).single_record
         self
       end
 
       def create_tag tag_name, params = {}
         params.delete(:comment)
-        @tag = PactBroker::Domain::Tag.create(name: tag_name, version: @version, version_order: @version.order, pacticipant_id: @version.pacticipant_id)
+        @tag = PactBroker::Domain::Tag.create(name: tag_name, version: @version, version_order: @version.order, application_id: @version.application_id)
         set_created_at_if_set params[:created_at], :tags, { name: @tag.name, version_id: @tag.version_id }
         self
       end
@@ -258,7 +258,7 @@ module PactBroker
       end
 
       def create_label label_name
-        @label = PactBroker::Domain::Label.create(name: label_name, pacticipant: @pacticipant)
+        @label = PactBroker::Domain::Label.create(name: label_name, application: @application)
         self
       end
 
@@ -274,17 +274,17 @@ module PactBroker
             pact_version_sha: PactBroker::Pacts::GenerateSha.call(json_content))
         ]
         contracts_to_publish = PactBroker::Contracts::ContractsToPublish.from_hash(
-          pacticipant_name: consumer_name,
-          pacticipant_version_number: consumer_version_number,
+          application_name: consumer_name,
+          application_version_number: consumer_version_number,
           tags: tags,
           branch: branch,
           build_url: build_url,
           contracts: contracts
         )
         PactBroker::Contracts::Service.publish(contracts_to_publish, base_url: "http://example.org")
-        @consumer = find_pacticipant(consumer_name)
+        @consumer = find_application(consumer_name)
         @consumer_version = find_version(consumer_name, consumer_version_number)
-        @provider = find_pacticipant(provider_name)
+        @provider = find_application(provider_name)
         @pact = PactBroker::Pacts::PactPublication.last.to_domain
         self
       end
@@ -352,8 +352,8 @@ module PactBroker
 
       def create_webhook parameters = {}
         params = parameters.dup
-        consumer, webhook_consumer = webhook_pacticipant(:consumer, params)
-        provider, webhook_provider = webhook_pacticipant(:provider, params)
+        consumer, webhook_consumer = webhook_application(:consumer, params)
+        provider, webhook_provider = webhook_application(:provider, params)
         uuid = params[:uuid] || PactBroker::Webhooks::Service.next_uuid
         enabled = params.key?(:enabled) ? params.delete(:enabled) : true
         event_params = if params[:event_names]
@@ -457,7 +457,7 @@ module PactBroker
         parameters.delete(:provider_version)
         verification = PactBroker::Domain::Verification.new(parameters)
         pact_version = PactBroker::Pacts::Repository.new.find_pact_version(@consumer, @provider, pact.pact_version_sha)
-        @provider_version = version_repository.find_by_pacticipant_id_and_number_or_create(provider.id, provider_version_number)
+        @provider_version = version_repository.find_by_application_id_and_number_or_create(provider.id, provider_version_number)
         branch_version = PactBroker::Versions::BranchVersionRepository.new.add_branch(@provider_version, branch) if branch
 
         set_created_at_for_provider_tags(parameters, tag_names)
@@ -518,12 +518,12 @@ module PactBroker
           .create_released_version_for_consumer_version
       end
 
-      def find_pacticipant(name)
-        PactBroker::Domain::Pacticipant.where(name: name).single_record
+      def find_application(name)
+        PactBroker::Domain::Application.where(name: name).single_record
       end
 
-      def find_version(pacticipant_name, version_number)
-        PactBroker::Domain::Version.for(pacticipant_name, version_number)
+      def find_version(application_name, version_number)
+        PactBroker::Domain::Version.for(application_name, version_number)
       end
 
       def find_pact(consumer_name, consumer_version_number, provider_name)
@@ -533,7 +533,7 @@ module PactBroker
       def find_pact_publication(consumer_name, consumer_version_number, provider_name)
         PactBroker::Pacts::PactPublication
           .remove_overridden_revisions
-          .where(provider: find_pacticipant(provider_name))
+          .where(provider: find_application(provider_name))
           .where(consumer_version: find_version(consumer_name, consumer_version_number))
           .single_record
       end
@@ -646,12 +646,12 @@ module PactBroker
          }.to_json
       end
 
-      def create_pacticipant_version(version_number, pacticipant, params = {})
+      def create_application_version(version_number, application, params = {})
         params.delete(:comment)
         tag_names = [params.delete(:tag_names), params.delete(:tag_name)].flatten.compact
         args = {
           number: version_number,
-          pacticipant_id: pacticipant.id,
+          application_id: application.id,
           branch: params[:branch],
           build_url: params[:build_url]
         }
@@ -664,8 +664,8 @@ module PactBroker
           set_created_at_if_set(params[:created_at], :tags, { name: tag.name, version_id: version.id })
         end
         if params[:branch]
-          set_created_at_if_set params[:created_at], :branches, { name: params[:branch], pacticipant_id: pacticipant.id }
-          set_created_at_if_set params[:created_at], :branch_versions, { branch_name: params[:branch], pacticipant_id: pacticipant.id, version_id: version.id }
+          set_created_at_if_set params[:created_at], :branches, { name: params[:branch], application_id: application.id }
+          set_created_at_if_set params[:created_at], :branch_versions, { branch_name: params[:branch], application_id: application.id, version_id: version.id }
         end
         version
       end
@@ -724,13 +724,13 @@ module PactBroker
          }.to_json
       end
 
-      def webhook_pacticipant(name, params)
-        pacticipant = params.key?(name) ? params.delete(name) : instance_variable_get(:"@#{name}")
+      def webhook_application(name, params)
+        application = params.key?(name) ? params.delete(name) : instance_variable_get(:"@#{name}")
         label = params.delete(:"#{name}_label")
-        if pacticipant
-          [pacticipant, Domain::WebhookPacticipant.new(name: pacticipant.name)]
+        if application
+          [application, Domain::WebhookApplication.new(name: application.name)]
         elsif label
-          [nil, Domain::WebhookPacticipant.new(label: label)]
+          [nil, Domain::WebhookApplication.new(label: label)]
         end
       end
 

@@ -22,7 +22,7 @@ The easiest way to create a webhook is by using the [Pact Broker Client CLI](htt
 
 You can also create webhooks through the API Browser by clicking on the `NON-GET` button for the `pb:webhooks` relation on the index, pasting in the JSON body, and clicking "Make Request".
 
-Below is an example webhook to trigger a Bamboo job when any contract for the provider "Foo" has changed. Both provider and consumer are optional - omitting either indicates that any pacticipant in that role will be matched. Webhooks with neither provider nor consumer specified are "global" webhooks that will trigger for any consumer/provider pair.
+Below is an example webhook to trigger a Bamboo job when any contract for the provider "Foo" has changed. Both provider and consumer are optional - omitting either indicates that any application in that role will be matched. Webhooks with neither provider nor consumer specified are "global" webhooks that will trigger for any consumer/provider pair.
 
     {
       "description": "Trigger SomeProject CI",
@@ -81,7 +81,7 @@ To specify an XML body, you will need to use a correctly escaped string (or use 
 
 #### Consumer or provider label matching
 
-Webhooks can be created to match events of certain set of [consumers or providers by label](/doc/label?context=pacticipant). Use `label` attribute for either `provider` or `consumer`. Both are optional, but they cannot be provided when `name` attribute is present. Following example would trigger a webhook when any contract with `async` labeled provider changed its content:
+Webhooks can be created to match events of certain set of [consumers or providers by label](/doc/label?context=application). Use `label` attribute for either `provider` or `consumer`. Both are optional, but they cannot be provided when `name` attribute is present. Following example would trigger a webhook when any contract with `async` labeled provider changed its content:
 
         {
           "provider": {
@@ -146,7 +146,7 @@ Example usage:
       }
     }
 
-#### Pacticipant versions used in the template parameters
+#### Application versions used in the template parameters
 
 The consumer version and provider version will be populated from different sources depending on which event has been triggered,
 and how it has been triggered.

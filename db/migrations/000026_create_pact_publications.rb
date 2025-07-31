@@ -3,7 +3,7 @@ Sequel.migration do
     create_table(:pact_publications, charset: "utf8") do
       primary_key :id
       foreign_key :consumer_version_id, :versions, null: false
-      foreign_key :provider_id, :pacticipants, null: false
+      foreign_key :provider_id, :applications, null: false
       Integer :revision_number, null: false
       foreign_key :pact_version_id, :pact_versions, null: false
       DateTime :created_at, null: false

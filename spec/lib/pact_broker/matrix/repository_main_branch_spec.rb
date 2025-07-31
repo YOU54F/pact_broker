@@ -6,7 +6,7 @@ module PactBroker
     describe Repository do
       def build_selectors(hash)
         hash.collect do | key, value |
-          UnresolvedSelector.new(pacticipant_name: key, pacticipant_version_number: value)
+          UnresolvedSelector.new(application_name: key, application_version_number: value)
         end
       end
 
@@ -21,12 +21,12 @@ module PactBroker
       describe "find" do
         describe "deploying a consumer with the main branches of the provider" do
           before do
-            td.create_pacticipant("Bar", main_branch: "develop")
+            td.create_application("Bar", main_branch: "develop")
               .publish_pact(consumer_name: "Foo", consumer_version_number: "1", provider_name: "Bar")
               .create_verification(provider_version: "1", branch: "develop")
               .create_verification(provider_version: "2", number: 2, branch: "develop")
               .create_verification(provider_version: "3", number: 3, branch: "not-develop")
-              .create_pacticipant("Baz", main_branch: "main")
+              .create_application("Baz", main_branch: "main")
               .publish_pact(consumer_name: "Foo", consumer_version_number: "1", provider_name: "Baz")
               .create_verification(provider_version: "10", branch: "main")
               .create_verification(provider_version: "11", number: 2, branch: "main")
@@ -45,8 +45,8 @@ module PactBroker
           end
 
           it "sets the resolved branch name" do
-            expect(rows.resolved_selectors.find{ |s| s.pacticipant_name == "Bar" }.branch).to eq "develop"
-            expect(rows.resolved_selectors.find{ |s| s.pacticipant_name == "Baz" }.branch).to eq "main"
+            expect(rows.resolved_selectors.find{ |s| s.application_name == "Bar" }.branch).to eq "develop"
+            expect(rows.resolved_selectors.find{ |s| s.application_name == "Baz" }.branch).to eq "main"
           end
 
           context "deploying a consumer with all versions of the provider's main branches (this doesn't even make sense)" do
@@ -57,22 +57,22 @@ module PactBroker
             end
 
             it "sets the resolved branch names" do
-              expect(rows.resolved_selectors.select{ |s| s.pacticipant_name == "Bar" }.collect(&:branch).uniq).to eq ["develop"]
-              expect(rows.resolved_selectors.select{ |s| s.pacticipant_name == "Baz" }.collect(&:branch).uniq).to eq ["main"]
+              expect(rows.resolved_selectors.select{ |s| s.application_name == "Bar" }.collect(&:branch).uniq).to eq ["develop"]
+              expect(rows.resolved_selectors.select{ |s| s.application_name == "Baz" }.collect(&:branch).uniq).to eq ["main"]
             end
           end
         end
 
         describe "deploying a provider with the main branches of the consumers" do
           before do
-            td.create_pacticipant("Foo", main_branch: "develop")
+            td.create_application("Foo", main_branch: "develop")
               .publish_pact(consumer_name: "Foo", consumer_version_number: "1", provider_name: "Bar", branch: "develop")
               .create_verification(provider_version: "1")
               .publish_pact(consumer_name: "Foo", consumer_version_number: "2", provider_name: "Bar", branch: "develop")
               .create_verification(provider_version: "1")
               .publish_pact(consumer_name: "Foo", consumer_version_number: "3", provider_name: "Bar", branch: "not-develop")
               .create_verification(provider_version: "1")
-              .create_pacticipant("Beep", main_branch: "main")
+              .create_application("Beep", main_branch: "main")
               .publish_pact(consumer_name: "Beep", consumer_version_number: "1", provider_name: "Bar", branch: "main")
               .create_verification(provider_version: "1")
               .publish_pact(consumer_name: "Beep", consumer_version_number: "2", provider_name: "Bar", branch: "main")
@@ -93,8 +93,8 @@ module PactBroker
           end
 
           it "sets the resolved branch name" do
-            expect(rows.resolved_selectors.find{ |s| s.pacticipant_name == "Beep" }.branch).to eq "main"
-            expect(rows.resolved_selectors.find{ |s| s.pacticipant_name == "Foo" }.branch).to eq "develop"
+            expect(rows.resolved_selectors.find{ |s| s.application_name == "Beep" }.branch).to eq "main"
+            expect(rows.resolved_selectors.find{ |s| s.application_name == "Foo" }.branch).to eq "develop"
           end
 
           context "deploying a provider with all versions of the consumer's main branches (this doesn't even make sense)" do
@@ -105,8 +105,8 @@ module PactBroker
             end
 
             it "sets the resolved branch names" do
-              expect(rows.resolved_selectors.select{ |s| s.pacticipant_name == "Beep" }.collect(&:branch).uniq).to eq ["main"]
-              expect(rows.resolved_selectors.select{ |s| s.pacticipant_name == "Foo" }.collect(&:branch).uniq).to eq ["develop"]
+              expect(rows.resolved_selectors.select{ |s| s.application_name == "Beep" }.collect(&:branch).uniq).to eq ["main"]
+              expect(rows.resolved_selectors.select{ |s| s.application_name == "Foo" }.collect(&:branch).uniq).to eq ["develop"]
             end
           end
         end

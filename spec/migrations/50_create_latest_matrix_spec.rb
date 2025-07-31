@@ -8,15 +8,15 @@ describe "create latest matrix (latest pact revision/latest verification for pro
   end
 
   let(:now) { DateTime.new(2018, 2, 2) }
-  let!(:consumer) { create(:pacticipants, {name: "C", created_at: now, updated_at: now}) }
-  let!(:provider_1) { create(:pacticipants, {name: "P", created_at: now, updated_at: now}) }
-  let!(:provider_2) { create(:pacticipants, {name: "Q", created_at: now, updated_at: now}) }
-  let!(:consumer_version_1) { create(:versions, {number: "1", order: 1, pacticipant_id: consumer[:id], created_at: now, updated_at: now}) }
-  let!(:consumer_version_2) { create(:versions, {number: "2", order: 2, pacticipant_id: consumer[:id], created_at: now, updated_at: now}) }
-  let!(:provider_1_version_1) { create(:versions, {number: "1", order: 1, pacticipant_id: provider_1[:id], created_at: now, updated_at: now}) }
-  let!(:provider_1_version_2) { create(:versions, {number: "2", order: 2, pacticipant_id: provider_1[:id], created_at: now, updated_at: now}) }
-  let!(:provider_2_version_1) { create(:versions, {number: "1", order: 1, pacticipant_id: provider_2[:id], created_at: now, updated_at: now}) }
-  let!(:provider_2_version_2) { create(:versions, {number: "2", order: 2, pacticipant_id: provider_2[:id], created_at: now, updated_at: now}) }
+  let!(:consumer) { create(:applications, {name: "C", created_at: now, updated_at: now}) }
+  let!(:provider_1) { create(:applications, {name: "P", created_at: now, updated_at: now}) }
+  let!(:provider_2) { create(:applications, {name: "Q", created_at: now, updated_at: now}) }
+  let!(:consumer_version_1) { create(:versions, {number: "1", order: 1, application_id: consumer[:id], created_at: now, updated_at: now}) }
+  let!(:consumer_version_2) { create(:versions, {number: "2", order: 2, application_id: consumer[:id], created_at: now, updated_at: now}) }
+  let!(:provider_1_version_1) { create(:versions, {number: "1", order: 1, application_id: provider_1[:id], created_at: now, updated_at: now}) }
+  let!(:provider_1_version_2) { create(:versions, {number: "2", order: 2, application_id: provider_1[:id], created_at: now, updated_at: now}) }
+  let!(:provider_2_version_1) { create(:versions, {number: "1", order: 1, application_id: provider_2[:id], created_at: now, updated_at: now}) }
+  let!(:provider_2_version_2) { create(:versions, {number: "2", order: 2, application_id: provider_2[:id], created_at: now, updated_at: now}) }
 
   let!(:pact_version_1) { create(:pact_versions, {content: {some: "json"}.to_json, sha: "1", consumer_id: consumer[:id], provider_id: provider_1[:id], created_at: now}) }
   let!(:pact_version_2) { create(:pact_versions, {content: {some: "json other"}.to_json, sha: "2", consumer_id: consumer[:id], provider_id: provider_1[:id], created_at: now}) }

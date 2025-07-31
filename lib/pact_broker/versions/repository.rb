@@ -12,55 +12,55 @@ module PactBroker
       include PactBroker::Logging
       include PactBroker::Repositories
 
-      def find_by_pacticipant_id_and_number pacticipant_id, number
-        PactBroker::Domain::Version.where(number: number, pacticipant_id: pacticipant_id).single_record
+      def find_by_application_id_and_number application_id, number
+        PactBroker::Domain::Version.where(number: number, application_id: application_id).single_record
       end
 
-      def find_by_pacticipant_name_and_latest_tag pacticipant_name, tag
+      def find_by_application_name_and_latest_tag application_name, tag
         PactBroker::Domain::Version
           .select_all_qualified
           .where_tag(tag)
-          .where_pacticipant_name(pacticipant_name)
+          .where_application_name(application_name)
           .reverse_order(:order)
           .first
       end
 
-      def find_latest_by_pacticipant_name_and_branch_name(pacticipant_name, branch_name)
+      def find_latest_by_application_name_and_branch_name(application_name, branch_name)
         branch_heads_join = { Sequel[:versions][:id] => Sequel[:branch_heads][:version_id], Sequel[:branch_heads][:branch_name] => branch_name }
         PactBroker::Domain::Version
-          .where_pacticipant_name(pacticipant_name)
+          .where_application_name(application_name)
           .join(:branch_heads, branch_heads_join)
           .single_record
       end
 
-      def find_by_pacticipant_name_and_tag pacticipant_name, tag
+      def find_by_application_name_and_tag application_name, tag
         PactBroker::Domain::Version
           .select_all_qualified
-          .where_pacticipant_name(pacticipant_name)
+          .where_application_name(application_name)
           .where_tag(tag)
           .all
       end
 
-      def find_latest_by_pacticpant_name pacticipant_name
+      def find_latest_by_pacticpant_name application_name
         PactBroker::Domain::Version
           .select_all_qualified
-          .where_pacticipant_name(pacticipant_name)
+          .where_application_name(application_name)
           .reverse_order(:order)
           .first
       end
 
-      def find_by_pacticipant_name_and_number pacticipant_name, number
+      def find_by_application_name_and_number application_name, number
         PactBroker::Domain::Version
           .select_all_qualified
-          .where_pacticipant_name(pacticipant_name)
+          .where_application_name(application_name)
           .where_number(number)
           .single_record
       end
 
-      def find_pacticipant_versions_in_reverse_order(pacticipant_name, options = {}, pagination_options = {}, eager_load_associations = [])
-        pacticipant = pacticipant_repository.find_by_name!(pacticipant_name)
+      def find_application_versions_in_reverse_order(application_name, options = {}, pagination_options = {}, eager_load_associations = [])
+        application = application_repository.find_by_name!(application_name)
         query = PactBroker::Domain::Version
-                  .where(pacticipant: pacticipant)
+                  .where(application: application)
                   .eager(*eager_load_associations)
                   .reverse_order(:order)
 
@@ -74,7 +74,7 @@ module PactBroker
       def create(args)
         version_params = {
           number: args[:number],
-          pacticipant_id: args[:pacticipant_id],
+          application_id: args[:application_id],
           created_at: Sequel.datetime_class.now,
           updated_at: Sequel.datetime_class.now,
           build_url: args[:build_url]
@@ -88,8 +88,8 @@ module PactBroker
         version
       end
 
-      def create_or_update(pacticipant, version_number, open_struct_version)
-        saved_version = PactBroker::Domain::Version.where(pacticipant_id: pacticipant.id, number: version_number).single_record
+      def create_or_update(application, version_number, open_struct_version)
+        saved_version = PactBroker::Domain::Version.where(application_id: application.id, number: version_number).single_record
         params = open_struct_version.to_h
         tags = params.delete(:tags)
         branch_name = params.delete(:branch)
@@ -100,7 +100,7 @@ module PactBroker
           # Upsert blanks out any fields that are not provided
           saved_version = PactBroker::Domain::Version.new(
             params.merge(
-              pacticipant_id: pacticipant.id,
+              application_id: application.id,
               number: version_number
             ).compact
           ).upsert
@@ -111,10 +111,10 @@ module PactBroker
         saved_version
       end
 
-      def create_or_overwrite(pacticipant, version_number, open_struct_version)
+      def create_or_overwrite(application, version_number, open_struct_version)
         saved_version = PactBroker::Domain::Version.new(
           number: version_number,
-          pacticipant: pacticipant,
+          application: application,
           build_url: open_struct_version.build_url
         ).upsert
 
@@ -133,10 +133,10 @@ module PactBroker
         saved_version.refresh
       end
 
-      def find_by_pacticipant_id_and_number_or_create pacticipant_id, number
-        version = find_by_pacticipant_id_and_number(pacticipant_id, number)
+      def find_by_application_id_and_number_or_create application_id, number
+        version = find_by_application_id_and_number(application_id, number)
 
-        version ? version : create(pacticipant_id: pacticipant_id, number: number)
+        version ? version : create(application_id: application_id, number: number)
       end
 
       def delete_by_id version_ids
@@ -156,7 +156,7 @@ module PactBroker
         version_ids_with_verifications = PactBroker::Domain::Verification.where(provider_id: [provider.id, consumer.id]).select(:provider_version_id).collect{|r| r[:provider_version_id]}
         # Hope we don't hit max parameter constraints here...
         PactBroker::Domain::Version
-          .where(Sequel[:versions][:pacticipant_id] => [consumer.id, provider.id])
+          .where(Sequel[:versions][:application_id] => [consumer.id, provider.id])
           .exclude(id: (version_ids_with_pact_publications + version_ids_with_verifications).uniq)
           .delete
       end
@@ -165,13 +165,13 @@ module PactBroker
         PactBroker::Domain::Version.select_all_qualified.for_selector(selector).all
       end
 
-      def find_latest_version_from_main_branch(pacticipant)
-        if pacticipant.main_branch
+      def find_latest_version_from_main_branch(application)
+        if application.main_branch
           latest_from_main_branch = PactBroker::Domain::Version
-            .latest_versions_for_pacticipant_branches(pacticipant.id, pacticipant.main_branch)
+            .latest_versions_for_application_branches(application.id, application.main_branch)
             .single_record
 
-          latest_from_main_branch || find_by_pacticipant_name_and_latest_tag(pacticipant.name, pacticipant.main_branch)
+          latest_from_main_branch || find_by_application_name_and_latest_tag(application.name, application.main_branch)
         end
       end
 

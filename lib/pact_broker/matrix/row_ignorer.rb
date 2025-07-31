@@ -26,8 +26,8 @@ module PactBroker
 
         def ignore_row?(resolved_ignore_selectors, row)
           resolved_ignore_selectors.any? do | s |
-            s.pacticipant_id == row.consumer_id  && (s.only_pacticipant_name_specified? || s.pacticipant_version_id == row.consumer_version_id) ||
-              s.pacticipant_id == row.provider_id  && (s.only_pacticipant_name_specified? || s.pacticipant_version_id == row.provider_version_id)
+            s.application_id == row.consumer_id  && (s.only_application_name_specified? || s.application_version_id == row.consumer_version_id) ||
+              s.application_id == row.provider_id  && (s.only_application_name_specified? || s.application_version_id == row.provider_version_id)
           end
         end
       end

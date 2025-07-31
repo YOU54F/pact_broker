@@ -18,8 +18,8 @@ module PactBroker
       end
 
       # Callback to invoke when a consumer contract, verification result (or provider contract in Pactflow) is published
-      # @param [PactBroker::Domain::Pacticipant] consumer or nil
-      # @param [PactBroker::Domain::Pacticipant] provider
+      # @param [PactBroker::Domain::Application] consumer or nil
+      # @param [PactBroker::Domain::Application] provider
       def self.handle_contract_data_published(consumer, provider)
         integration_repository.create_for_pact(consumer.id, provider.id)
         integration_repository.set_contract_data_updated_at(consumer, provider)
@@ -34,8 +34,8 @@ module PactBroker
       end
 
       def self.delete(consumer_name, provider_name)
-        consumer = pacticipant_service.find_pacticipant_by_name!(consumer_name)
-        provider = pacticipant_service.find_pacticipant_by_name!(provider_name)
+        consumer = application_service.find_application_by_name!(consumer_name)
+        provider = application_service.find_application_by_name!(provider_name)
         # this takes care of the triggered webhooks and webhook executions
         pact_service.delete_all_pact_publications_between(consumer_name, and: provider_name)
         verification_service.delete_all_verifications_between(consumer_name, and: provider_name)
@@ -43,8 +43,8 @@ module PactBroker
         webhook_repository.delete_by_consumer_and_provider(consumer, provider)
         version_repository.delete_orphan_versions(consumer, provider)
         integration_repository.delete(consumer.id, provider.id)
-        pacticipant_service.delete_if_orphan(consumer)
-        pacticipant_service.delete_if_orphan(provider) unless consumer == provider
+        application_service.delete_if_orphan(consumer)
+        application_service.delete_if_orphan(provider) unless consumer == provider
       end
 
       def self.delete_all

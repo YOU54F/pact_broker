@@ -6,46 +6,46 @@ module PactBroker
       describe "#version_does_not_exist_description" do
         context "for an existing version" do
           let(:subject) do
-            PactBroker::Matrix::ResolvedSelector.for_pacticipant_and_version(pacticipant, version, original_selector, :specified, false, one_of_many)
+            PactBroker::Matrix::ResolvedSelector.for_application_and_version(application, version, original_selector, :specified, false, one_of_many)
           end
 
           let(:original_selector) do
             {
-              pacticipant_name: pacticipant_name,
+              application_name: application_name,
               tag: tag,
               branch: branch,
               environment_name: environment_name,
-              pacticipant_version_number: pacticipant_version_number,
+              application_version_number: application_version_number,
               main_branch: main_branch,
               latest: latest
             }
           end
 
-          let(:pacticipant) { double("pacticipant", name: pacticipant_name, id: 1)}
+          let(:application) { double("application", name: application_name, id: 1)}
           let(:version) { double("version", number: "123", id: 2, values: version_values)}
 
-          let(:pacticipant_name) { "Foo" }
+          let(:application_name) { "Foo" }
           let(:tag) { nil }
           let(:branch) { nil }
           let(:environment_name) { nil }
           let(:main_branch) { nil }
-          let(:pacticipant_version_number) { nil }
+          let(:application_version_number) { nil }
           let(:latest) { nil }
           let(:one_of_many) { false }
           let(:version_values) { {} }
 
           context "when it was specified by version number" do
-            let(:pacticipant_version_number) { "123" }
+            let(:application_version_number) { "123" }
 
             its(:description) { is_expected.to eq "version 123 of Foo" }
-            its(:only_pacticipant_name_specified?) { is_expected.to be false }
+            its(:only_application_name_specified?) { is_expected.to be false }
           end
 
           context "when it was specified by tag" do
             let(:tag) { "dev" }
 
             its(:description) { is_expected.to eq "a version of Foo with tag dev (123)" }
-            its(:only_pacticipant_name_specified?) { is_expected.to be false }
+            its(:only_application_name_specified?) { is_expected.to be false }
           end
 
           context "when it was specified by tag and latest" do
@@ -53,7 +53,7 @@ module PactBroker
             let(:latest) { true }
 
             its(:description) { is_expected.to eq "the latest version of Foo with tag dev (123)" }
-            its(:only_pacticipant_name_specified?) { is_expected.to be false }
+            its(:only_application_name_specified?) { is_expected.to be false }
           end
 
           context "when it was specified by branch" do
@@ -65,7 +65,7 @@ module PactBroker
               let(:one_of_many) { true }
 
               its(:description) { is_expected.to eq "one of the versions of Foo from branch main (123)" }
-              its(:only_pacticipant_name_specified?) { is_expected.to be false }
+              its(:only_application_name_specified?) { is_expected.to be false }
             end
           end
 
@@ -74,21 +74,21 @@ module PactBroker
             let(:latest) { true }
 
             its(:description) { is_expected.to eq "the latest version of Foo from branch main (123)" }
-            its(:only_pacticipant_name_specified?) { is_expected.to be false }
+            its(:only_application_name_specified?) { is_expected.to be false }
           end
 
           context "when it was specified by environment" do
             let(:environment_name) { "test" }
 
             its(:description) { is_expected.to eq "the version of Foo currently in test (123)" }
-            its(:only_pacticipant_name_specified?) { is_expected.to be false }
+            its(:only_application_name_specified?) { is_expected.to be false }
           end
 
           context "when it was specified by version number" do
-            let(:pacticipant_version_number) { "123" }
+            let(:application_version_number) { "123" }
 
             its(:description) { is_expected.to eq "version 123 of Foo" }
-            its(:only_pacticipant_name_specified?) { is_expected.to be false }
+            its(:only_application_name_specified?) { is_expected.to be false }
           end
 
           context "when specified by main_branch" do
@@ -102,7 +102,7 @@ module PactBroker
               let(:one_of_many) { true }
 
               its(:description) { is_expected.to eq "one of the versions of Foo from branch develop (123)" }
-              its(:only_pacticipant_name_specified?) { is_expected.to be false }
+              its(:only_application_name_specified?) { is_expected.to be false }
             end
           end
 
@@ -112,44 +112,44 @@ module PactBroker
             let(:version_values) { { branch_name: "develop" } }
 
             its(:description) { is_expected.to eq "the latest version of Foo from branch develop (123)" }
-            its(:only_pacticipant_name_specified?) { is_expected.to be false }
+            its(:only_application_name_specified?) { is_expected.to be false }
           end
 
-          context "when it was specified by pacticipant name only" do
+          context "when it was specified by application name only" do
             let(:subject) do
-              PactBroker::Matrix::ResolvedSelector.for_pacticipant(pacticipant, original_selector, :specified, false)
+              PactBroker::Matrix::ResolvedSelector.for_application(application, original_selector, :specified, false)
             end
 
             its(:description) { is_expected.to eq "any version of Foo" }
-            its(:only_pacticipant_name_specified?) { is_expected.to be true }
+            its(:only_application_name_specified?) { is_expected.to be true }
           end
         end
 
         context "for non existing version" do
           let(:subject) do
-            PactBroker::Matrix::ResolvedSelector.for_pacticipant_and_non_existing_version(pacticipant, original_selector, :specified, false)
+            PactBroker::Matrix::ResolvedSelector.for_application_and_non_existing_version(application, original_selector, :specified, false)
           end
 
           let(:original_selector) do
             {
-              pacticipant_name: pacticipant_name,
+              application_name: application_name,
               tag: tag,
               branch: branch,
               environment_name: environment_name,
-              pacticipant_version_number: pacticipant_version_number,
+              application_version_number: application_version_number,
               main_branch: main_branch,
               latest: latest
             }
           end
 
-          let(:pacticipant) { double("pacticipant", name: pacticipant_name, id: 1)}
+          let(:application) { double("application", name: application_name, id: 1)}
 
-          let(:pacticipant_name) { "Foo" }
+          let(:application_name) { "Foo" }
           let(:tag) { nil }
           let(:branch) { nil }
           let(:environment_name) { nil }
           let(:main_branch) { nil }
-          let(:pacticipant_version_number) { nil }
+          let(:application_version_number) { nil }
           let(:latest) { nil }
 
           its(:version_does_not_exist_description) { is_expected.to eq "No pacts or verifications have been published for Foo" }
@@ -192,7 +192,7 @@ module PactBroker
           end
 
           context "when it was specified by version number" do
-            let(:pacticipant_version_number) { "1" }
+            let(:application_version_number) { "1" }
 
             its(:description) { is_expected.to eq "version 1 of Foo (no such version exists)" }
             its(:version_does_not_exist_description) { is_expected.to eq "No pacts or verifications have been published for version 1 of Foo" }

@@ -9,7 +9,7 @@ module PactBroker
 
       def find(filter_options = {}, pagination_options = {}, eager_load_associations = [])
         query = scope_for(PactBroker::Integrations::Integration).select_all_qualified
-        query = query.filter_by_pacticipant(filter_options[:query_string]) if filter_options[:query_string]
+        query = query.filter_by_application(filter_options[:query_string]) if filter_options[:query_string]
         return [] if query.nil?
         query
           .eager(*eager_load_associations)
@@ -48,8 +48,8 @@ module PactBroker
       end
 
       # Sets the contract_data_updated_at for the integration(s) as specified by the consumer and provider
-      # @param [PactBroker::Domain::Pacticipant, nil] consumer the consumer for the integration, or nil if for a provider-only event (eg. Pactflow provider contract published)
-      # @param [PactBroker::Domain::Pacticipant] provider the provider for the integration
+      # @param [PactBroker::Domain::Application, nil] consumer the consumer for the integration, or nil if for a provider-only event (eg. Pactflow provider contract published)
+      # @param [PactBroker::Domain::Application] provider the provider for the integration
       def set_contract_data_updated_at(consumer, provider)
         set_contract_data_updated_at_for_multiple_integrations([OpenStruct.new(consumer: consumer, provider: provider)])
       end

@@ -19,12 +19,12 @@ module PactBroker
             .create_integration
         end
 
-        let(:app_a) { td.find_pacticipant("app a") }
-        let(:app_b) { td.find_pacticipant("app b") }
+        let(:app_a) { td.find_application("app a") }
+        let(:app_b) { td.find_application("app b") }
 
-        let(:app_x) { td.find_pacticipant("app x") }
-        let(:app_y) { td.find_pacticipant("app y") }
-        let(:app_z) { td.find_pacticipant("app z") }
+        let(:app_x) { td.find_application("app x") }
+        let(:app_y) { td.find_application("app y") }
+        let(:app_z) { td.find_application("app z") }
 
         let(:relationship_1) { Domain::IndexItem.new(app_a, app_x) }
         let(:relationship_2) { Domain::IndexItem.new(app_b, app_y) }
@@ -36,15 +36,15 @@ module PactBroker
 
         subject  { Service.find_group_containing(app_b) }
 
-        it "returns the Group containing the given pacticipant" do
+        it "returns the Group containing the given application" do
           expect(subject.size).to eq 3
           expect(subject).to include(have_attributes(consumer_name: "app b", provider_name: "app y"))
           expect(subject).to include(have_attributes(consumer_name: "app y", provider_name: "app z"))
           expect(subject).to include(have_attributes(consumer_name: "app z", provider_name: "app y"))
         end
 
-        context "when a max_pacticipants is specified" do
-          subject  { Service.find_group_containing(app_b, max_pacticipants: 2) }
+        context "when a max_applications is specified" do
+          subject  { Service.find_group_containing(app_b, max_applications: 2) }
 
           it "stops searching before reaching the end of the group" do
             expect(subject.size).to eq 1

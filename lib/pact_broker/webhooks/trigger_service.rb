@@ -106,7 +106,7 @@ module PactBroker
 
       def expand_events_for_currently_deployed_environments(webhook, pact, event_context)
         if PactBroker.feature_enabled?(:expand_currently_deployed_provider_versions) && webhook.expand_currently_deployed_provider_versions?
-          deployed_version_service.find_currently_deployed_versions_for_pacticipant(pact.provider).collect(&:version_number).uniq.collect do | version_number |
+          deployed_version_service.find_currently_deployed_versions_for_application(pact.provider).collect(&:version_number).uniq.collect do | version_number |
             event_context.merge(currently_deployed_provider_version_number: version_number)
           end
         else

@@ -52,7 +52,7 @@ module PactBroker
             .create_pact_with_verification_and_tags("Ignored", "6", ["fmain"], "Bar", "8")
         end
 
-        let(:consumer_ids) { PactBroker::Domain::Pacticipant.where(name: ["Foo", "Foo2"]).all.collect(&:id) }
+        let(:consumer_ids) { PactBroker::Domain::Application.where(name: ["Foo", "Foo2"]).all.collect(&:id) }
 
         subject { Verification.latest_verifications_for_consumer_version_tags(consumer_ids, ["fmain", "fprod"]).order(:id) }
 

@@ -52,7 +52,7 @@ module PactBroker
 
         def policy_record_context
           {
-            pacticipant: released_version&.pacticipant
+            application: released_version&.application
           }
         end
 

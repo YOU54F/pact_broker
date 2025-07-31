@@ -7,7 +7,7 @@ module PactBroker
     module Resources
       describe ProviderStates do
         before do
-          allow(PactBroker::Pacticipants::Service).to receive(:find_pacticipant_by_name).and_return(provider)
+          allow(PactBroker::Applications::Service).to receive(:find_application_by_name).and_return(provider)
           allow(PactBroker::Pacts::ProviderStateService).to receive(:list_provider_states).and_return(provider_states)
         end
 

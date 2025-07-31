@@ -22,24 +22,24 @@ module PactBroker
         QueryResultsWithDeploymentStatusSummary.new(query_results, DeploymentStatusSummary.new(query_results))
       end
 
-      def can_i_merge(pacticipant_name: nil, pacticipant: nil, latest_main_branch_version: nil)
-        # first we find the pacticipant by name (or use the one passed in) if pacticipant is nil
-        if pacticipant.nil?
-          pacticipant = pacticipant_service.find_pacticipant_by_name(pacticipant_name)
-          raise PactBroker::Error.new("No pacticipant found with name '#{pacticipant_name}'") unless pacticipant
+      def can_i_merge(application_name: nil, application: nil, latest_main_branch_version: nil)
+        # first we find the application by name (or use the one passed in) if application is nil
+        if application.nil?
+          application = application_service.find_application_by_name(application_name)
+          raise PactBroker::Error.new("No application found with name '#{application_name}'") unless application
         else
-          pacticipant_name = pacticipant.name
+          application_name = application.name
         end
          
         # then we find the latest version from the main branch if not passed in
         if latest_main_branch_version.nil?
-          latest_main_branch_version = version_service.find_latest_version_from_main_branch(pacticipant)
-          raise PactBroker::Error.new("No main branch version found for pacticipant '#{pacticipant_name}'") unless latest_main_branch_version
+          latest_main_branch_version = version_service.find_latest_version_from_main_branch(application)
+          raise PactBroker::Error.new("No main branch version found for application '#{application_name}'") unless latest_main_branch_version
         end
 
         selectors = PactBroker::Matrix::UnresolvedSelector.from_hash(
-          pacticipant_name: pacticipant_name, 
-          pacticipant_version_number: latest_main_branch_version.number
+          application_name: application_name, 
+          application_version_number: latest_main_branch_version.number
         )
          
         options = { main_branch: true, latest: true, latestby: "cvp" }
@@ -54,18 +54,18 @@ module PactBroker
       end
 
       def find_for_consumer_and_provider params, options = {}
-        selectors = [ UnresolvedSelector.new(pacticipant_name: params[:consumer_name]), UnresolvedSelector.new(pacticipant_name: params[:provider_name]) ]
+        selectors = [ UnresolvedSelector.new(application_name: params[:consumer_name]), UnresolvedSelector.new(application_name: params[:provider_name]) ]
         can_i_deploy(selectors, options)
       end
 
       def find_for_consumer_and_provider_with_tags params
         consumer_selector = UnresolvedSelector.new(
-          pacticipant_name: params[:consumer_name],
+          application_name: params[:consumer_name],
           tag: params[:tag],
           latest: true
         )
         provider_selector = UnresolvedSelector.new(
-          pacticipant_name: params[:provider_name],
+          application_name: params[:provider_name],
           tag: params[:provider_tag],
           latest: true
         )
@@ -84,19 +84,19 @@ module PactBroker
         error_messages = []
 
         selectors.each do | s |
-          if s[:pacticipant_name].nil?
-            error_messages << "Please specify the pacticipant name"
+          if s[:application_name].nil?
+            error_messages << "Please specify the application name"
           else
             # TODO a bunch more validation
-            if s.key?(:pacticipant_version_number) && s.key?(:latest)
-              error_messages << "A version number and latest flag cannot both be specified for #{s[:pacticipant_name]}"
+            if s.key?(:application_version_number) && s.key?(:latest)
+              error_messages << "A version number and latest flag cannot both be specified for #{s[:application_name]}"
             end
           end
         end
 
-        selectors.collect{ |selector| selector[:pacticipant_name] }.compact.each do | pacticipant_name |
-          unless pacticipant_service.find_pacticipant_by_name(pacticipant_name)
-            error_messages << "Pacticipant #{pacticipant_name} not found"
+        selectors.collect{ |selector| selector[:application_name] }.compact.each do | application_name |
+          unless application_service.find_application_by_name(application_name)
+            error_messages << "Application #{application_name} not found"
           end
         end
 
@@ -113,11 +113,11 @@ module PactBroker
         error_messages = []
 
         options.fetch(:ignore_selectors, []).each do | s |
-          if s[:pacticipant_name].nil?
-            error_messages << "Please specify the pacticipant name to ignore"
+          if s[:application_name].nil?
+            error_messages << "Please specify the application name to ignore"
           else
-            if s.key?(:pacticipant_version_number) && s.key?(:latest)
-              error_messages << "A version number and latest flag cannot both be specified for #{s[:pacticipant_name]} to ignore"
+            if s.key?(:application_version_number) && s.key?(:latest)
+              error_messages << "A version number and latest flag cannot both be specified for #{s[:application_name]} to ignore"
             end
           end
         end

@@ -30,9 +30,9 @@ module PactBroker
           end
         end
 
-        def validate_pacticipant_with_name_exists(value, key)
-          if ValidationHelpers.provided?(value) && !ValidationHelpers.pacticipant_with_name_exists?(value)
-            key.failure(PactBroker::Messages.validation_message("pacticipant_with_name_not_found"))
+        def validate_application_with_name_exists(value, key)
+          if ValidationHelpers.provided?(value) && !ValidationHelpers.application_with_name_exists?(value)
+            key.failure(PactBroker::Messages.validation_message("application_with_name_not_found"))
           end
         end
 

@@ -1,6 +1,6 @@
 Sequel.migration do
   change do
-    alter_table(:pacticipants) do
+    alter_table(:applications) do
       add_index [:name], name: "ndx_ppt_name" # Not sure if this is useful give we use LIKE not EQ
     end
 

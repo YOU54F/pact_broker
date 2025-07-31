@@ -1,0 +1,23 @@
+{
+  "category": "Applications",
+  "name": "Application",
+  "order": 7,
+  "request": {
+    "method": "OPTIONS",
+    "path_template": "/applications/:application_name",
+    "path": "/applications/foo",
+    "headers": {
+      "Accept": "application/hal+json"
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "access-control-allow-methods": "GET, PUT, PATCH, DELETE, OPTIONS",
+      "content-length": "0",
+      "date": "<date>",
+      "server": "Webmachine-Ruby/2.0.1 Rack/3.2"
+    },
+    "body": ""
+  }
+}

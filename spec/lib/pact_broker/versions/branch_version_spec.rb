@@ -43,13 +43,13 @@ module PactBroker
             .create_consumer_version("2", branch: "feat/foo")
         end
 
-        context "when the branch name matches the pacticipant's main branch" do
+        context "when the branch name matches the application's main branch" do
           let(:subject) { td.find_version("Foo", "1").branch_versions.first }
 
           its(:main_branch?) { is_expected.to be true }
         end
 
-        context "when the branch name does not match pacticipant's main branch" do
+        context "when the branch name does not match application's main branch" do
           let(:subject) { td.find_version("Foo", "2").branch_versions.first }
 
           its(:main_branch?) { is_expected.to be false }

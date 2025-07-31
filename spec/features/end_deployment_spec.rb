@@ -11,11 +11,11 @@
 describe "Record deployment ended", skip: "Not yet implemented" do
   before do
     td.create_environment("test")
-      .create_pacticipant("Foo")
-      .create_pacticipant_version("1")
+      .create_application("Foo")
+      .create_application_version("1")
       .create_deployment("test")
   end
-  let(:path) { "/pacticipants/Foo/deployments/test/latest/end" }
+  let(:path) { "/applications/Foo/deployments/test/latest/end" }
   let(:headers) { {} }
   let(:response_body) { JSON.parse(last_response.body, symbolize_names: true) }
 

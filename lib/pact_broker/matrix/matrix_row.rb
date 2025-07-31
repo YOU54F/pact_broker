@@ -1,7 +1,7 @@
 require "pact_broker/dataset"
 require "pact_broker/logging"
 require "pact_broker/pacts/pact_version"
-require "pact_broker/domain/pacticipant"
+require "pact_broker/domain/application"
 require "pact_broker/domain/version"
 require "pact_broker/domain/verification"
 require "pact_broker/domain/tag"
@@ -59,8 +59,8 @@ module PactBroker
 
       # Must be kept in sync with PactBroker::Matrix::EveryRow
       associate(:many_to_one, :pact_publication, :class => "PactBroker::Pacts::PactPublication", :key => :pact_publication_id, :primary_key => :id)
-      associate(:many_to_one, :provider, :class => "PactBroker::Domain::Pacticipant", :key => :provider_id, :primary_key => :id)
-      associate(:many_to_one, :consumer, :class => "PactBroker::Domain::Pacticipant", :key => :consumer_id, :primary_key => :id)
+      associate(:many_to_one, :provider, :class => "PactBroker::Domain::Application", :key => :provider_id, :primary_key => :id)
+      associate(:many_to_one, :consumer, :class => "PactBroker::Domain::Application", :key => :consumer_id, :primary_key => :id)
       associate(:many_to_one, :consumer_version, :class => "PactBroker::Domain::Version", :key => :consumer_version_id, :primary_key => :id)
       associate(:many_to_one, :provider_version, :class => "PactBroker::Domain::Version", :key => :provider_version_id, :primary_key => :id)
       associate(:many_to_one, :pact_version, class: "PactBroker::Pacts::PactVersion", :key => :pact_version_id, :primary_key => :id)

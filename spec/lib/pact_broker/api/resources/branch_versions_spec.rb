@@ -5,12 +5,12 @@ module PactBroker
     module Resources
       describe BranchVersions do
         let(:branch_name) { "main" }
-        let(:path) { "/pacticipants/Foo/branches/#{branch_name}/versions/" }
+        let(:path) { "/applications/Foo/branches/#{branch_name}/versions/" }
 
         describe "GET" do
-          let(:pacticipant) { td.create_consumer("Foo").and_return(:pacticipant) }
+          let(:application) { td.create_consumer("Foo").and_return(:application) }
           let(:version) { 
-            td.use_consumer(pacticipant.name)
+            td.use_consumer(application.name)
               .create_consumer_version("1", branch: branch_name)
               .and_return(:consumer_version) 
           }
@@ -26,16 +26,16 @@ module PactBroker
                 created_at: DateTime.now - 1)
           end
 
-          context "when the pacticipant and version do not exist" do
+          context "when the application and version do not exist" do
             subject { get(path, nil, { "HTTP_ACCEPT" => "application/hal+json" }) }
 
             its(:status) { is_expected.to eq 404 }
             its(:body) { expect(JSON.parse(subject.body, symbolize_names: true)[:error]).to match(/document was not found/) }
           end
 
-          context "when the pacticipant and version exist" do
+          context "when the application and version exist" do
             before do
-              # Create a version on a pacticipant and other data
+              # Create a version on a application and other data
               deployed_version
             end
             subject { get(path, nil, { "HTTP_ACCEPT" => "application/hal+json" }) }
@@ -47,7 +47,7 @@ module PactBroker
 
               it "contains the expected keys" do
                 expect(response_body_hash).to include(:_links, :_embedded)
-                expect(response_body_hash[:_links]).to include(:self, :"pb:pacticipant")
+                expect(response_body_hash[:_links]).to include(:self, :"pb:application")
                 version_links = response_body_hash[:_embedded][:"versions"]
                 expect(version_links.first[:_links][:"pb:deployed-environments"]).to be_a(Array)
                 expect(version_links.first[:_links][:"pb:deployed-environments"].size).to eq 2

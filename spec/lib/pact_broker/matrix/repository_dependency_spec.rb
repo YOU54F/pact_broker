@@ -5,7 +5,7 @@ module PactBroker
     describe Repository do
       def build_selectors(hash)
         hash.collect do | key, value |
-          UnresolvedSelector.new(pacticipant_name: key, pacticipant_version_number: value)
+          UnresolvedSelector.new(application_name: key, application_version_number: value)
         end
       end
 
@@ -23,7 +23,7 @@ module PactBroker
             .create_verification(provider_version: "2")
         end
 
-        let(:selectors) { [ UnresolvedSelector.new(pacticipant_name: "Bar", pacticipant_version_number: "2") ] }
+        let(:selectors) { [ UnresolvedSelector.new(application_name: "Bar", application_version_number: "2") ] }
         let(:options) { { latest: true, tag: "prod"} }
 
         subject { shorten_rows(rows) }
@@ -40,7 +40,7 @@ module PactBroker
             .create_verification(provider_version: "2")
         end
 
-        let(:selectors) { [ UnresolvedSelector.new(pacticipant_name: "Foo", pacticipant_version_number: "1") ] }
+        let(:selectors) { [ UnresolvedSelector.new(application_name: "Foo", application_version_number: "1") ] }
         let(:options) { { latest: true, tag: "prod"} }
 
         subject { shorten_rows(rows) }
@@ -48,7 +48,7 @@ module PactBroker
 
         it "returns an array with one row that does not have a verification" do
           expect(results.first).to_not have_verification
-          expect(results.resolved_selectors.find{ |s | s[:pacticipant_name] == "Bar"}.pacticipant_version_id).to eq(-1)
+          expect(results.resolved_selectors.find{ |s | s[:application_name] == "Bar"}.application_version_id).to eq(-1)
         end
       end
     end

@@ -3,7 +3,7 @@
 require "pact_broker/pacts/repository"
 require "pact_broker/pacts/pact_params"
 require "pact_broker/versions/repository"
-require "pact_broker/pacticipants/repository"
+require "pact_broker/applications/repository"
 
 module PactBroker
   module Pacts
@@ -13,9 +13,9 @@ module PactBroker
       let(:provider_name) { "Provider" }
 
       describe "create" do
-        let(:consumer) { Pacticipants::Repository.new.create name: "Consumer" }
-        let(:provider) { Pacticipants::Repository.new.create name: "Provider" }
-        let(:version) { PactBroker::Versions::Repository.new.create number: "1.2.3", pacticipant_id: consumer.id }
+        let(:consumer) { Applications::Repository.new.create name: "Consumer" }
+        let(:provider) { Applications::Repository.new.create name: "Provider" }
+        let(:version) { PactBroker::Versions::Repository.new.create number: "1.2.3", application_id: consumer.id }
         let(:pact_version_sha) { "123" }
         let(:json_content) { { interactions: ["json"] }.to_json }
 
@@ -74,7 +74,7 @@ module PactBroker
         end
 
         context "when a pact already exists with exactly the same content" do
-          let(:another_version) { Versions::Repository.new.create number: "2.0.0", pacticipant_id: consumer.id }
+          let(:another_version) { Versions::Repository.new.create number: "2.0.0", application_id: consumer.id }
 
           before do
             Repository.new.create(
@@ -124,7 +124,7 @@ module PactBroker
         end
 
         context "when base_equality_only_on_content_that_affects_verification_results is true" do
-          let(:another_version) { Versions::Repository.new.create number: "2.0.0", pacticipant_id: consumer.id }
+          let(:another_version) { Versions::Repository.new.create number: "2.0.0", application_id: consumer.id }
           let(:sha_1) { "1" }
           let(:sha_2) { "1" }
 
@@ -168,8 +168,8 @@ module PactBroker
         end
 
         context "when a pact already exists with the same content but with a different consumer/provider" do
-          let(:another_version) { Versions::Repository.new.create number: "2.0.0", pacticipant_id: consumer.id }
-          let(:another_provider) { Pacticipants::Repository.new.create name: "Provider2" }
+          let(:another_version) { Versions::Repository.new.create number: "2.0.0", application_id: consumer.id }
+          let(:another_provider) { Applications::Repository.new.create name: "Provider2" }
           before do
             Repository.new.create(
               version_id: version.id,
@@ -198,7 +198,7 @@ module PactBroker
         end
 
         context "when a pact already exists with different content" do
-          let(:another_version) { Versions::Repository.new.create number: "2.0.0", pacticipant_id: consumer.id }
+          let(:another_version) { Versions::Repository.new.create number: "2.0.0", application_id: consumer.id }
 
           before do
             Repository.new.create(
@@ -1074,7 +1074,7 @@ module PactBroker
         it "finds the latest pact for each consumer/provider pair" do
           pacts = Repository.new.find_latest_pacts
 
-          expect(pacts[0].consumer_version.pacticipant.name).to eq("Condor")
+          expect(pacts[0].consumer_version.application.name).to eq("Condor")
           expect(pacts[0].consumer.name).to eq("Condor")
           expect(pacts[0].consumer.id).to_not be nil
           expect(pacts[0].provider.name).to eq("Pricing Service")
@@ -1082,7 +1082,7 @@ module PactBroker
           expect(pacts[0].consumer_version.number).to eq("1.4.0")
           expect(pacts[0].consumer_version.tags.collect(&:name)).to eq ["prod"]
 
-          expect(pacts[1].consumer_version.pacticipant.name).to eq("Contract Email Service")
+          expect(pacts[1].consumer_version.application.name).to eq("Contract Email Service")
           expect(pacts[1].consumer.name).to eq("Contract Email Service")
           expect(pacts[1].provider.name).to eq("Contract Proposal Service")
           expect(pacts[1].consumer_version.number).to eq("2.7.0")

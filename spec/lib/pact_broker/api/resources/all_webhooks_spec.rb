@@ -4,8 +4,8 @@ module PactBroker::Api
   module Resources
     describe AllWebhooks do
       before do
-        allow(PactBroker::Pacticipants::Service).to receive(:find_pacticipant_by_name).with("Some Provider").and_return(provider)
-        allow(PactBroker::Pacticipants::Service).to receive(:find_pacticipant_by_name).with("Some Consumer").and_return(consumer)
+        allow(PactBroker::Applications::Service).to receive(:find_application_by_name).with("Some Provider").and_return(provider)
+        allow(PactBroker::Applications::Service).to receive(:find_application_by_name).with("Some Consumer").and_return(consumer)
         allow(Decorators::WebhookDecorator).to receive(:new).and_return(webhook_decorator)
       end
 
@@ -14,8 +14,8 @@ module PactBroker::Api
       let(:path) { "/webhooks" }
       let(:headers) { {"CONTENT_TYPE" => "application/json"} }
       let(:webhook) { double("webhook", consumer: parsed_consumer, provider: parsed_provider) }
-      let(:parsed_provider) { instance_double(PactBroker::Domain::Pacticipant, name: "Some Provider") }
-      let(:parsed_consumer) { instance_double(PactBroker::Domain::Pacticipant, name: "Some Consumer") }
+      let(:parsed_provider) { instance_double(PactBroker::Domain::Application, name: "Some Provider") }
+      let(:parsed_consumer) { instance_double(PactBroker::Domain::Application, name: "Some Consumer") }
       let(:consumer) { double("consumer", name: "Some Consumer") }
       let(:provider) { double("provider", name: "Some Provider") }
       let(:saved_webhook) { double("saved_webhook")}

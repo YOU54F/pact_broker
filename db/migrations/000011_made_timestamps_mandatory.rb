@@ -4,7 +4,7 @@ Sequel.migration do
       set_column_not_null(:created_at)
       set_column_not_null(:updated_at)
     end
-    alter_table(:pacticipants) do
+    alter_table(:applications) do
       set_column_not_null(:created_at)
       set_column_not_null(:updated_at)
     end

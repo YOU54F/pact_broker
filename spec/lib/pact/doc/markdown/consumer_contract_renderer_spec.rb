@@ -22,7 +22,7 @@ module Pact
             end
           end
 
-          context "with markdown characters in the pacticipant names" do
+          context "with markdown characters in the application names" do
             let(:consumer_contract) { Pact::ConsumerContract.from_uri "./spec/support/markdown_pact_with_markdown_chars_in_names.json" }
 
             it "escapes the markdown characters" do

@@ -6,17 +6,17 @@ begin
   base_url = ENV["PACT_BROKER_BASE_URL"] || "http://localhost:9292"
 
   td = PactBroker::Test::HttpTestDataBuilder.new(base_url)
-  td.delete_pacticipant("Foo")
-    .delete_pacticipant("Bar")
+  td.delete_application("Foo")
+    .delete_application("Bar")
     .create_environment(name: "test")
-    .create_pacticipant("Foo")
-    .create_pacticipant("Bar")
+    .create_application("Foo")
+    .create_application("Bar")
     .publish_pact_the_old_way(consumer: "Foo", consumer_version: "1", provider: "Bar", content_id: "111")
     .publish_pact_the_old_way(consumer: "Foo", consumer_version: "2", provider: "Bar", content_id: "111")
     .get_pacts_for_verification(provider_version_branch: "main")
     .verify_pact(provider_version_branch: "main", provider_version: "1")
-    .record_deployment(pacticipant: "Bar", version: "1", environment_name: "test")
-    .can_i_deploy(pacticipant: "Foo", version: "1", to_environment: "test")
+    .record_deployment(application: "Bar", version: "1", environment_name: "test")
+    .can_i_deploy(application: "Foo", version: "1", to_environment: "test")
 
 
 rescue StandardError => e

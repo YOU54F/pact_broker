@@ -13,8 +13,8 @@ module PactBroker
       set_primary_key :id
       associate(:many_to_one, :pact_version, class: "PactBroker::Pacts::PactVersion", key: :pact_version_id, primary_key: :id)
       associate(:many_to_one, :provider_version, class: "PactBroker::Domain::Version", key: :provider_version_id, primary_key: :id)
-      associate(:many_to_one, :provider, class: "PactBroker::Domain::Pacticipant", key: :provider_id, primary_key: :id)
-      associate(:many_to_one, :consumer, class: "PactBroker::Domain::Pacticipant", key: :consumer_id, primary_key: :id)
+      associate(:many_to_one, :provider, class: "PactBroker::Domain::Application", key: :provider_id, primary_key: :id)
+      associate(:many_to_one, :consumer, class: "PactBroker::Domain::Application", key: :consumer_id, primary_key: :id)
       associate(:one_to_many, :provider_version_tags, :class => "PactBroker::Domain::Tag", primary_key: :provider_version_id, key: :version_id)
       plugin :serialization, :json, :test_results, :tag_names
       serialize_attributes [TO_JSON, FROM_JSON_WITH_SYMBOL_KEYS], :consumer_version_selector_hashes
@@ -28,11 +28,11 @@ module PactBroker
         include PactBroker::Dataset
 
         def for_provider_name(provider_name)
-          where(provider: PactBroker::Domain::Pacticipant.find_by_name(provider_name))
+          where(provider: PactBroker::Domain::Application.find_by_name(provider_name))
         end
 
         def for_consumer_name(consumer_name)
-          where(consumer: PactBroker::Domain::Pacticipant.find_by_name(consumer_name))
+          where(consumer: PactBroker::Domain::Application.find_by_name(consumer_name))
         end
 
         # TODO optimise this
@@ -46,7 +46,7 @@ module PactBroker
             Sequel[:providers][:main_branch] => Sequel[:branch_versions][:branch_name]
           }
 
-          join(:pacticipants, providers_join, { table_alias: :providers })
+          join(:applications, providers_join, { table_alias: :providers })
             .join(:branch_versions, branch_versions_join)
         end
 
@@ -75,14 +75,14 @@ module PactBroker
           verisons_join = { Sequel[:v][:provider_version_id] => Sequel[:pv][:id] }
 
           base_query = db[Sequel.as(:latest_verification_id_for_pact_version_and_provider_version, :v)]
-            .select(:v[:verification_id], :pv[:pacticipant_id].as(:provider_id), :lpp[:consumer_id], :cvt[:name].as(:consumer_version_tag_name))
+            .select(:v[:verification_id], :pv[:application_id].as(:provider_id), :lpp[:consumer_id], :cvt[:name].as(:consumer_version_tag_name))
             .join(:latest_pact_publication_ids_for_consumer_versions, verif_pact_join, { table_alias: :lpp } )
             .join(:tags, tag_join, { table_alias: :cvt })
             .join(:versions, verisons_join, { table_alias: :pv })
 
 
           base_join = {
-            :pv[:pacticipant_id] => :v2[:provider_id],
+            :pv[:application_id] => :v2[:provider_id],
             :lpp[:consumer_id] => :v2[:consumer_id],
             :cvt[:name] => :v2[:consumer_version_tag_name]
           }
@@ -102,7 +102,7 @@ module PactBroker
 
           db[Sequel.as(:latest_verification_id_for_pact_version_and_provider_version, :verifications)]
             .select_group(
-              :pv[:pacticipant_id].as(:provider_id),
+              :pv[:application_id].as(:provider_id),
               :lpp[:consumer_id],
               :cvt[:name].as(:consumer_version_tag_name)
             )
@@ -172,7 +172,7 @@ module PactBroker
         end
 
         def for_consumer_name_and_consumer_version_number(consumer_name, consumer_version_number)
-          consumer_versions = PactBroker::Domain::Version.select(:id).where_pacticipant_name_and_version_number(consumer_name, consumer_version_number)
+          consumer_versions = PactBroker::Domain::Version.select(:id).where_application_name_and_version_number(consumer_name, consumer_version_number)
           join(:pact_publications, {
             Sequel[:pact_publications][:pact_version_id] => Sequel[:verifications][:pact_version_id],
             Sequel[:pact_publications][:consumer_version_id] => consumer_versions
@@ -272,9 +272,9 @@ end
 #  verifications_provider_version_id_index     | btree (provider_version_id)
 # Foreign key constraints:
 #  fk_verifications_versions          | (provider_version_id) REFERENCES versions(id)
-#  verifications_consumer_id_fkey     | (consumer_id) REFERENCES pacticipants(id)
+#  verifications_consumer_id_fkey     | (consumer_id) REFERENCES applications(id)
 #  verifications_pact_version_id_fkey | (pact_version_id) REFERENCES pact_versions(id)
-#  verifications_provider_id_fkey     | (provider_id) REFERENCES pacticipants(id)
+#  verifications_provider_id_fkey     | (provider_id) REFERENCES applications(id)
 # Referenced By:
 #  latest_verification_id_for_pact_version_and_provider_version | latest_v_id_for_pv_and_pv_verification_id_fk               | (verification_id) REFERENCES verifications(id) ON DELETE CASCADE
 #  pact_version_provider_tag_successful_verifications           | pact_version_provider_tag_successful_verifications_v_id_fk | (verification_id) REFERENCES verifications(id) ON DELETE SET NULL

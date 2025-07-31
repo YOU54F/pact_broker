@@ -15,7 +15,7 @@ module PactBroker
             .create_consumer("Consumer")
             .create_version("1.2.3")
             .create_tag("prod")
-          PactBroker::Tags::Repository.new.find(tag_name: "prod", pacticipant_version_number: "1.2.3", pacticipant_name: "Consumer")
+          PactBroker::Tags::Repository.new.find(tag_name: "prod", application_version_number: "1.2.3", application_name: "Consumer")
         end
 
         let(:options) { { user_options: { base_url: "http://example.org" } } }
@@ -28,7 +28,7 @@ module PactBroker
         end
 
         it "includes a link to itself" do
-          expect(subject[:_links][:self][:href]).to eq "http://example.org/pacticipants/Consumer/versions/1.2.3/tags/prod"
+          expect(subject[:_links][:self][:href]).to eq "http://example.org/applications/Consumer/versions/1.2.3/tags/prod"
         end
 
         it "includes the tag name" do

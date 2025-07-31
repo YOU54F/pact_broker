@@ -8,7 +8,7 @@ describe "Deleting a branch (removing all versions from a branch)" do
       .create_consumer_version("1234", branch: "main")
   end
 
-  let(:path) { "/pacticipants/foo/branches/main" }
+  let(:path) { "/applications/foo/branches/main" }
   let(:headers) { {} }
   let(:response_body) { JSON.parse(subject.body, symbolize_names: true) }
 
@@ -22,12 +22,12 @@ describe "Deleting a branch (removing all versions from a branch)" do
     expect { subject }.to change { PactBroker::Versions::Branch.count }.by(-1)
   end
 
-  it "does not delete the pacticipant versions" do
+  it "does not delete the application versions" do
     expect { subject }.to_not change { PactBroker::Domain::Version.count }
   end
 
   context "when the branch version does not exist" do
-    let(:path) { "/pacticipants/waffle/branches/main" }
+    let(:path) { "/applications/waffle/branches/main" }
 
     its(:status) { is_expected.to eq 404 }
   end
@@ -39,7 +39,7 @@ describe "Deleting a branch (removing all versions from a branch)" do
       expect { subject }.to change { PactBroker::Versions::Branch.count }.by(-1)
     end
 
-    it "DOES delete the pacticipant versions", pending: true do
+    it "DOES delete the application versions", pending: true do
       expect { subject }.to change { PactBroker::Domain::Version.count }.by(-2)
     end
   end

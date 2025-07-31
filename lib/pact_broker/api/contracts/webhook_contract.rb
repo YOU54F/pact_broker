@@ -1,6 +1,6 @@
 require "pact_broker/api/contracts/base_contract"
 require "pact_broker/api/contracts/webhook_request_contract"
-require "pact_broker/api/contracts/webhook_pacticipant_contract"
+require "pact_broker/api/contracts/webhook_application_contract"
 require "pact_broker/webhooks/webhook_event"
 
 module PactBroker
@@ -25,8 +25,8 @@ module PactBroker
           optional(:enabled).filled(:bool)
         end
 
-        rule(:consumer).validate(validate_with_contract: WebhookPacticipantContract)
-        rule(:provider).validate(validate_with_contract: WebhookPacticipantContract)
+        rule(:consumer).validate(validate_with_contract: WebhookApplicationContract)
+        rule(:provider).validate(validate_with_contract: WebhookApplicationContract)
         rule(:request).validate(validate_with_contract: WebhookRequestContract)
         rule(:events).validate(validate_each_with_contract: EventContract)
 

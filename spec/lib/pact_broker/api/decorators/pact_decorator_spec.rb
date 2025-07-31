@@ -32,9 +32,9 @@ module PactBroker
           revision_number: 2,
           name: "A Pact"
         )}
-        let(:consumer) { instance_double(PactBroker::Domain::Pacticipant, name: "A Consumer")}
-        let(:provider) { instance_double(PactBroker::Domain::Pacticipant, name: "A Provider")}
-        let(:consumer_version) { instance_double(PactBroker::Domain::Version, number: "1234", pacticipant: consumer)}
+        let(:consumer) { instance_double(PactBroker::Domain::Application, name: "A Consumer")}
+        let(:provider) { instance_double(PactBroker::Domain::Application, name: "A Provider")}
+        let(:consumer_version) { instance_double(PactBroker::Domain::Version, number: "1234", application: consumer)}
         let(:metadata) { "abcd" }
         let(:decorator) { PactDecorator.new(pact) }
         let(:json) { decorator.to_json(user_options: { base_url: base_url, metadata: metadata }) }
@@ -70,15 +70,15 @@ module PactBroker
           end
 
           it "includes a link to tag this version" do
-            expect(subject[:_links][:'pb:tag-version'][:href]).to eq "http://example.org/pacticipants/A%20Consumer/versions/1234/tags/{tag}"
+            expect(subject[:_links][:'pb:tag-version'][:href]).to eq "http://example.org/applications/A%20Consumer/versions/1234/tags/{tag}"
           end
 
           it "includes a link to the consumer" do
-            expect(subject[:_links][:'pb:consumer']).to eq name: "A Consumer", title: "Consumer", href: "http://example.org/pacticipants/A%20Consumer"
+            expect(subject[:_links][:'pb:consumer']).to eq name: "A Consumer", title: "Consumer", href: "http://example.org/applications/A%20Consumer"
           end
 
           it "includes a link to the provider" do
-            expect(subject[:_links][:'pb:provider']).to eq name: "A Provider", title: "Provider", href: "http://example.org/pacticipants/A%20Provider"
+            expect(subject[:_links][:'pb:provider']).to eq name: "A Provider", title: "Provider", href: "http://example.org/applications/A%20Provider"
           end
 
           it "includes a link to the webhooks for this pact" do
@@ -98,7 +98,7 @@ module PactBroker
           it "includes a link to the pact version" do
             expect(subject[:_links][:'pb:consumer-version'][:title]).to eq "Consumer version"
             expect(subject[:_links][:'pb:consumer-version'][:name]).to eq "1234"
-            expect(subject[:_links][:'pb:consumer-version'][:href]).to eq "http://example.org/pacticipants/A%20Consumer/versions/1234"
+            expect(subject[:_links][:'pb:consumer-version'][:href]).to eq "http://example.org/applications/A%20Consumer/versions/1234"
           end
 
           it "includes a link to the latest untagged version" do

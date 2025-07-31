@@ -23,8 +23,8 @@ module PactBroker
                                     )
                                     .distinct
                                     .left_outer_join(:integrations, self_join, { :table_alias => :existing_integrations })
-                                    .join(:pacticipants, { :id => :consumer_id }, { :table_alias => :consumer, implicit_qualifier: :pact_publications })
-                                    .join(:pacticipants, { :id => :provider_id }, { :table_alias => :provider, implicit_qualifier: :pact_publications })
+                                    .join(:applications, { :id => :consumer_id }, { :table_alias => :consumer, implicit_qualifier: :pact_publications })
+                                    .join(:applications, { :id => :provider_id }, { :table_alias => :provider, implicit_qualifier: :pact_publications })
                                     .where(Sequel[:existing_integrations][:provider_id] => nil)
 
           connection

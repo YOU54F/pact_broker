@@ -47,8 +47,8 @@ module PactBroker
 
         get "/provider/:provider_name/consumer/:consumer_name" do
           selectors = [
-                        PactBroker::Matrix::UnresolvedSelector.new(pacticipant_name: params[:consumer_name]),
-                        PactBroker::Matrix::UnresolvedSelector.new(pacticipant_name: params[:provider_name])
+                        PactBroker::Matrix::UnresolvedSelector.new(application_name: params[:consumer_name]),
+                        PactBroker::Matrix::UnresolvedSelector.new(application_name: params[:provider_name])
                       ]
           options = { latestby: "cvpv", limit: 100 }
           lines = matrix_service.find(selectors, options)

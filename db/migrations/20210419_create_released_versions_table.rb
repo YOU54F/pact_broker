@@ -4,7 +4,7 @@ Sequel.migration do
       primary_key :id
       String :uuid, null: false
       foreign_key :version_id, :versions, null: false
-      Integer :pacticipant_id, null: false
+      Integer :application_id, null: false
       foreign_key :environment_id, :environments, null: false
       DateTime :created_at
       DateTime :updated_at

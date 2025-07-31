@@ -40,7 +40,7 @@ module PactBroker
 
         describe "when deploying a consumer and ignoring a provider" do
           let(:selectors) do
-            [ UnresolvedSelector.new(pacticipant_name: "Foo", pacticipant_version_number: "1") ]
+            [ UnresolvedSelector.new(application_name: "Foo", application_version_number: "1") ]
           end
 
           let(:options) do
@@ -48,7 +48,7 @@ module PactBroker
           end
 
           let(:ignore_selectors) do
-            [ UnresolvedSelector.new(pacticipant_name: "Bar") ]
+            [ UnresolvedSelector.new(application_name: "Bar") ]
           end
 
           describe "with a missing verification from a provider" do
@@ -72,7 +72,7 @@ module PactBroker
 
             context "when ignoring the specific provider version" do
               let(:ignore_selectors) do
-                [ UnresolvedSelector.new(pacticipant_name: "Bar", pacticipant_version_number: "2") ]
+                [ UnresolvedSelector.new(application_name: "Bar", application_version_number: "2") ]
               end
 
               include_context "with ignore selectors"
@@ -80,7 +80,7 @@ module PactBroker
 
             context "when ignoring a different specific provider version" do
               let(:ignore_selectors) do
-                [ UnresolvedSelector.new(pacticipant_name: "Bar", pacticipant_version_number: "999") ]
+                [ UnresolvedSelector.new(application_name: "Bar", application_version_number: "999") ]
               end
 
               its(:deployment_status_summary) { is_expected.to_not be_deployable}
@@ -105,8 +105,8 @@ module PactBroker
 
             let(:selectors) do
               [
-                UnresolvedSelector.new(pacticipant_name: "Foo", pacticipant_version_number: "1"),
-                UnresolvedSelector.new(pacticipant_name: "Bar", tag: "prod", latest: true)
+                UnresolvedSelector.new(application_name: "Foo", application_version_number: "1"),
+                UnresolvedSelector.new(application_name: "Bar", tag: "prod", latest: true)
               ]
             end
 
@@ -122,8 +122,8 @@ module PactBroker
 
             let(:selectors) do
               [
-                UnresolvedSelector.new(pacticipant_name: "Foo", pacticipant_version_number: "1"),
-                UnresolvedSelector.new(pacticipant_name: "Bar", tag: "prod", latest: true)
+                UnresolvedSelector.new(application_name: "Foo", application_version_number: "1"),
+                UnresolvedSelector.new(application_name: "Bar", tag: "prod", latest: true)
               ]
             end
 
@@ -139,7 +139,7 @@ module PactBroker
 
             let(:selectors) do
               [
-                UnresolvedSelector.new(pacticipant_name: "Foo", pacticipant_version_number: "1"),
+                UnresolvedSelector.new(application_name: "Foo", application_version_number: "1"),
               ]
             end
 
@@ -156,12 +156,12 @@ module PactBroker
 
             let(:selectors) do
               [
-                UnresolvedSelector.new(pacticipant_name: "Foo", pacticipant_version_number: "1"),
+                UnresolvedSelector.new(application_name: "Foo", application_version_number: "1"),
               ]
             end
 
             let(:ignore_selectors) do
-              [ UnresolvedSelector.new(pacticipant_name: "Bar", pacticipant_version_number: "999") ]
+              [ UnresolvedSelector.new(application_name: "Bar", application_version_number: "999") ]
             end
 
             it "includes a warning about the incorrect ignore selector" do
@@ -172,7 +172,7 @@ module PactBroker
 
         describe "when deploying a provider and ignoring a consumer" do
           let(:selectors) do
-            [ UnresolvedSelector.new(pacticipant_name: "Bar", pacticipant_version_number: "2") ]
+            [ UnresolvedSelector.new(application_name: "Bar", application_version_number: "2") ]
           end
 
           let(:options) do
@@ -184,7 +184,7 @@ module PactBroker
           end
 
           let(:ignore_selectors) do
-            [ UnresolvedSelector.new(pacticipant_name: "Foo") ]
+            [ UnresolvedSelector.new(application_name: "Foo") ]
           end
 
           describe "with a missing verification from a provider" do
@@ -214,7 +214,7 @@ module PactBroker
 
             context "when ignoring the specific consumer version" do
               let(:ignore_selectors) do
-                [ UnresolvedSelector.new(pacticipant_name: "Foo", pacticipant_version_number: "1") ]
+                [ UnresolvedSelector.new(application_name: "Foo", application_version_number: "1") ]
               end
 
               include_context "with ignore selectors"
@@ -222,7 +222,7 @@ module PactBroker
 
             context "when ignoring the wrong specific consumer version" do
               let(:ignore_selectors) do
-                [ UnresolvedSelector.new(pacticipant_name: "Foo", pacticipant_version_number: "wrong") ]
+                [ UnresolvedSelector.new(application_name: "Foo", application_version_number: "wrong") ]
               end
 
               its(:deployment_status_summary) { is_expected.to_not be_deployable}

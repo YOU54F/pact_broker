@@ -68,7 +68,7 @@ module PactBroker
             },
             _links: {
               self: {
-                href: pacticipant_url(base_url, index_item.consumer)
+                href: application_url(base_url, index_item.consumer)
               }
             }
           }
@@ -80,7 +80,7 @@ module PactBroker
             version: nil,
             _links: {
               self: {
-                href: pacticipant_url(base_url, index_item.provider)
+                href: application_url(base_url, index_item.provider)
               }
             }
           }

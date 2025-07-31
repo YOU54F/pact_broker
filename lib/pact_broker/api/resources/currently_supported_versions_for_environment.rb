@@ -21,7 +21,7 @@ module PactBroker
         end
 
         def to_json
-          decorator_class(decorator_name).new(released_versions).to_json(**decorator_options(title: title, expand: [:pacticipant, :version]))
+          decorator_class(decorator_name).new(released_versions).to_json(**decorator_options(title: title, expand: [:application, :version]))
         end
 
         def policy_name
@@ -52,8 +52,8 @@ module PactBroker
 
         def query_params
           {
-            pacticipant_name: request.query["pacticipant"],
-            pacticipant_version_number: request.query["version"]
+            application_name: request.query["application"],
+            application_version_number: request.query["version"]
           }.compact
         end
 

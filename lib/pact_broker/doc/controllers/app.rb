@@ -16,9 +16,9 @@ module PactBroker
           "webhooks-create" => "webhooks",
           "webhooks-webhooks" => "webhooks",
           "webhook" => "webhooks",
-          "can-i-deploy-pacticipant-version-to-tag" => "can-i-deploy",
-          "can-i-deploy-pacticipant-version-to-environment" => "can-i-deploy",
-          "pacticipant" => "pacticipants"
+          "can-i-deploy-application-version-to-tag" => "can-i-deploy",
+          "can-i-deploy-application-version-to-environment" => "can-i-deploy",
+          "application" => "applications"
         }.freeze
 
         helpers do

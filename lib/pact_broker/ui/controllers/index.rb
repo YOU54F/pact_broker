@@ -30,7 +30,7 @@ module PactBroker
           index_items = index_service.find_index_items(options)
 
           if index_items.empty? && !search.blank?
-            error_messages << "No pacticipants found matching: \"#{search}\""
+            error_messages << "No applications found matching: \"#{search}\""
           end
 
           view_index_items = ViewDomain::IndexItems.new(index_items, base_url: base_url)

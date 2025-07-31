@@ -1,6 +1,6 @@
 require "pact_broker/deployments/environment"
 require "securerandom"
-require "pact_broker/pacticipants/generate_display_name"
+require "pact_broker/applications/generate_display_name"
 require "pact_broker/string_refinements"
 require "pact_broker/repositories/scopes"
 
@@ -22,7 +22,7 @@ module PactBroker
       def create(uuid, environment)
         environment.uuid = uuid
         if environment.display_name.blank?
-          environment.display_name = PactBroker::Pacticipants::GenerateDisplayName.call(environment.name)
+          environment.display_name = PactBroker::Applications::GenerateDisplayName.call(environment.name)
         end
         environment.save
       end
@@ -30,7 +30,7 @@ module PactBroker
       def replace(uuid, environment)
         environment.uuid = uuid
         if environment.display_name.blank?
-          environment.display_name = PactBroker::Pacticipants::GenerateDisplayName.call(environment.name)
+          environment.display_name = PactBroker::Applications::GenerateDisplayName.call(environment.name)
         end
         environment.upsert
       end
@@ -51,7 +51,7 @@ module PactBroker
         PactBroker::Deployments::Environment.where(uuid: uuid).delete
       end
 
-      def find_for_pacticipant(_pacticipant)
+      def find_for_application(_application)
         find_all
       end
 

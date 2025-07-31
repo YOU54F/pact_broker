@@ -42,12 +42,12 @@ module PactBroker
 
         # for pactflow
         def policy_record
-          @policy_record ||= pacticipant_service.find_pacticipant_by_name(parsed_contracts.pacticipant_name)
+          @policy_record ||= application_service.find_application_by_name(parsed_contracts.application_name)
         end
 
         # for pactflow
         def policy_record_context
-          { pacticipant: policy_record }
+          { application: policy_record }
         end
 
         private

@@ -16,8 +16,8 @@ begin
   PROVIDER = "wip-provider"
 
   td = PactBroker::Test::HttpTestDataBuilder.new(base_url)
-  td.delete_pacticipant(CONSUMER)
-    .delete_pacticipant(PROVIDER)
+  td.delete_application(CONSUMER)
+    .delete_application(PROVIDER)
     .publish_pact_the_old_way(consumer: CONSUMER, consumer_version: "1", provider: PROVIDER, content_id: "111", branch: "main", tag: nil)
     .publish_pact_the_old_way(consumer: CONSUMER, consumer_version: "2", provider: PROVIDER, content_id: "222", branch: "feat/x", tag: nil)
     .get_pacts_for_verification(

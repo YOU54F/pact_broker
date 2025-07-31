@@ -6,11 +6,11 @@ module PactBroker
 
       describe ".get_all_unique_labels" do
         before do
-          td.create_pacticipant("bar")
+          td.create_application("bar")
             .create_label("ios")
-            .create_pacticipant("foo")
+            .create_application("foo")
             .create_label("android")
-            .create_pacticipant("wiffle")
+            .create_application("wiffle")
             .create_label("ios")
         end
 
@@ -41,18 +41,18 @@ module PactBroker
 
       describe ".find" do
 
-        let(:pacticipant_name) { "foo" }
+        let(:application_name) { "foo" }
         let(:label_name) { "ios" }
 
         subject { Repository.new }
-        let(:options) { {pacticipant_name: pacticipant_name, label_name: label_name} }
+        let(:options) { {application_name: application_name, label_name: label_name} }
         let(:find_label) { subject.find options }
 
         let!(:test_data_builder) do
           td
-            .create_pacticipant("wiffle")
+            .create_application("wiffle")
             .create_label(label_name)
-            .create_pacticipant(pacticipant_name)
+            .create_application(application_name)
             .create_label("wrong label")
         end
 
@@ -64,7 +64,7 @@ module PactBroker
 
           it "returns the label" do
             expect(find_label.name).to eq label_name
-            expect(find_label.pacticipant.name).to eq pacticipant_name
+            expect(find_label.application.name).to eq application_name
             expect(find_label.created_at).to be_datey
             expect(find_label.updated_at).to be_datey
           end
@@ -74,7 +74,7 @@ module PactBroker
               allow(PactBroker.configuration).to receive(:use_case_sensitive_resource_names).and_return(false)
             end
 
-            let(:options) { {pacticipant_name: pacticipant_name.upcase, label_name: label_name.upcase} }
+            let(:options) { {application_name: application_name.upcase, label_name: label_name.upcase} }
 
             it "returns the label" do
               expect(find_label).to_not be nil
@@ -87,19 +87,19 @@ module PactBroker
               allow(PactBroker.configuration).to receive(:use_case_sensitive_resource_names).and_return(true)
             end
 
-            let(:options) { {pacticipant_name: pacticipant_name, label_name: label_name.upcase} }
+            let(:options) { {application_name: application_name, label_name: label_name.upcase} }
 
             it "returns nil" do
               expect(find_label).to be nil
             end
           end
 
-          context "when case sensitivity is turned on and a pacticipant name with different case is used" do
+          context "when case sensitivity is turned on and a application name with different case is used" do
             before do
               allow(PactBroker.configuration).to receive(:use_case_sensitive_resource_names).and_return(true)
             end
 
-            let(:options) { {pacticipant_name: pacticipant_name.upcase, label_name: label_name} }
+            let(:options) { {application_name: application_name.upcase, label_name: label_name} }
 
             it "returns nil" do
               expect(find_label).to be nil
@@ -115,19 +115,19 @@ module PactBroker
       end
 
       describe "delete" do
-        let(:pacticipant_name) { "foo" }
+        let(:application_name) { "foo" }
         let(:label_name) { "ios" }
 
-        let!(:pacticipant) do
+        let!(:application) do
           td
-            .create_pacticipant("Ignore")
+            .create_application("Ignore")
             .create_label("ios")
-            .create_pacticipant(pacticipant_name)
+            .create_application(application_name)
             .create_label("ios")
             .create_label("bar")
-            .and_return(:pacticipant)
+            .and_return(:application)
         end
-        let(:options) { {pacticipant_name: pacticipant_name, label_name: label_name} }
+        let(:options) { {application_name: application_name, label_name: label_name} }
 
         subject { Repository.new.delete(options) }
 
@@ -136,18 +136,18 @@ module PactBroker
         end
       end
 
-      describe "delete_by_pacticipant_id" do
-        let!(:pacticipant) do
+      describe "delete_by_application_id" do
+        let!(:application) do
           td
-            .create_pacticipant("Ignore")
+            .create_application("Ignore")
             .create_label("ios")
-            .create_pacticipant("Foo")
+            .create_application("Foo")
             .create_label("ios")
             .create_label("bar")
-            .and_return(:pacticipant)
+            .and_return(:application)
         end
 
-        subject { Repository.new.delete_by_pacticipant_id(pacticipant.id) }
+        subject { Repository.new.delete_by_application_id(application.id) }
 
         it "deletes the labels" do
           expect{ subject }.to change { PactBroker::Domain::Label.count }.by(-2)

@@ -86,36 +86,35 @@ module PactBroker
         add ["pact", "provider", :provider_name, "consumer", :consumer_name, "version", :consumer_version_number], Api::Resources::Pact, {resource_name: "pact_publication", deprecated: "true"} # Deprecate, singular /pact
         add ["pact", "provider", :provider_name, "consumer", :consumer_name, "latest"], Api::Resources::LatestPact, {resource_name: "latest_pact_publications", deprecated: "true"}
 
-        # Pacticipants
-        add ["pacticipants"], Api::Resources::Pacticipants, {resource_name: "pacticipants"}
-        add ["pacticipants", "label", :label_name], PactBroker::Api::Resources::PacticipantsForLabel, {resource_name: "pacticipants_for_label"}
-        add ["pacticipants", :pacticipant_name], Api::Resources::Pacticipant, {resource_name: "pacticipant"}
-        add ["pacticipants", :pacticipant_name, "labels", :label_name], Api::Resources::Label, {resource_name: "pacticipant_label"}
-
+        # Applications
+        add ["applications"], Api::Resources::Applications, {resource_name: "applications"}
+        add ["applications", "label", :label_name], PactBroker::Api::Resources::ApplicationsForLabel, {resource_name: "applications_for_label"}
+        add ["applications", :application_name], Api::Resources::Application, {resource_name: "application"}
+        add ["applications", :application_name, "labels", :label_name], Api::Resources::Label, {resource_name: "application_label"}
         # Labels
         add ["labels"], Api::Resources::Labels, {resource_name: "labels"}
 
         # Versions
-        add ["pacticipants", :pacticipant_name, "versions"], Api::Resources::Versions, {resource_name: "pacticipant_versions"}
-        add ["pacticipants", :pacticipant_name, "branches", :branch_name, "versions"], Api::Resources::BranchVersions, {resource_name: "pacticipant_branch_versions"}
-        add ["pacticipants", :pacticipant_name, "versions", :pacticipant_version_number], Api::Resources::Version, {resource_name: "pacticipant_version"}
-        add ["pacticipants", :pacticipant_name, "latest-version", :tag], Api::Resources::LatestVersion, {resource_name: "latest_tagged_pacticipant_version"}
-        add ["pacticipants", :pacticipant_name, "latest-version", :tag, "can-i-deploy", "to", :to], Api::Resources::CanIDeployPacticipantVersionByTagToTag, { resource_name: "can_i_deploy_latest_tagged_version_to_tag" }
-        add ["pacticipants", :pacticipant_name, "latest-version", :tag, "can-i-deploy", "to", :to, "badge"], Api::Resources::CanIDeployPacticipantVersionByTagToTagBadge, { resource_name: "can_i_deploy_latest_tagged_version_to_tag_badge" }
-        add ["pacticipants", :pacticipant_name, "main-branch", "can-i-merge", "badge"], Api::Resources::CanIMergeBadge, { resource_name: "can_i_merge_badge" }
-        add ["pacticipants", :pacticipant_name, "latest-version"], Api::Resources::LatestVersion, {resource_name: "latest_pacticipant_version"}
-        add ["pacticipants", :pacticipant_name, "versions", :pacticipant_version_number, "tags", :tag_name], Api::Resources::Tag, {resource_name: "pacticipant_version_tag"}
-        add ["pacticipants", :pacticipant_name, "branches"], Api::Resources::PacticipantBranches, {resource_name: "pacticipant_branches"}
-        add ["pacticipants", :pacticipant_name, "branches", :branch_name], Api::Resources::Branch, { resource_name: "branch" }
-        add ["pacticipants", :pacticipant_name, "branches", :branch_name, "latest-version"], Api::Resources::LatestVersion, { resource_name: "latest_pacticipant_version_for_branch" }
-        add ["pacticipants", :pacticipant_name, "branches", :branch_name, "versions", :version_number], Api::Resources::BranchVersion, { resource_name: "branch_version" }
-        add ["pacticipants", :pacticipant_name, "branches", :branch_name, "latest-version", "can-i-deploy", "to-environment", :environment_name], Api::Resources::CanIDeployPacticipantVersionByBranchToEnvironment, { resource_name: "can_i_deploy_latest_branch_version_to_environment" }
-        add ["pacticipants", :pacticipant_name, "branches", :branch_name, "latest-version", "can-i-deploy", "to-environment", :environment_name, "badge"], Api::Resources::CanIDeployPacticipantVersionByBranchToEnvironmentBadge, { resource_name: "can_i_deploy_latest_branch_version_to_environment_badge" }
+        add ["applications", :application_name, "versions"], Api::Resources::Versions, {resource_name: "application_versions"}
+        add ["applications", :application_name, "branches", :branch_name, "versions"], Api::Resources::BranchVersions, {resource_name: "application_branch_versions"}
+        add ["applications", :application_name, "versions", :application_version_number], Api::Resources::Version, {resource_name: "application_version"}
+        add ["applications", :application_name, "latest-version", :tag], Api::Resources::LatestVersion, {resource_name: "latest_tagged_application_version"}
+        add ["applications", :application_name, "latest-version", :tag, "can-i-deploy", "to", :to], Api::Resources::CanIDeployApplicationVersionByTagToTag, { resource_name: "can_i_deploy_latest_tagged_version_to_tag" }
+        add ["applications", :application_name, "latest-version", :tag, "can-i-deploy", "to", :to, "badge"], Api::Resources::CanIDeployApplicationVersionByTagToTagBadge, { resource_name: "can_i_deploy_latest_tagged_version_to_tag_badge" }
+        add ["applications", :application_name, "main-branch", "can-i-merge", "badge"], Api::Resources::CanIMergeBadge, { resource_name: "can_i_merge_badge" }
+        add ["applications", :application_name, "latest-version"], Api::Resources::LatestVersion, {resource_name: "latest_application_version"}
+        add ["applications", :application_name, "versions", :application_version_number, "tags", :tag_name], Api::Resources::Tag, {resource_name: "application_version_tag"}
+        add ["applications", :application_name, "branches"], Api::Resources::ApplicationBranches, {resource_name: "application_branches"}
+        add ["applications", :application_name, "branches", :branch_name], Api::Resources::Branch, { resource_name: "branch" }
+        add ["applications", :application_name, "branches", :branch_name, "latest-version"], Api::Resources::LatestVersion, { resource_name: "latest_application_version_for_branch" }
+        add ["applications", :application_name, "branches", :branch_name, "versions", :version_number], Api::Resources::BranchVersion, { resource_name: "branch_version" }
+        add ["applications", :application_name, "branches", :branch_name, "latest-version", "can-i-deploy", "to-environment", :environment_name], Api::Resources::CanIDeployApplicationVersionByBranchToEnvironment, { resource_name: "can_i_deploy_latest_branch_version_to_environment" }
+        add ["applications", :application_name, "branches", :branch_name, "latest-version", "can-i-deploy", "to-environment", :environment_name, "badge"], Api::Resources::CanIDeployApplicationVersionByBranchToEnvironmentBadge, { resource_name: "can_i_deploy_latest_branch_version_to_environment_badge" }
 
         # Webhooks
-        add ["webhooks", "provider", :provider_name, "consumer", :consumer_name ], Api::Resources::PacticipantWebhooks, {resource_name: "pacticipant_webhooks"}
-        add ["webhooks", "provider", :provider_name], Api::Resources::PacticipantWebhooks, {resource_name: "provider_webhooks"}
-        add ["webhooks", "consumer", :consumer_name], Api::Resources::PacticipantWebhooks, {resource_name: "consumer_webhooks"}
+        add ["webhooks", "provider", :provider_name, "consumer", :consumer_name ], Api::Resources::ApplicationWebhooks, {resource_name: "application_webhooks"}
+        add ["webhooks", "provider", :provider_name], Api::Resources::ApplicationWebhooks, {resource_name: "provider_webhooks"}
+        add ["webhooks", "consumer", :consumer_name], Api::Resources::ApplicationWebhooks, {resource_name: "consumer_webhooks"}
         add ["pacts", "provider", :provider_name, "consumer", :consumer_name, "webhooks"], Api::Resources::PactWebhooks, {resource_name: "pact_webhooks"}
         add ["pacts", "provider", :provider_name, "consumer", :consumer_name, "webhooks", "status"], Api::Resources::PactWebhooksStatus, {resource_name: "pact_webhooks_status"}
         add ["pacts", "provider", :provider_name, "consumer", :consumer_name, "version", :consumer_version_number, "triggered-webhooks"], Api::Resources::PactTriggeredWebhooks, {resource_name: "pact_triggered_webhooks"}
@@ -127,7 +126,7 @@ module PactBroker
         add ["webhooks"], Api::Resources::AllWebhooks, {resource_name: "webhooks"}
 
         add ["relationships"], Api::Resources::Relationships, {resource_name: "relationships"}
-        add ["groups", :pacticipant_name], Api::Resources::Group, {resource_name: "group"}
+        add ["groups", :application_name], Api::Resources::Group, {resource_name: "group"}
 
         # matrix
         add ["matrix", "provider", :provider_name, "consumer", :consumer_name], Api::Resources::MatrixForConsumerAndProvider, {resource_name: "matrix_consumer_provider"}
@@ -145,8 +144,8 @@ module PactBroker
         add ["environments", :environment_uuid], Api::Resources::Environment, { resource_name: "environment" }
         add ["environments", :environment_uuid, "deployed-versions", "currently-deployed"], Api::Resources::CurrentlyDeployedVersionsForEnvironment, { resource_name: "environment_currently_deployed_deployed_versions" }
         add ["environments", :environment_uuid, "released-versions", "currently-supported"], Api::Resources::CurrentlySupportedVersionsForEnvironment, { resource_name: "environment_currently_supported_released_versions" }
-        add ["pacticipants", :pacticipant_name, "versions", :pacticipant_version_number, "deployed-versions", "environment", :environment_uuid], Api::Resources::DeployedVersionsForVersionAndEnvironment, { resource_name: "deployed_versions_for_version_and_environment" }
-        add ["pacticipants", :pacticipant_name, "versions", :pacticipant_version_number, "released-versions", "environment", :environment_uuid], Api::Resources::ReleasedVersionsForVersionAndEnvironment, { resource_name: "released_versions_for_version_and_environment" }
+        add ["applications", :application_name, "versions", :application_version_number, "deployed-versions", "environment", :environment_uuid], Api::Resources::DeployedVersionsForVersionAndEnvironment, { resource_name: "deployed_versions_for_version_and_environment" }
+        add ["applications", :application_name, "versions", :application_version_number, "released-versions", "environment", :environment_uuid], Api::Resources::ReleasedVersionsForVersionAndEnvironment, { resource_name: "released_versions_for_version_and_environment" }
         add ["released-versions", :uuid], Api::Resources::ReleasedVersion, { resource_name: "released_version" }
         add ["deployed-versions", :uuid], Api::Resources::DeployedVersion, { resource_name: "deployed_version" }
 
@@ -155,7 +154,8 @@ module PactBroker
         add ["metrics"], Api::Resources::Metrics, {resource_name: "metrics"}
         add [], Api::Resources::Index, {resource_name: "index"}
 
-        add ["pacticipants", :pacticipant_name, "tags", :tag_name, "versions"], Api::Resources::TagVersions, {resource_name: "pacticipant_tag_versions"}
+        add ["applications", :application_name, "tags", :tag_name, "versions"], Api::Resources::TagVersions, {resource_name: "application_tag_versions"}
+
       end
     end
   end

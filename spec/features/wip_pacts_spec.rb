@@ -27,23 +27,23 @@ RSpec.describe "the lifecycle of a WIP pact" do
   end
 
   def can_i_deploy(consumer_version, provider_tag)
-    can_i_deploy_response = get("/can-i-deploy", { pacticipant: "Foo", version: consumer_version, to: provider_tag })
+    can_i_deploy_response = get("/can-i-deploy", { application: "Foo", version: consumer_version, to: provider_tag })
     JSON.parse(can_i_deploy_response.body)["summary"]["deployable"]
   end
 
   def publish_pact_with_master_tag
     put("/pacts/provider/Bar/consumer/Foo/version/1", pact_content_1, request_headers)
-    put("/pacticipants/Foo/versions/1/tags/master", nil, request_headers)
+    put("/applications/Foo/versions/1/tags/master", nil, request_headers)
   end
 
   def publish_pact_with_feature_tag(version = "2", tag = "feat-x", pact_content = nil)
     put("/pacts/provider/Bar/consumer/Foo/version/#{version}", pact_content || pact_content_2, request_headers)
-    put("/pacticipants/Foo/versions/#{version}/tags/#{tag}", nil, request_headers)
+    put("/applications/Foo/versions/#{version}/tags/#{tag}", nil, request_headers)
   end
 
   def publish_new_pact_with_master_tag_after_merging_in_feature_branch
     put("/pacts/provider/Bar/consumer/Foo/version/3", pact_content_2, request_headers)
-    put("/pacticipants/Foo/versions/3/tags/master", nil, request_headers)
+    put("/applications/Foo/versions/3/tags/master", nil, request_headers)
   end
 
   def get_pacts_for_verification(request_body = nil)
@@ -75,7 +75,7 @@ RSpec.describe "the lifecycle of a WIP pact" do
   def publish_verification_results(provider_version_number, tag, verification_results_url, success)
     request_body = { success: success, providerApplicationVersion: provider_version_number}.to_json
     post(verification_results_url, request_body, request_headers)
-    put("/pacticipants/Bar/versions/#{provider_version_number}/tags/#{tag}", nil, request_headers)
+    put("/applications/Bar/versions/#{provider_version_number}/tags/#{tag}", nil, request_headers)
   end
 
   def pending_status_from(pacts_for_verification_response)

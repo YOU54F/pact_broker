@@ -15,7 +15,7 @@ module PactBroker
           subject.collect(&:number).sort_by(&:to_i)
         end
 
-        context "when selecting the latest prod versions without a pacticipant name" do
+        context "when selecting the latest prod versions without a application name" do
           before do
             td.create_consumer("Foo")
               .create_consumer_version("1", tag_names: %w{prod})
@@ -27,12 +27,12 @@ module PactBroker
 
           let(:selector) { PactBroker::Matrix::UnresolvedSelector.new(tag: "prod", latest: true) }
 
-          it "returns the latest prod version for each pacticipant" do
+          it "returns the latest prod version for each application" do
             expect(version_numbers).to eq %w{2 11}
           end
         end
 
-        context "when selecting the latest prod versions with a pacticipant name" do
+        context "when selecting the latest prod versions with a application name" do
           before do
             td.create_consumer("Foo")
               .create_consumer_version("1", tag_names: %w{prod})
@@ -42,7 +42,7 @@ module PactBroker
               .create_consumer_version("11", tag_names: %w{prod})
           end
 
-          let(:selector) { PactBroker::Matrix::UnresolvedSelector.new(pacticipant_name: "Foo", tag: "prod", latest: true) }
+          let(:selector) { PactBroker::Matrix::UnresolvedSelector.new(application_name: "Foo", tag: "prod", latest: true) }
 
 
           it "returns the latest prod version for Foo" do
@@ -50,7 +50,7 @@ module PactBroker
           end
         end
 
-        context "when selecting all prod versions without a pacticipant name" do
+        context "when selecting all prod versions without a application name" do
           before do
             td.create_consumer("Foo")
               .create_consumer_version("1", tag_names: %w{prod})
@@ -63,7 +63,7 @@ module PactBroker
 
           let(:selector) { PactBroker::Matrix::UnresolvedSelector.new(tag: "prod") }
 
-          it "selects all the production versions without a pacticipant name" do
+          it "selects all the production versions without a application name" do
             expect(version_numbers).to eq %w{1 2 10 11}
           end
         end
@@ -86,10 +86,10 @@ module PactBroker
             expect(version_numbers).to eq %w{2 4 11}
           end
 
-          context "when also specifying pacticipant name" do
-            let(:selector) { PactBroker::Matrix::UnresolvedSelector.new(tag: true, latest: true, pacticipant_name: "Foo") }
+          context "when also specifying application name" do
+            let(:selector) { PactBroker::Matrix::UnresolvedSelector.new(tag: true, latest: true, application_name: "Foo") }
 
-            it "selects the head versions for each tag for the given pacticipant" do
+            it "selects the head versions for each tag for the given application" do
               expect(version_numbers).to eq %w{2 4}
             end
           end
@@ -113,10 +113,10 @@ module PactBroker
             expect(version_numbers).to eq %w{1 2 4 10}
           end
 
-          context "when also specifying pacticipant name" do
-            let(:selector) { PactBroker::Matrix::UnresolvedSelector.new(tag: true, pacticipant_name: "Foo") }
+          context "when also specifying application name" do
+            let(:selector) { PactBroker::Matrix::UnresolvedSelector.new(tag: true, application_name: "Foo") }
 
-            it "selects every version with a tag for the given pacticipant" do
+            it "selects every version with a tag for the given application" do
               expect(version_numbers).to eq %w{1 2 4}
             end
           end
@@ -194,8 +194,8 @@ module PactBroker
 
           it "selects the versions that are the latest for their branches" do
             expect(version_numbers).to eq %w{2 5}
-            expect(subject.find{ |v| v.pacticipant.name == "Bar" }.values[:branch_name]).to eq "develop"
-            expect(subject.find{ |v| v.pacticipant.name == "Foo" }.values[:branch_name]).to eq "main"
+            expect(subject.find{ |v| v.application.name == "Bar" }.values[:branch_name]).to eq "develop"
+            expect(subject.find{ |v| v.application.name == "Foo" }.values[:branch_name]).to eq "main"
           end
         end
 
@@ -215,13 +215,13 @@ module PactBroker
 
           it "selects the versions for the main branches" do
             expect(version_numbers).to eq %w{1 2 4 5}
-            expect(subject.select{ |v| v.pacticipant.name == "Bar" }.collect{ |v| v.values[:branch_name] }.uniq).to eq ["develop"]
-            expect(subject.select{ |v| v.pacticipant.name == "Foo" }.collect{ |v| v.values[:branch_name] }.uniq).to eq ["main"]
+            expect(subject.select{ |v| v.application.name == "Bar" }.collect{ |v| v.values[:branch_name] }.uniq).to eq ["develop"]
+            expect(subject.select{ |v| v.application.name == "Foo" }.collect{ |v| v.values[:branch_name] }.uniq).to eq ["main"]
           end
         end
 
-        context "when selecting all versions of a pacticipant currently deployed to an environment" do
-          let(:selector) { PactBroker::Matrix::UnresolvedSelector.new(environment_name: "prod", pacticipant_name: "Foo") }
+        context "when selecting all versions of a application currently deployed to an environment" do
+          let(:selector) { PactBroker::Matrix::UnresolvedSelector.new(environment_name: "prod", application_name: "Foo") }
 
           before do
             td.create_environment("test")
@@ -241,7 +241,7 @@ module PactBroker
               .create_consumer_version("11")
           end
 
-          it "returns the versions of that pacticipant currently deployed to the environment" do
+          it "returns the versions of that application currently deployed to the environment" do
             expect(version_numbers).to eq %w{2 3}
           end
         end
@@ -268,7 +268,7 @@ module PactBroker
               .create_released_version_for_consumer_version
           end
 
-          it "returns the versions of that pacticipant currently deployed to the environment" do
+          it "returns the versions of that application currently deployed to the environment" do
             expect(version_numbers).to eq %w{2 10 12}
           end
         end
@@ -364,7 +364,7 @@ module PactBroker
         end
       end
 
-      describe "latest_for_pacticipant?" do
+      describe "latest_for_application?" do
         before do
           td.create_consumer("Foo")
             .create_consumer_version("1")
@@ -375,20 +375,20 @@ module PactBroker
             .create_consumer_version("7")
         end
 
-        context "when the version is the latest for the pacticipant" do
+        context "when the version is the latest for the application" do
           it "returns true" do
-            expect(Version.for("Foo", "2").latest_for_pacticipant?).to be true
+            expect(Version.for("Foo", "2").latest_for_application?).to be true
           end
         end
 
-        context "when the version is not the latest version for the pacticipant" do
+        context "when the version is not the latest version for the application" do
           it "returns false" do
-            expect(Version.for("Foo", "1").latest_for_pacticipant?).to be false
+            expect(Version.for("Foo", "1").latest_for_application?).to be false
           end
         end
       end
 
-      describe "latest_version_for_pacticipant" do
+      describe "latest_version_for_application" do
         before do
           td.create_consumer("Foo")
             .create_consumer_version("1")
@@ -402,13 +402,13 @@ module PactBroker
         subject { Version.order(:order) }
 
         it "lazy loads" do
-          expect(subject.all[0].latest_version_for_pacticipant.number).to eq "2"
+          expect(subject.all[0].latest_version_for_application.number).to eq "2"
         end
 
         it "eager loads" do
-          all = subject.eager(:latest_version_for_pacticipant).all
-          expect(all[0].associations[:latest_version_for_pacticipant]).to_not be nil
-          expect(all[0].latest_version_for_pacticipant.number).to eq "2"
+          all = subject.eager(:latest_version_for_application).all
+          expect(all[0].associations[:latest_version_for_application]).to_not be nil
+          expect(all[0].latest_version_for_application.number).to eq "2"
         end
       end
 
@@ -436,9 +436,9 @@ module PactBroker
             .and_return(:consumer)
         end
 
-        it "does not allow two versions with the same pacticipant and order" do
-          Sequel::Model.db[:versions].insert(number: "1", order: 0, pacticipant_id: consumer.id, created_at: DateTime.new(2017), updated_at: DateTime.new(2017))
-          expect { Sequel::Model.db[:versions].insert(number: "2", order: 0, pacticipant_id: consumer.id, created_at: DateTime.new(2017), updated_at: DateTime.new(2017)) }
+        it "does not allow two versions with the same application and order" do
+          Sequel::Model.db[:versions].insert(number: "1", order: 0, application_id: consumer.id, created_at: DateTime.new(2017), updated_at: DateTime.new(2017))
+          expect { Sequel::Model.db[:versions].insert(number: "2", order: 0, application_id: consumer.id, created_at: DateTime.new(2017), updated_at: DateTime.new(2017)) }
             .to raise_error(Sequel::UniqueConstraintViolation)
         end
       end

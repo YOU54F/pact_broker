@@ -9,9 +9,9 @@ module PactBroker
 
         include PactBroker::Api::PactBrokerUrls
 
-        def initialize branch_head, pacticipant_name
+        def initialize branch_head, application_name
           @branch_head = branch_head
-          @pacticipant_name = pacticipant_name
+          @application_name = application_name
         end
 
         def branch_name
@@ -32,7 +32,7 @@ module PactBroker
 
         private
 
-        attr_reader :branch_head, :pacticipant_name
+        attr_reader :branch_head, :application_name
       end
     end
   end

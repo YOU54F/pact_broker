@@ -3,10 +3,10 @@ require "pact_broker/versions/repository"
 module PactBroker
   module Versions
     describe Repository do
-      let(:pacticipant_name) { "test_pacticipant" }
+      let(:application_name) { "test_application" }
       let(:version_number) { "1.2.3" }
 
-      describe "#find_latest_by_pacticipant_name_and_branch_name" do
+      describe "#find_latest_by_application_name_and_branch_name" do
         before do
           td.create_consumer("Bar")
             .create_consumer_version("2.3.4", branch: "prod")
@@ -16,15 +16,15 @@ module PactBroker
             .create_consumer_version("5.6.7")
         end
 
-        subject { Repository.new.find_latest_by_pacticipant_name_and_branch_name("Foo", "prod") }
+        subject { Repository.new.find_latest_by_application_name_and_branch_name("Foo", "prod") }
 
-        it "returns the most recent version from the specified branch for the specified pacticipant" do
+        it "returns the most recent version from the specified branch for the specified application" do
           expect(subject.number).to eq "2.3.4"
-          expect(subject.pacticipant.name).to eq "Foo"
+          expect(subject.application.name).to eq "Foo"
         end
       end
 
-      describe "#find_pacticipant_versions_in_reverse_order" do
+      describe "#find_application_versions_in_reverse_order" do
         before do
           td
             .create_consumer("Foo")
@@ -36,7 +36,7 @@ module PactBroker
         end
 
         let(:options) { {} }
-        subject { Repository.new.find_pacticipant_versions_in_reverse_order("Foo", options) }
+        subject { Repository.new.find_application_versions_in_reverse_order("Foo", options) }
 
         it "returns all the application versions for the given consumer" do
           expect(subject.collect(&:number)).to eq ["3", "2", "1"]
@@ -51,7 +51,7 @@ module PactBroker
         end
 
         context "with pagination options" do
-          subject { Repository.new.find_pacticipant_versions_in_reverse_order "Foo", options, { page_number: 1, page_size: 1 } }
+          subject { Repository.new.find_application_versions_in_reverse_order "Foo", options, { page_number: 1, page_size: 1 } }
 
           it "paginates the query" do
             expect(subject.collect(&:number)).to eq ["3"]
@@ -59,7 +59,7 @@ module PactBroker
         end
       end
 
-      describe "#find_by_pacticipant_name_and_latest_tag" do
+      describe "#find_by_application_name_and_latest_tag" do
         before do
           td.create_consumer("Bar")
             .create_consumer_version("2.3.4")
@@ -72,22 +72,22 @@ module PactBroker
             .create_consumer_version("5.6.7")
         end
 
-        subject { Repository.new.find_by_pacticipant_name_and_latest_tag("Foo", "prod") }
+        subject { Repository.new.find_by_application_name_and_latest_tag("Foo", "prod") }
 
         it "returns the most recent version that has the specified tag" do
 
           expect(subject.number).to eq "2.3.4"
-          expect(subject.pacticipant.name).to eq "Foo"
+          expect(subject.application.name).to eq "Foo"
         end
       end
 
       describe "#create" do
         context "when a previous version exists" do
           let!(:existing_version) do
-            td.create_version_with_hierarchy(pacticipant_name, version_number).and_return(:version)
+            td.create_version_with_hierarchy(application_name, version_number).and_return(:version)
           end
 
-          subject { Repository.new.create pacticipant_id: existing_version.pacticipant_id, number: "1.2.4" }
+          subject { Repository.new.create application_id: existing_version.application_id, number: "1.2.4" }
 
           it "creates a new version" do
             expect { subject }.to change { PactBroker::Domain::Version.count }.by(1)
@@ -99,9 +99,9 @@ module PactBroker
         end
 
         context "when the same version already exists" do
-          let!(:existing_version) { td.create_version_with_hierarchy(pacticipant_name, version_number).and_return(:version) }
+          let!(:existing_version) { td.create_version_with_hierarchy(application_name, version_number).and_return(:version) }
 
-          subject { Repository.new.create pacticipant_id: existing_version.pacticipant_id, number: version_number }
+          subject { Repository.new.create application_id: existing_version.application_id, number: version_number }
 
           it "does not create a new version" do
             expect { subject }.to_not change { PactBroker::Domain::Version.count }
@@ -137,7 +137,7 @@ module PactBroker
 
           it "updates the branch head" do
             subject
-            expect(td.find_pacticipant("Foo").branch_head_for("main").version.number).to eq "1.2.3"
+            expect(td.find_application("Foo").branch_head_for("main").version.number).to eq "1.2.3"
           end
         end
 
@@ -150,21 +150,21 @@ module PactBroker
 
           it "leaves the branch, but deletes the branch head (not sure about this, but thinking the branch creation date is handy for the WIP/pending calculation)" do
             subject
-            foo = td.find_pacticipant("Foo")
+            foo = td.find_application("Foo")
             expect(foo.branches.collect(&:name)).to include "main"
-            expect(td.find_pacticipant("Foo").branch_head_for("main")).to be nil
+            expect(td.find_application("Foo").branch_head_for("main")).to be nil
           end
         end
       end
 
-      describe "#find_by_pacticipant_name_and_number" do
+      describe "#find_by_application_name_and_number" do
 
-        subject { described_class.new.find_by_pacticipant_name_and_number pacticipant_name, version_number }
+        subject { described_class.new.find_by_application_name_and_number application_name, version_number }
 
         context "when the version exists" do
           before do
             td.create_consumer("Another Consumer")
-              .create_consumer(pacticipant_name)
+              .create_consumer(application_name)
               .create_consumer_version(version_number)
               .create_consumer_version_tag("prod")
               .create_consumer_version("1.2.4")
@@ -175,7 +175,7 @@ module PactBroker
           it "returns the version" do
             expect(subject.id).to_not be nil
             expect(subject.number).to eq version_number
-            expect(subject.pacticipant.name).to eq pacticipant_name
+            expect(subject.application.name).to eq application_name
             expect(subject.tags.first.name).to eq "prod"
             expect(subject.order).to_not be nil
           end
@@ -185,7 +185,7 @@ module PactBroker
               allow(PactBroker.configuration).to receive(:use_case_sensitive_resource_names).and_return(false)
             end
 
-            subject { described_class.new.find_by_pacticipant_name_and_number pacticipant_name.upcase, version_number.upcase }
+            subject { described_class.new.find_by_application_name_and_number application_name.upcase, version_number.upcase }
 
             it "returns the version" do
               expect(subject).to_not be nil
@@ -208,13 +208,13 @@ module PactBroker
             .create_consumer_version_tag("dev")
         end
 
-        let(:pacticipant) { td.and_return(:consumer) }
+        let(:application) { td.and_return(:consumer) }
         let(:version_number) { "1234" }
         let(:tags) { nil }
         let(:open_struct_version) { OpenStruct.new(build_url: new_build_url, tags: tags) }
         let(:new_build_url) { "new-build-url" }
 
-        subject { Repository.new.create_or_update(pacticipant, version_number, open_struct_version) }
+        subject { Repository.new.create_or_update(application, version_number, open_struct_version) }
 
         context "with empty properties" do
           let(:open_struct_version) { OpenStruct.new }
@@ -266,12 +266,12 @@ module PactBroker
             .create_consumer_version_tag("dev")
         end
 
-        let(:pacticipant) { td.and_return(:consumer) }
+        let(:application) { td.and_return(:consumer) }
         let(:version_number) { "1234" }
         let(:tags) { nil }
         let(:open_struct_version) { OpenStruct.new(tags: tags) }
 
-        subject { Repository.new.create_or_overwrite(pacticipant, version_number, open_struct_version) }
+        subject { Repository.new.create_or_overwrite(application, version_number, open_struct_version) }
 
         it "overwrites the values" do
           expect(subject.branch_names).to eq ["original-branch"]
@@ -313,7 +313,7 @@ module PactBroker
       end
 
       describe "#find_latest_version_from_main_branch" do
-        subject { Repository.new.find_latest_version_from_main_branch(td.find_pacticipant("Foo")) }
+        subject { Repository.new.find_latest_version_from_main_branch(td.find_application("Foo")) }
 
         context "when there is a version with the provider's configured main branch as the branch" do
           before do

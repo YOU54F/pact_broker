@@ -56,7 +56,7 @@ module PactBroker
           return find_wip_pact_versions_for_provider_by_provider_branch(provider_name, provider_version_branch, explicitly_specified_verifiable_pacts, options)
         end
 
-        provider = pacticipant_repository.find_by_name(provider_name)
+        provider = application_repository.find_by_name(provider_name)
         wip_start_date = options.fetch(:include_wip_pacts_since)
 
         wip_by_consumer_tags = find_wip_pact_versions_for_provider_by_provider_tags(
@@ -107,7 +107,7 @@ module PactBroker
       end
 
       def find_pacts_by_selector(provider_name, consumer_version_selectors)
-        provider = pacticipant_repository.find_by_name(provider_name)
+        provider = application_repository.find_by_name(provider_name)
 
         specified_selectors_or_defaults(consumer_version_selectors, provider).flat_map do | selector |
           query = scope_for(PactPublication).for_provider_and_consumer_version_selector(provider, selector)
@@ -148,9 +148,9 @@ module PactBroker
         consumers = integration_service.find_for_provider(provider).collect(&:consumer)
 
         consumers.collect do | consumer |
-          if consumer.main_branch && PactBroker::Domain::Version.for_selector(PactBroker::Matrix::UnresolvedSelector.new(branch: consumer.main_branch, pacticipant_name: consumer.name, latest: true)).any?
+          if consumer.main_branch && PactBroker::Domain::Version.for_selector(PactBroker::Matrix::UnresolvedSelector.new(branch: consumer.main_branch, application_name: consumer.name, latest: true)).any?
             selectors << Selector.for_main_branch.for_consumer(consumer.name)
-          elsif consumer.main_branch && PactBroker::Domain::Version.for_selector(PactBroker::Matrix::UnresolvedSelector.new(tag: consumer.main_branch, pacticipant_name: consumer.name, latest: true)).any?
+          elsif consumer.main_branch && PactBroker::Domain::Version.for_selector(PactBroker::Matrix::UnresolvedSelector.new(tag: consumer.main_branch, application_name: consumer.name, latest: true)).any?
             selectors << Selector.latest_for_tag(consumer.main_branch).for_consumer(consumer.name)
           else
             selectors << Selector.overall_latest.for_consumer(consumer.name)
@@ -226,7 +226,7 @@ module PactBroker
       end
 
       def find_wip_pact_versions_for_provider_by_provider_branch(provider_name, provider_version_branch, explicitly_specified_verifiable_pacts, options)
-        provider = pacticipant_repository.find_by_name(provider_name)
+        provider = application_repository.find_by_name(provider_name)
         wip_start_date = options.fetch(:include_wip_pacts_since)
 
         potential_wip_by_consumer_branch = PactPublication.for_provider(provider).created_after(wip_start_date).for_all_branch_heads

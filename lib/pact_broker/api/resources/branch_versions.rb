@@ -31,7 +31,7 @@ module PactBroker
         end
 
         def versions
-          @versions ||= version_service.find_pacticipant_versions_in_reverse_order(pacticipant_name, { branch_name: identifier_from_path[:branch_name] }, pagination_options, decorator_class(:versions_decorator).eager_load_associations)
+          @versions ||= version_service.find_application_versions_in_reverse_order(application_name, { branch_name: identifier_from_path[:branch_name] }, pagination_options, decorator_class(:versions_decorator).eager_load_associations)
         end
 
         def deployed_versions
@@ -43,11 +43,11 @@ module PactBroker
         end
 
         def branch
-          @branch ||= branch_service.find_branch(**identifier_from_path.slice(:pacticipant_name, :branch_name))
+          @branch ||= branch_service.find_branch(**identifier_from_path.slice(:application_name, :branch_name))
         end
 
         def resource_title
-          "Versions for branch #{branch.name} of #{branch.pacticipant.name}"
+          "Versions for branch #{branch.name} of #{branch.application.name}"
         end
 
         private

@@ -27,7 +27,7 @@ module PactBroker
           let(:display_name) { " " }
 
           it "generates a display name" do
-            expect(PactBroker::Pacticipants::GenerateDisplayName).to receive(:call).with("foo").and_return("Display Name")
+            expect(PactBroker::Applications::GenerateDisplayName).to receive(:call).with("foo").and_return("Display Name")
             expect(subject.display_name).to eq "Display Name"
           end
         end

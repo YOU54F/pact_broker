@@ -32,7 +32,7 @@ module PactBroker
                 :title => "title"
               },
               :"pb:provider" => {
-                :href => "http://example.org/pacticipants/foo",
+                :href => "http://example.org/applications/foo",
                 :name => "foo"
               },
               :"pb:pacts" =>[{

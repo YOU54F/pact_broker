@@ -1,5 +1,5 @@
 require "pact_broker/api/decorators/base_decorator"
-require "pact_broker/api/decorators/embedded_pacticipant_decorator"
+require "pact_broker/api/decorators/embedded_application_decorator"
 require "pact_broker/api/decorators/embedded_version_decorator"
 require "pact_broker/api/decorators/environment_decorator"
 
@@ -13,7 +13,7 @@ module PactBroker
         property :applicationInstance, getter: lambda { |_| target }
         property :undeployedAt, getter: lambda { |_|  undeployed_at ? FormatDateTime.call(undeployed_at) : nil }, writeable: false
 
-        property :pacticipant, :extend => EmbeddedPacticipantDecorator, writeable: false, embedded: true
+        property :application, :extend => EmbeddedApplicationDecorator, writeable: false, embedded: true
         property :version, :extend => EmbeddedVersionDecorator, writeable: false, embedded: true
         property :environment, :extend => EnvironmentDecorator, writeable: false, embedded: true
 

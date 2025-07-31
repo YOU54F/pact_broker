@@ -6,7 +6,7 @@ module PactBroker
       class Selector
         using PactBroker::HashRefinements
 
-        ATTRIBUTES = [:pacticipant_name, :latest, :tag, :branch, :environment_name, :max_age, :deployed, :released, :main_branch]
+        ATTRIBUTES = [:application_name, :latest, :tag, :branch, :environment_name, :max_age, :deployed, :released, :main_branch]
 
         attr_accessor(*ATTRIBUTES)
 
@@ -20,7 +20,7 @@ module PactBroker
         def self.from_hash(hash)
           standard_hash = hash.symbolize_keys.snakecase_keys
           new_hash = standard_hash.slice(*ATTRIBUTES)
-          new_hash[:pacticipant_name] ||= standard_hash[:pacticipant] if standard_hash[:pacticipant]
+          new_hash[:application_name] ||= standard_hash[:application] if standard_hash[:application]
           new_hash[:environment_name] ||= standard_hash[:environment] if standard_hash[:environment]
           new_hash[:source_hash] = hash
           new(new_hash.compact)

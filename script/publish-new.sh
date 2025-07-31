@@ -7,7 +7,7 @@ next_version=$(echo ${latest_url} | ruby -e "version = ARGF.read[/\d+\.\d+\.\d+/
 curl -v -XPUT \
 	-H "Content-Length: 0" \
 	-H "Content-Type: application/json" \
-	http://localhost:9292/pacticipants/Foo/versions/${next_version}/tags/dev
+	http://localhost:9292/applications/Foo/versions/${next_version}/tags/dev
 
 echo ${BODY} >tmp.json
 curl -v -XPUT \-H "Content-Type: application/json" -d@tmp.json \
@@ -18,7 +18,7 @@ sleep 3
 curl -v -XPUT \
 	-H "Content-Length: 0" \
 	-H "Content-Type: application/json" \
-	http://localhost:9292/pacticipants/Foo/versions/${next_version}/tags/prod
+	http://localhost:9292/applications/Foo/versions/${next_version}/tags/prod
 
 next_next_version=$(echo ${next_version} | ruby -e "version = ARGF.read[/\d+\.\d+\.\d+/]; require 'semver'; puts SemVer.parse(version).tap{ | v| v.minor = v.minor + 1}.format('%M.%m.%p')")
 

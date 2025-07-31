@@ -3,7 +3,7 @@ def latest_tagged_pact_consumer_version_orders_v2(connection)
   connection.from(pp)
     .select_group(
       Sequel[pp][:provider_id],
-      Sequel[:cv][:pacticipant_id].as(:consumer_id),
+      Sequel[:cv][:application_id].as(:consumer_id),
       Sequel[:t][:name].as(:tag_name))
     .select_append{ max(order).as(latest_consumer_version_order) }
     .join(:versions, { Sequel[pp][:consumer_version_id] => Sequel[:cv][:id] }, { table_alias: :cv} )

@@ -1,7 +1,7 @@
 require "pact_broker/api/resources/pact"
 require "rack/test"
 require "pact_broker/pacts/service"
-require "pact_broker/pacticipants/service"
+require "pact_broker/applications/service"
 
 module PactBroker::Api
   module Resources
@@ -89,17 +89,17 @@ module PactBroker::Api
           end
         end
 
-        context "with a potential duplicate pacticipant" do
+        context "with a potential duplicate application" do
 
-          let(:pacticipant_service) { PactBroker::Pacticipants::Service }
+          let(:application_service) { PactBroker::Applications::Service }
           let(:messages) { ["message1", "message2"] }
 
           before do
-            allow(pacticipant_service).to receive(:messages_for_potential_duplicate_pacticipants).and_return(messages)
+            allow(application_service).to receive(:messages_for_potential_duplicate_applications).and_return(messages)
           end
 
           it "checks for duplicates" do
-            expect(pacticipant_service).to receive(:messages_for_potential_duplicate_pacticipants).with(["Consumer", "Provider"], "http://example.org")
+            expect(application_service).to receive(:messages_for_potential_duplicate_applications).with(["Consumer", "Provider"], "http://example.org")
             response
           end
 

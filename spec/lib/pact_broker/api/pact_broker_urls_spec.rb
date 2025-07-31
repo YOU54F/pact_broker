@@ -22,8 +22,8 @@ module PactBroker
           pact_version_sha: "5hbfu",
           consumer_version_tag_names: ["dev"])
       end
-      let(:consumer) { double("pacticipant", name: consumer_name) }
-      let(:provider) { double("pacticipant", name: provider_name) }
+      let(:consumer) { double("application", name: consumer_name) }
+      let(:provider) { double("application", name: provider_name) }
       let(:verification) do
         instance_double(PactBroker::Domain::Verification,
           consumer_name: consumer_name,
@@ -33,7 +33,7 @@ module PactBroker
       end
       let(:version) do
         double("version",
-          pacticipant: consumer,
+          application: consumer,
           number: "2/4")
       end
       let(:tag) { double("tag", name: "feat/foo", version: version) }
@@ -64,10 +64,10 @@ module PactBroker
         it { is_expected.to eq "http://example.org/pacts/provider/Bar%2FBar/consumer/Foo%2FFoo/version/123%2F456" }
       end
 
-      describe "templated_tag_url_for_pacticipant" do
-        subject { PactBrokerUrls.templated_tag_url_for_pacticipant(provider_name, base_url) }
+      describe "templated_tag_url_for_application" do
+        subject { PactBrokerUrls.templated_tag_url_for_application(provider_name, base_url) }
 
-        it { is_expected.to eq "http://example.org/pacticipants/Bar%2FBar/versions/{version}/tags/{tag}" }
+        it { is_expected.to eq "http://example.org/applications/Bar%2FBar/versions/{version}/tags/{tag}" }
       end
 
       describe "pact_triggered_webhooks_url" do
@@ -196,16 +196,16 @@ module PactBroker
         end
       end
 
-      describe "matrix_for_pacticipant_version_url" do
-        subject { PactBrokerUrls.matrix_for_pacticipant_version_url(version, base_url) }
+      describe "matrix_for_application_version_url" do
+        subject { PactBrokerUrls.matrix_for_application_version_url(version, base_url) }
 
-        it { is_expected.to eq "http://example.org/matrix?q%5B%5D%5Bpacticipant%5D=Foo%2FFoo&q%5B%5D%5Bversion%5D=2%2F4&latestby=cvpv" }
+        it { is_expected.to eq "http://example.org/matrix?q%5B%5D%5Bapplication%5D=Foo%2FFoo&q%5B%5D%5Bversion%5D=2%2F4&latestby=cvpv" }
       end
 
       describe "matrix_badge_url" do
         subject { PactBrokerUrls.matrix_badge_url_for_selectors(consumer_selector, provider_selector, base_url) }
-        let(:provider_selector) { PactBroker::Matrix::UnresolvedSelector.new(pacticipant_name: provider_name, tag: "meep", latest: true) }
-        let(:consumer_selector) { PactBroker::Matrix::UnresolvedSelector.new(pacticipant_name: consumer_name, tag: "bar", latest: true) }
+        let(:provider_selector) { PactBroker::Matrix::UnresolvedSelector.new(application_name: provider_name, tag: "meep", latest: true) }
+        let(:consumer_selector) { PactBroker::Matrix::UnresolvedSelector.new(application_name: consumer_name, tag: "bar", latest: true) }
 
         it { is_expected.to eq "http://example.org/matrix/provider/Bar%2FBar/latest/meep/consumer/Foo%2FFoo/latest/bar/badge.svg" }
       end
@@ -214,7 +214,7 @@ module PactBroker
         subject { PactBrokerUrls.tag_url(base_url, tag) }
 
         it { is_expected.to match_route_in_api(PactBroker::API) }
-        it { is_expected.to eq "http://example.org/pacticipants/Foo%2FFoo/versions/2%2F4/tags/feat%2Ffoo" }
+        it { is_expected.to eq "http://example.org/applications/Foo%2FFoo/versions/2%2F4/tags/feat%2Ffoo" }
       end
     end
   end

@@ -11,39 +11,39 @@ module PactBroker
       include PactBroker::Logging
 
       def self.find_latest_by_pacticpant_name params
-        version_repository.find_latest_by_pacticpant_name params.fetch(:pacticipant_name)
+        version_repository.find_latest_by_pacticpant_name params.fetch(:application_name)
       end
 
-      def self.find_by_pacticipant_name_and_number params
-        version_repository.find_by_pacticipant_name_and_number params.fetch(:pacticipant_name), params.fetch(:pacticipant_version_number)
+      def self.find_by_application_name_and_number params
+        version_repository.find_by_application_name_and_number params.fetch(:application_name), params.fetch(:application_version_number)
       end
 
-      def self.find_by_pacticipant_name_and_latest_tag(pacticipant_name, tag)
-        version_repository.find_by_pacticipant_name_and_latest_tag(pacticipant_name, tag)
+      def self.find_by_application_name_and_latest_tag(application_name, tag)
+        version_repository.find_by_application_name_and_latest_tag(application_name, tag)
       end
 
-      def self.find_latest_by_pacticipant_name_and_branch_name(pacticipant_name, branch_name)
-        version_repository.find_latest_by_pacticipant_name_and_branch_name(pacticipant_name, branch_name)
+      def self.find_latest_by_application_name_and_branch_name(application_name, branch_name)
+        version_repository.find_latest_by_application_name_and_branch_name(application_name, branch_name)
       end
 
-      def self.find_pacticipant_versions_in_reverse_order(pacticipant_name, options, pagination_options = {}, eager_load_associations = [])
-        version_repository.find_pacticipant_versions_in_reverse_order(pacticipant_name, options, pagination_options, eager_load_associations)
+      def self.find_application_versions_in_reverse_order(application_name, options, pagination_options = {}, eager_load_associations = [])
+        version_repository.find_application_versions_in_reverse_order(application_name, options, pagination_options, eager_load_associations)
       end
 
-      def self.create_or_overwrite(pacticipant_name, version_number, version)
-        pacticipant = pacticipant_repository.find_by_name_or_create(pacticipant_name)
-        version = version_repository.create_or_overwrite(pacticipant, version_number, version)
+      def self.create_or_overwrite(application_name, version_number, version)
+        application = application_repository.find_by_name_or_create(application_name)
+        version = version_repository.create_or_overwrite(application, version_number, version)
         version
       end
 
-      def self.create_or_update(pacticipant_name, version_number, version)
-        pacticipant = pacticipant_repository.find_by_name_or_create(pacticipant_name)
-        version = version_repository.create_or_update(pacticipant, version_number, version)
+      def self.create_or_update(application_name, version_number, version)
+        application = application_repository.find_by_name_or_create(application_name)
+        version = version_repository.create_or_update(application, version_number, version)
         version
       end
 
-      def self.find_latest_version_from_main_branch(pacticipant)
-        version_repository.find_latest_version_from_main_branch(pacticipant)
+      def self.find_latest_version_from_main_branch(application)
+        version_repository.find_latest_version_from_main_branch(application)
       end
 
       def self.delete version
@@ -56,7 +56,7 @@ module PactBroker
 
       def self.maybe_set_version_branch_from_tag(version, tag_name)
         if use_tag_as_branch?(version) && version.branch_versions.empty?
-          logger.info "Adding #{version.pacticipant.name} version #{version.number} to branch '#{tag_name}' (from first tag, because use_first_tag_as_branch=true)"
+          logger.info "Adding #{version.application.name} version #{version.number} to branch '#{tag_name}' (from first tag, because use_first_tag_as_branch=true)"
           branch_version_repository.add_branch(version, tag_name, auto_created: true)
         end
       end

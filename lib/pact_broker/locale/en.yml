@@ -43,10 +43,10 @@ en:
         webhook_triggered_for_event: Webhook %{webhook_description} triggered for event %{event_name}.
         triggered_webhook_see_logs: View logs at %{url}
       version:
-        created: "%{action} %{pacticipant_name} version %{pacticipant_version_number}"
-        created_for_branch: "%{action} %{pacticipant_name} version %{pacticipant_version_number} with branch %{branch}"
-        created_for_branch_with_tags: "%{action} %{pacticipant_name} version %{pacticipant_version_number} with branch %{branch} and tags %{tags}"
-        created_with_tags: "%{action} %{pacticipant_name} version %{pacticipant_version_number} with tags %{tags}"
+        created: "%{action} %{application_name} version %{application_version_number}"
+        created_for_branch: "%{action} %{application_name} version %{application_version_number} with branch %{branch}"
+        created_for_branch_with_tags: "%{action} %{application_name} version %{application_version_number} with branch %{branch} and tags %{tags}"
+        created_with_tags: "%{action} %{application_name} version %{application_version_number} with tags %{tags}"
       contract:
         pact_published: Pact successfully published for %{consumer_name} version %{consumer_version_number} and provider %{provider_name}.
         same_pact_content_published: Pact successfully republished for %{consumer_name} version %{consumer_version_number} and provider %{provider_name} with no content changes.
@@ -60,7 +60,7 @@ en:
         webhooks: Configure separate %{provider_name} pact verification build and webhook to trigger it when the pact content changes. See https://docs.pact.io/go/webhooks
         version_branch: Configure the version branch to be the value of your repository branch.
       branch:
-        bulk_delete: "Scheduled deletion of %{count} branches for pacticipant %{pacticipant_name}. Remaining branches are: %{remaining}"
+        bulk_delete: "Scheduled deletion of %{count} branches for application %{application_name}. Remaining branches are: %{remaining}"
     errors:
       runtime:
         with_error_reference: "An error has occurred. The details have been logged with the reference %{error_reference}"
@@ -74,24 +74,24 @@ en:
         attribute_missing: "Missing required attribute '%{attribute}'"
         invalid_http_method: "Invalid HTTP method '%{method}'"
         invalid_url: "Invalid URL '%{url}'. Expected format: http://example.org"
-        pact_missing_pacticipant_name: "was not found at expected path $.%{pacticipant}.name in the submitted pact file."
+        pact_missing_application_name: "was not found at expected path $.%{application}.name in the submitted pact file."
         pact_content_modification_not_allowed: "Cannot change the content of the pact for %{consumer_name} version %{consumer_version_number} and provider %{provider_name}, as race conditions will cause unreliable results for can-i-deploy. Each pact must be published with a unique consumer version number. Some Pact libraries generate random data when a concrete value for a type matcher is not specified, and this can cause the contract to mutate - ensure you have given example values for all type matchers. For more information see https://docs.pact.io/go/versioning"
         consumer_version_number_missing: "Please specify the consumer version number by setting the X-Pact-Consumer-Version header."
         consumer_version_number_header_invalid: "X-Pact-Consumer-Version '%{consumer_version_number}' cannot be parsed to a version number. The expected format (unless this configuration has been overridden) is a semantic version. eg. 1.3.0 or 2.0.4.rc1"
-        pacticipant_name_mismatch: "in pact ('%{name_in_pact}') does not match %{pacticipant} name in path ('%{name}')."
-        consumer_name_in_contract_mismatch_pacticipant_name: "consumerName ('%{consumer_name_in_contract}') must match pacticipantName ('%{pacticipant_name}')"
+        application_name_mismatch: "in pact ('%{name_in_pact}') does not match %{application} name in path ('%{name}')."
+        consumer_name_in_contract_mismatch_application_name: "consumerName ('%{consumer_name_in_contract}') must match applicationName ('%{application_name}')"
         consumer_name_in_content_mismatch: "consumer name in contract content ('%{consumer_name_in_content}') must match consumerName in contract params ('%{consumer_name}')"
         provider_name_in_content_mismatch: "provider name in contract content ('%{provider_name_in_content}') must match providerName in contract params ('%{provider_name}')"
         connection_encoding_not_utf8: "The Sequel connection encoding (%{encoding}) is strongly recommended to be \"utf8\". If you need to set it to %{encoding} for some particular reason, then disable this check by setting config.validate_database_connection_config = false"
         invalid_webhook_uuid: The UUID can only contain the characters A-Z, a-z, 0-9, _ and -, and must be 16 or more characters.
-        pacticipant_not_found: No pacticipant with name '%{name}' found
+        application_not_found: No application with name '%{name}' found
         environment_name_must_be_unique: "name '%{name}' is already used by an existing environment."
         must_specify_environment_or_tag: Must specify either an environment or a 'to' tag.
         cannot_specify_tag_and_environment: Cannot specify both a 'to' tag and an environment.
         cannot_specify_latest_and_environment: Cannot specify both latest=true and an environment.
         cannot_specify_more_than_one_destination_identifier: Cannot specify more than one of tag, environment and mainBranch.
         environment_with_name_not_found: "Environment with name '%{name}' does not exist"
-        cannot_modify_version_branch: "The branch for a pacticipant version cannot be changed once set (currently '%{old_branch}', proposed value '%{new_branch}'). Your pact publication/verification publication configurations may be in conflict with each other if you are seeing this error. If the current branch value is incorrect, you must delete the pacticipant version resource at %{version_url} and publish the pacts/verification results again with a consistent branch name."
+        cannot_modify_version_branch: "The branch for a application version cannot be changed once set (currently '%{old_branch}', proposed value '%{new_branch}'). Your pact publication/verification publication configurations may be in conflict with each other if you are seeing this error. If the current branch value is incorrect, you must delete the application version resource at %{version_url} and publish the pacts/verification results again with a consistent branch name."
         invalid_content_for_content_type: "content could not be parsed as %{content_type}"
         invalid_parsed_contract_class: "parsed content was expected to be a Hash but was a %{actual_class}"
         cannot_set_currently_deployed_true: The currentlyDeployed property cannot be set back to true. Please record a new deployment.
@@ -118,20 +118,20 @@ en:
         invalid_consumer_version_number: "Consumer version number '%{value}' cannot be parsed to a version number. The expected format (unless this configuration has been overridden) is a semantic version. eg. 1.3.0 or 2.0.4.rc1"
         invalid_version_number: "Version number '%{value}' cannot be parsed to a version number. The expected format (unless this configuration has been overridden) is a semantic version. eg. 1.3.0 or 2.0.4.rc1"
         invalid_url: "is not a valid URL eg. http://example.org"
-        pacticipant_with_name_not_found: "does not match an existing pacticipant"
+        application_with_name_not_found: "does not match an existing application"
         invalid_http_method: "is not a recognised HTTP method"
         webhook_templated_host_not_allowed: "cannot have a template parameter in the host"
-      duplicate_pacticipant: |
+      duplicate_application: |
         This is the first time a pact has been published for "%{new_name}".
-        The name "%{new_name}" is very similar to the following existing pacticipants:
+        The name "%{new_name}" is very similar to the following existing applications:
         %{existing_names}
         If you meant to specify one of the above names, please correct the pact configuration, and re-publish the pact.
         If the pact is intended to be for a new consumer or provider, please manually create "%{new_name}" using the following command from the Pact Broker CLI, and then re-publish the pact:
 
-        pact-broker create-or-update-pacticipant --name "%{new_name}" --broker-base-url %{base_url}
+        pact-broker create-or-update-application --name "%{new_name}" --broker-base-url %{base_url}
 
         For information on the Pact Broker CLI see https://docs.pact.io/go/pbc-cli
-        To disable this check, set `check_for_potential_duplicate_pacticipant_names` to false in the configuration.
+        To disable this check, set `check_for_potential_duplicate_application_names` to false in the configuration.
       new_line_in_url_path: URL path cannot contain a new line character.
       tab_in_url_path: URL path cannot contain a tab character.
       non_utf_8_char_in_request_body: "Request body has a non UTF-8 character at char %{char_number} and cannot be parsed as JSON. Fragment preceding invalid character is: '%{fragment}'"

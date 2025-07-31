@@ -55,7 +55,7 @@ module PactBroker
       end
 
       def warning_messages
-        resolved_ignore_selectors.select(&:pacticipant_or_version_does_not_exist?).collect { | s | IgnoreSelectorDoesNotExist.new(s) } +
+        resolved_ignore_selectors.select(&:application_or_version_does_not_exist?).collect { | s | IgnoreSelectorDoesNotExist.new(s) } +
           bad_practice_warnings
       end
 
@@ -66,20 +66,20 @@ module PactBroker
           warnings << NoEnvironmentSpecified.new
         end
 
-        if selector_without_pacticipant_version_number_specified?
-          warnings << SelectorWithoutPacticipantVersionNumberSpecified.new
+        if selector_without_application_version_number_specified?
+          warnings << SelectorWithoutApplicationVersionNumberSpecified.new
         end
 
         warnings
       end
 
-      def selector_without_pacticipant_version_number_specified?
-        # If only the pacticipant name is specified, it can't be a can-i-deploy query, must be a matrix UI query
-        if resolved_selectors.select(&:specified?).reject(&:only_pacticipant_name_specified?).any?
+      def selector_without_application_version_number_specified?
+        # If only the application name is specified, it can't be a can-i-deploy query, must be a matrix UI query
+        if resolved_selectors.select(&:specified?).reject(&:only_application_name_specified?).any?
           # There should be at least one selector with a version number specified
           resolved_selectors
             .select(&:specified?)
-            .select(&:pacticipant_version_specified_in_original_selector?)
+            .select(&:application_version_specified_in_original_selector?)
             .empty?
         else
           false
@@ -88,10 +88,10 @@ module PactBroker
 
 
       def more_than_one_selector_specified?
-        # If only the pacticipant name is specified, it can't be a can-i-deploy query, must be a matrix UI query
+        # If only the application name is specified, it can't be a can-i-deploy query, must be a matrix UI query
         resolved_selectors
           .select(&:specified?)
-          .reject(&:only_pacticipant_name_specified?)
+          .reject(&:only_application_name_specified?)
           .any?
       end
 
@@ -165,7 +165,7 @@ module PactBroker
       end
 
       def row_exists_for_integration(integration)
-        all_rows.find { | row | integration.matches_pacticipant_ids?(row) }
+        all_rows.find { | row | integration.matches_application_ids?(row) }
       end
 
       def missing_reasons
@@ -187,18 +187,18 @@ module PactBroker
       end
 
       # Find the resolved version selector that caused the matrix row with the
-      # specified pacticipant name and version number to be returned in the query.
+      # specified application name and version number to be returned in the query.
       #
       # @return [PactBroker::Matrix::ResolvedSelector]
-      def selector_for(pacticipant_name, pacticipant_version_number)
-        found = resolved_selectors.select{ | s| s.pacticipant_name == pacticipant_name }
+      def selector_for(application_name, application_version_number)
+        found = resolved_selectors.select{ | s| s.application_name == application_name }
 
         if found.size == 1
           found.first
-        elsif pacticipant_version_number
-          found.find{ |s| s.pacticipant_version_number == pacticipant_version_number } || dummy_selector_for(pacticipant_name)
+        elsif application_version_number
+          found.find{ |s| s.application_version_number == application_version_number } || dummy_selector_for(application_name)
         else
-          dummy_selector_for(pacticipant_name)
+          dummy_selector_for(application_name)
         end
       end
 
@@ -210,8 +210,8 @@ module PactBroker
         end
       end
 
-      def dummy_selector_for(pacticipant_name)
-        dummy_selectors.find{ | s| s.pacticipant_name == pacticipant_name }
+      def dummy_selector_for(application_name)
+        dummy_selectors.find{ | s| s.application_name == application_name }
       end
 
       # When the user has not specified a version of the provider (eg no 'latest' and/or 'tag', which means 'all versions')
@@ -224,18 +224,18 @@ module PactBroker
 
       def dummy_selectors_from_integrations
         integrations.collect do | row |
-          dummy_consumer_selector = ResolvedSelector.for_pacticipant(row.consumer, {}, :inferred, false)
-          dummy_provider_selector = ResolvedSelector.for_pacticipant(row.provider, {}, :inferred, false)
+          dummy_consumer_selector = ResolvedSelector.for_application(row.consumer, {}, :inferred, false)
+          dummy_provider_selector = ResolvedSelector.for_application(row.provider, {}, :inferred, false)
           [dummy_consumer_selector, dummy_provider_selector]
         end.flatten
       end
 
       def dummy_selectors_from_considered_rows
         considered_rows.collect do | row |
-          dummy_consumer_selector = ResolvedSelector.for_pacticipant_and_version(row.consumer, row.consumer_version, {}, :inferred, false)
+          dummy_consumer_selector = ResolvedSelector.for_application_and_version(row.consumer, row.consumer_version, {}, :inferred, false)
           dummy_provider_selector = row.provider_version ?
-            ResolvedSelector.for_pacticipant_and_version(row.provider, row.provider_version, {}, :inferred, false) :
-            ResolvedSelector.for_pacticipant(row.provider, {}, :inferred, false)
+            ResolvedSelector.for_application_and_version(row.provider, row.provider_version, {}, :inferred, false) :
+            ResolvedSelector.for_application(row.provider, {}, :inferred, false)
           [dummy_consumer_selector, dummy_provider_selector]
         end.flatten
       end

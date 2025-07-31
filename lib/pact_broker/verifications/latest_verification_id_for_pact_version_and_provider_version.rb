@@ -28,8 +28,8 @@ end
 #  latest_v_id_for_pv_and_pv_pv_id_v_id                      | btree (pact_version_id, verification_id)
 #  latest_verif_id_for_pact_ver_and_prov_ver_prov_ver_id_ndx | btree (provider_version_id)
 # Foreign key constraints:
-#  latest_v_id_for_pv_and_pv_consumer_id_fk         | (consumer_id) REFERENCES pacticipants(id) ON DELETE CASCADE
+#  latest_v_id_for_pv_and_pv_consumer_id_fk         | (consumer_id) REFERENCES applications(id) ON DELETE CASCADE
 #  latest_v_id_for_pv_and_pv_pact_version_id_fk     | (pact_version_id) REFERENCES pact_versions(id) ON DELETE CASCADE
-#  latest_v_id_for_pv_and_pv_provider_id_fk         | (provider_id) REFERENCES pacticipants(id) ON DELETE CASCADE
+#  latest_v_id_for_pv_and_pv_provider_id_fk         | (provider_id) REFERENCES applications(id) ON DELETE CASCADE
 #  latest_v_id_for_pv_and_pv_provider_version_id_fk | (provider_version_id) REFERENCES versions(id) ON DELETE CASCADE
 #  latest_v_id_for_pv_and_pv_verification_id_fk     | (verification_id) REFERENCES verifications(id) ON DELETE CASCADE

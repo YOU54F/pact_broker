@@ -10,8 +10,8 @@ module PactBroker
         let(:tag_json) { {"some" => "tag"}.to_json }
         let(:tag_attributes) {
           {
-            :pacticipant_name => "Condor",
-            :pacticipant_version_number => "1.3.0",
+            :application_name => "Condor",
+            :application_version_number => "1.3.0",
             :tag_name => "prod"
           }
         }
@@ -22,7 +22,7 @@ module PactBroker
             allow(Tags::Service).to receive(:delete)
           end
 
-          subject { delete("/pacticipants/Condor/versions/1.3.0/tags/prod" ) }
+          subject { delete("/applications/Condor/versions/1.3.0/tags/prod" ) }
 
           context "when the tag exists" do
             it "deletes the tag by name" do
@@ -70,7 +70,7 @@ module PactBroker
             allow(PactBroker::Api::Decorators::TagDecorator).to receive(:new).and_return(tag_decorator)
           end
 
-          subject { get("/pacticipants/Condor/versions/1.3.0/tags/prod" ) }
+          subject { get("/applications/Condor/versions/1.3.0/tags/prod" ) }
 
           context "when the tag exists" do
 
@@ -108,7 +108,7 @@ module PactBroker
           let(:create_deployed_versions_for_tags) { false }
           let(:request_body) { nil }
 
-          subject { put("/pacticipants/Condor/versions/1.3.0/tags/prod", request_body, "CONTENT_LENGTH" => "0", "CONTENT_TYPE" => "application/json") }
+          subject { put("/applications/Condor/versions/1.3.0/tags/prod", request_body, "CONTENT_LENGTH" => "0", "CONTENT_TYPE" => "application/json") }
 
           it "returns a success response" do
             subject

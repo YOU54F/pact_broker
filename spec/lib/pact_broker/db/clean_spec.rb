@@ -7,7 +7,7 @@ module PactBroker
     describe Clean, pending: !!DB.mysql?  do
 
       def pact_publication_count_for(consumer_name, version_number)
-        PactBroker::Pacts::PactPublication.where(consumer_version: PactBroker::Domain::Version.where_pacticipant_name(consumer_name).where(number: version_number)).count
+        PactBroker::Pacts::PactPublication.where(consumer_version: PactBroker::Domain::Version.where_application_name(consumer_name).where(number: version_number)).count
       end
 
       let(:options) { {} }
@@ -89,19 +89,19 @@ module PactBroker
 
           it "does not delete the latest verification" do
             expect{ subject }.to_not change {
-              PactBroker::Domain::Verification.where(provider_version: PactBroker::Domain::Version.where_pacticipant_name("Bar").where(number: "4")).count
+              PactBroker::Domain::Verification.where(provider_version: PactBroker::Domain::Version.where_application_name("Bar").where(number: "4")).count
             }
           end
 
           it "deletes the non-latest verification" do
             expect{ subject }.to change {
-              PactBroker::Domain::Verification.where(provider_version: PactBroker::Domain::Version.where_pacticipant_name("Bar").where(number: "3")).count
+              PactBroker::Domain::Verification.where(provider_version: PactBroker::Domain::Version.where_application_name("Bar").where(number: "3")).count
             }.by(-1)
           end
 
           it "deletes the pact publication that does not belongs to the latest verification" do
             expect{ subject }.to change {
-              PactBroker::Pacts::PactPublication.where(consumer_version: PactBroker::Domain::Version.where_pacticipant_name("Foo").where(number: "1")).count
+              PactBroker::Pacts::PactPublication.where(consumer_version: PactBroker::Domain::Version.where_application_name("Foo").where(number: "1")).count
             }.by(-1)
           end
         end

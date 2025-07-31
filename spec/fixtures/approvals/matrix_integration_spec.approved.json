@@ -9,7 +9,7 @@
     "deployable": null,
     "reasons": [
       "PactBroker::Matrix::PactNotEverVerifiedByProvider",
-      "PactBroker::Matrix::SelectorWithoutPacticipantVersionNumberSpecified"
+      "PactBroker::Matrix::SelectorWithoutApplicationVersionNumberSpecified"
     ]
   },
   "PactBroker::Matrix::Service find when deploying a consumer that has not been verified by any providers returns 2 integrations": {

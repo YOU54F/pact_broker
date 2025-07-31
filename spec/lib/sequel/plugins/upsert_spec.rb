@@ -5,17 +5,17 @@ require "sequel"
 module Sequel
   module Plugins
     module Upsert
-      class PacticipantNoUpsert < Sequel::Model(:pacticipants)
+      class ApplicationNoUpsert < Sequel::Model(:applications)
         plugin :timestamps, update_on_create: true
       end
 
-      class Pacticipant < Sequel::Model
+      class Application < Sequel::Model
         plugin :upsert, identifying_columns: [:name]
         plugin :timestamps, update_on_create: true
       end
 
       class Version < Sequel::Model
-        plugin :upsert, identifying_columns: [:pacticipant_id, :number]
+        plugin :upsert, identifying_columns: [:application_id, :number]
         plugin :timestamps, update_on_create: true
       end
 
@@ -25,9 +25,9 @@ module Sequel
         plugin :upsert, identifying_columns: [:provider_id, :consumer_version_id]
       end
 
-      describe PacticipantNoUpsert do
+      describe ApplicationNoUpsert do
         it "has an _insert_dataset method" do
-          expect(PacticipantNoUpsert.private_instance_methods).to include(:_insert_dataset)
+          expect(ApplicationNoUpsert.private_instance_methods).to include(:_insert_dataset)
         end
       end
 
@@ -70,11 +70,11 @@ module Sequel
 
       context "when a duplicate is inserted with no upsert" do
         before do
-          PacticipantNoUpsert.new(name: "Foo").save
+          ApplicationNoUpsert.new(name: "Foo").save
         end
 
         subject do
-          PacticipantNoUpsert.new(name: "Foo").save
+          ApplicationNoUpsert.new(name: "Foo").save
         end
 
         it "raises an error" do
@@ -85,13 +85,13 @@ module Sequel
       # This doesn't work on MSQL because the _insert_raw method
       # does not return the row ID of the duplicated row when upsert is used
       # May have to go back to the old method of doing this
-      context "when a duplicate Pacticipant is inserted with upsert" do
+      context "when a duplicate Application is inserted with upsert" do
         before do
-          Pacticipant.new(name: "Foo", repository_url: "http://foo").upsert
+          Application.new(name: "Foo", repository_url: "http://foo").upsert
         end
 
         subject do
-          Pacticipant.new(name: "Foo", repository_url: "http://bar").upsert
+          Application.new(name: "Foo", repository_url: "http://bar").upsert
         end
 
         it "does not raise an error" do
@@ -103,16 +103,16 @@ module Sequel
         end
 
         it "does not insert another row" do
-          expect { subject }.to_not change { Pacticipant.count }
+          expect { subject }.to_not change { Application.count }
         end
       end
 
       context "when a duplicate Version is inserted with upsert" do
-        let!(:pacticipant) { Pacticipant.new(name: "Foo").save }
+        let!(:application) { Application.new(name: "Foo").save }
         let!(:original_version) do
           version = Version.new(
             number: "1",
-            pacticipant_id: pacticipant.id,
+            application_id: application.id,
             build_url: "original-url"
           ).upsert
           Version.where(id: version.id).update(created_at: yesterday, updated_at: yesterday)
@@ -121,7 +121,7 @@ module Sequel
         let(:yesterday) { DateTime.now - 2 }
 
         subject do
-          Version.new(number: "1", pacticipant_id: pacticipant.id, build_url: "new-url").upsert
+          Version.new(number: "1", application_id: application.id, build_url: "new-url").upsert
         end
 
         it "does not raise an error" do
@@ -134,7 +134,7 @@ module Sequel
 
         context "when an attribute is not set" do
           subject do
-            Version.new(number: "1", pacticipant_id: pacticipant.id).upsert
+            Version.new(number: "1", application_id: application.id).upsert
           end
 
           it "nils out values that weren't set on the second model" do

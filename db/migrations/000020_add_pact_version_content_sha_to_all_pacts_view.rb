@@ -11,8 +11,8 @@ Sequel.migration do
         Sequel[:p][:id].as(:provider_id), Sequel[:p][:name].as(:provider_name),
         Sequel[:pvc][:sha].as(:pact_version_content_sha), Sequel[:pacts][:created_at], Sequel[:pacts][:updated_at]).
         join(:versions, {:id => :version_id}, {:table_alias => :cv, implicit_qualifier: :pacts}).
-        join(:pacticipants, {:id => :pacticipant_id}, {:table_alias => :c, implicit_qualifier: :cv}).
-        join(:pacticipants, {:id => :provider_id}, {:table_alias => :p, implicit_qualifier: :pacts}).
+        join(:applications, {:id => :application_id}, {:table_alias => :c, implicit_qualifier: :cv}).
+        join(:applications, {:id => :provider_id}, {:table_alias => :p, implicit_qualifier: :pacts}).
         join(:pact_version_contents, {:sha => :pact_version_content_sha}, {:table_alias => :pvc, implicit_qualifier: :pacts})
       )
 
