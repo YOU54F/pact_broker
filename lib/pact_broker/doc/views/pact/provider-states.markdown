@@ -8,11 +8,11 @@ Path: `/pacts/provider/{provider}/provider-states`
 
 Provider states are collected from the latest pact on the main branch for any dependant consumers.
 
-Path: `/pacts/provider/{provider}/provider-states/branch/<branch_name>`
+Path: `/pacts/provider/{provider}/provider-states/branch/{branch_name}`
 
 Provider states are collected from the latest pacts on the specified branch for any dependant consumers.
 
-Path: `/pacts/provider/{provider}/provider-states/environment/<environment_name>`
+Path: `/pacts/provider/{provider}/provider-states/environment/{environment_name}`
 
 Provider states are collected from the latest pacts in the specified environment for any dependant consumers.
 
