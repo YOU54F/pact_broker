@@ -4,7 +4,7 @@ require "pact_broker/api/contracts/validation_helpers"
 module PactBroker
   module Api
     module Contracts
-      class PutPacticipantNameContract < BaseContract
+      class PutApplicationNameContract < BaseContract
         json do
           required(:name).maybe(:string)
           required(:name_in_pact).maybe(:string)
@@ -28,8 +28,8 @@ module PactBroker
           required(:consumer_version_number).filled(:string)
         end
 
-        rule(:consumer).validate(validate_with_contract: PutPacticipantNameContract)
-        rule(:provider).validate(validate_with_contract: PutPacticipantNameContract)
+        rule(:consumer).validate(validate_with_contract: PutApplicationNameContract)
+        rule(:provider).validate(validate_with_contract: PutApplicationNameContract)
 
         rule(:consumer_version_number).validate(:not_blank_if_present)
 

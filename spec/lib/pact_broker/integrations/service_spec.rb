@@ -10,7 +10,7 @@ module PactBroker
           .create_pact_with_hierarchy("Foo", "4", "Dog")
       end
 
-      let(:provider) { PactBroker::Domain::Pacticipant.find_by_name("Bar").single_record }
+      let(:provider) { PactBroker::Domain::Application.find_by_name("Bar").single_record }
 
       subject { Service.find_for_provider(provider) }
 
@@ -123,7 +123,7 @@ module PactBroker
           end
 
           it "does not delete the consumer" do
-            expect { subject }.to_not change { PactBroker::Domain::Pacticipant.where(name: "Foo").count }
+            expect { subject }.to_not change { PactBroker::Domain::Application.where(name: "Foo").count }
           end
         end
 
@@ -137,7 +137,7 @@ module PactBroker
           end
 
           it "does not delete the consumer" do
-            expect { subject }.to_not change { PactBroker::Domain::Pacticipant.where(name: "Foo").count }
+            expect { subject }.to_not change { PactBroker::Domain::Application.where(name: "Foo").count }
           end
         end
 
@@ -147,7 +147,7 @@ module PactBroker
           end
 
           it "deletes the consumer" do
-            expect { subject }.to change { PactBroker::Domain::Pacticipant.where(name: "Foo").count }
+            expect { subject }.to change { PactBroker::Domain::Application.where(name: "Foo").count }
           end
         end
 
@@ -160,7 +160,7 @@ module PactBroker
           end
 
           it "does not delete the provider" do
-            expect { subject }.to_not change { PactBroker::Domain::Pacticipant.where(name: "Bar").count }
+            expect { subject }.to_not change { PactBroker::Domain::Application.where(name: "Bar").count }
           end
         end
 
@@ -174,7 +174,7 @@ module PactBroker
           end
 
           it "does not delete the provider" do
-            expect { subject }.to_not change { PactBroker::Domain::Pacticipant.where(name: "Bar").count }
+            expect { subject }.to_not change { PactBroker::Domain::Application.where(name: "Bar").count }
           end
         end
 
@@ -184,7 +184,7 @@ module PactBroker
           end
 
           it "deletes the provider" do
-            expect { subject }.to change { PactBroker::Domain::Pacticipant.where(name: "Bar").count }
+            expect { subject }.to change { PactBroker::Domain::Application.where(name: "Bar").count }
           end
         end
 
@@ -196,7 +196,7 @@ module PactBroker
           end
 
           it "does not delete the consumer" do
-            expect { subject }.to_not change { PactBroker::Domain::Pacticipant.where(name: "Foo").count }
+            expect { subject }.to_not change { PactBroker::Domain::Application.where(name: "Foo").count }
           end
         end
 
@@ -208,11 +208,11 @@ module PactBroker
           end
 
           it "does not delete the provider" do
-            expect { subject }.to_not change { PactBroker::Domain::Pacticipant.where(name: "Bar").count }
+            expect { subject }.to_not change { PactBroker::Domain::Application.where(name: "Bar").count }
           end
         end
 
-        context "When a pacticipant has labels" do
+        context "When a application has labels" do
           before do
             td.create_pact_with_hierarchy("Foo", "1", "Bar")
               .create_label("prod")
@@ -222,8 +222,8 @@ module PactBroker
             expect { subject }.to change { PactBroker::Domain::Label.count }
           end
 
-          it "deletes the pacticipant" do
-            expect { subject }.to change { PactBroker::Domain::Pacticipant.where(name: "Bar").count }
+          it "deletes the application" do
+            expect { subject }.to change { PactBroker::Domain::Application.where(name: "Bar").count }
           end
         end
 
@@ -242,7 +242,7 @@ module PactBroker
           end
         end
 
-        context "when a pacticipant has a pact with itself... I wouldn't have believed it unless I'd seen it..." do
+        context "when a application has a pact with itself... I wouldn't have believed it unless I'd seen it..." do
           before do
             td.create_consumer("Foo")
               .use_provider("Foo")
@@ -255,7 +255,7 @@ module PactBroker
           end
         end
 
-        context "when the pacticipants are not found for some bizarre reason (I can't see how this can happen, but it has)" do
+        context "when the applications are not found for some bizarre reason (I can't see how this can happen, but it has)" do
           it "raises an error" do
             expect { Service.delete("Foo", "Bar") }.to raise_error(PactBroker::Error, /found/)
           end
@@ -282,7 +282,7 @@ module PactBroker
 
         it "doesn't blow up" do
           Service.delete_all
-          expect(PactBroker::Domain::Pacticipant.count).to be 0
+          expect(PactBroker::Domain::Application.count).to be 0
         end
       end
     end

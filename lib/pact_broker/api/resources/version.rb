@@ -36,7 +36,7 @@ module PactBroker
         def from_json
           if request.really_put?
             handle_request do
-              version_service.create_or_overwrite(pacticipant_name, pacticipant_version_number, parsed_version)
+              version_service.create_or_overwrite(application_name, application_version_number, parsed_version)
             end
           else
             415
@@ -46,7 +46,7 @@ module PactBroker
         def from_merge_patch_json
           if request.patch?
             handle_request do
-              version_service.create_or_update(pacticipant_name, pacticipant_version_number, parsed_version)
+              version_service.create_or_update(application_name, application_version_number, parsed_version)
             end
           else
             415
@@ -80,7 +80,7 @@ module PactBroker
         end
 
         def environments
-          @environments ||= environment_service.find_for_pacticipant(version.pacticipant)
+          @environments ||= environment_service.find_for_application(version.application)
         end
 
         def deployed_versions
@@ -88,7 +88,7 @@ module PactBroker
         end
 
         def version
-          @version ||= version_service.find_by_pacticipant_name_and_number(identifier_from_path)
+          @version ||= version_service.find_by_application_name_and_number(identifier_from_path)
         end
       end
     end

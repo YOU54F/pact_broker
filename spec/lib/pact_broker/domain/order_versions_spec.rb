@@ -28,10 +28,10 @@ describe PactBroker::Domain::OrderVersions do
       allow(PactBroker.configuration).to receive(:order_versions_by_date).and_return(true)
     end
     let(:consumer) { td.create_consumer.and_return(:consumer) }
-    let!(:version_1) { PactBroker::Domain::Version.create(pacticipant_id: consumer.id, number: "2") }
-    let!(:version_2) { PactBroker::Domain::Version.create(pacticipant_id: consumer.id, number: "1") }
-    let!(:version_3) { PactBroker::Domain::Version.create(pacticipant_id: consumer.id, number: "3") }
-    let!(:version_4) { PactBroker::Domain::Version.create(pacticipant_id: consumer.id, number: "4") }
+    let!(:version_1) { PactBroker::Domain::Version.create(application_id: consumer.id, number: "2") }
+    let!(:version_2) { PactBroker::Domain::Version.create(application_id: consumer.id, number: "1") }
+    let!(:version_3) { PactBroker::Domain::Version.create(application_id: consumer.id, number: "3") }
+    let!(:version_4) { PactBroker::Domain::Version.create(application_id: consumer.id, number: "4") }
 
     let(:ordered_versions) { PactBroker::Domain::Version.order(:order).all.collect(&:number) }
 
@@ -62,7 +62,7 @@ describe PactBroker::Domain::OrderVersions do
       end
 
       it "just uses the next order number for the new version" do
-        PactBroker::Domain::Version.create(number: "5", pacticipant_id: consumer.id)
+        PactBroker::Domain::Version.create(number: "5", application_id: consumer.id)
         expect(ordered_versions).to eq(["z", "a", "3", "h", "5"])
       end
     end
@@ -75,7 +75,7 @@ describe PactBroker::Domain::OrderVersions do
 
       it "inserts the new version in the right place" do
         # 1 z a 4
-        PactBroker::Domain::Version.create(number: "2", pacticipant_id: consumer.id)
+        PactBroker::Domain::Version.create(number: "2", application_id: consumer.id)
         expect(ordered_versions).to eq(["1", "z", "a", "2", "4"])
       end
     end

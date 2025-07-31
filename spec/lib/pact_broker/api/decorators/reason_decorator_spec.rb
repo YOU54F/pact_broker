@@ -84,8 +84,8 @@ module PactBroker
             its(:to_s) { is_expected.to start_with "WARN: It is recommended to specify the environment" }
           end
 
-          context "when the reason is SelectorWithoutPacticipantVersionNumberSpecified" do
-            let(:reason) { PactBroker::Matrix::SelectorWithoutPacticipantVersionNumberSpecified.new }
+          context "when the reason is SelectorWithoutApplicationVersionNumberSpecified" do
+            let(:reason) { PactBroker::Matrix::SelectorWithoutApplicationVersionNumberSpecified.new }
 
             its(:to_s) { is_expected.to start_with "WARN: It is recommended to specify the version number" }
           end

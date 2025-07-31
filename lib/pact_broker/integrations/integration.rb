@@ -20,8 +20,8 @@ module PactBroker
 
       set_primary_key :id
       plugin :insert_ignore, identifying_columns: [:consumer_id, :provider_id]
-      associate(:many_to_one, :consumer, :class => "PactBroker::Domain::Pacticipant", :key => :consumer_id, :primary_key => :id)
-      associate(:many_to_one, :provider, :class => "PactBroker::Domain::Pacticipant", :key => :provider_id, :primary_key => :id)
+      associate(:many_to_one, :consumer, :class => "PactBroker::Domain::Application", :key => :consumer_id, :primary_key => :id)
+      associate(:many_to_one, :provider, :class => "PactBroker::Domain::Application", :key => :provider_id, :primary_key => :id)
       associate(:one_to_one, :latest_verification, :class => "PactBroker::Verifications::LatestVerificationForConsumerAndProvider", key: [:consumer_id, :provider_id], primary_key: [:consumer_id, :provider_id])
 
       one_to_many(:latest_triggered_webhooks,
@@ -88,14 +88,14 @@ module PactBroker
       dataset_module do
         include PactBroker::Dataset
 
-        def filter_by_pacticipant(query_string)
-          matching_pacticipant_ids = PactBroker::Domain::Pacticipant.filter(:name, query_string).select(:id).all.collect(&:id)
-          return nil if matching_pacticipant_ids.empty?
-          including_pacticipant_id(matching_pacticipant_ids)
+        def filter_by_application(query_string)
+          matching_application_ids = PactBroker::Domain::Application.filter(:name, query_string).select(:id).all.collect(&:id)
+          return nil if matching_application_ids.empty?
+          including_application_id(matching_application_ids)
         end
 
-        def including_pacticipant_id(pacticipant_id)
-          where(consumer_id: pacticipant_id).or(provider_id: pacticipant_id)
+        def including_application_id(application_id)
+          where(consumer_id: application_id).or(provider_id: application_id)
         end
       end
 
@@ -136,7 +136,7 @@ module PactBroker
         provider.name
       end
 
-      def pacticipant_ids
+      def application_ids
         [consumer_id, provider_id]
       end
 
@@ -158,5 +158,5 @@ end
 #  integrations_pkey                           | PRIMARY KEY btree (id)
 #  integrations_consumer_id_provider_id_unique | UNIQUE btree (consumer_id, provider_id)
 # Foreign key constraints:
-#  integrations_consumer_id_foreign_key | (consumer_id) REFERENCES pacticipants(id) ON DELETE CASCADE
-#  integrations_provider_id_foreign_key | (provider_id) REFERENCES pacticipants(id) ON DELETE CASCADE
+#  integrations_consumer_id_foreign_key | (consumer_id) REFERENCES applications(id) ON DELETE CASCADE
+#  integrations_provider_id_foreign_key | (provider_id) REFERENCES applications(id) ON DELETE CASCADE

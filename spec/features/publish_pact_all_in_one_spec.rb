@@ -1,8 +1,8 @@
 RSpec.describe "publishing a pact using the all in one endpoint", validate_oas: true do
   let(:request_body_hash) do
     {
-      :pacticipantName => "Foo",
-      :pacticipantVersionNumber => "1",
+      :applicationName => "Foo",
+      :applicationVersionNumber => "1",
       :branch => "main",
       :tags => ["a", "b"],
       :buildUrl => "http://ci/builds/1234",
@@ -34,7 +34,7 @@ RSpec.describe "publishing a pact using the all in one endpoint", validate_oas: 
 
   context "with a validation error" do
     before do
-      request_body_hash.delete(:pacticipantName)
+      request_body_hash.delete(:applicationName)
     end
 
     it "returns a validation error response" do

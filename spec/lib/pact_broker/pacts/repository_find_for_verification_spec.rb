@@ -181,7 +181,7 @@ module PactBroker
 
           it "returns the latest pact for each consumer" do
             expect(subject.size).to eq 1
-            expected_consumer_version = PactBroker::Domain::Version.where_pacticipant_name("Foo1").where(number: "1").single_record
+            expected_consumer_version = PactBroker::Domain::Version.where_application_name("Foo1").where(number: "1").single_record
             expect(find_by_consumer_name_and_consumer_version_number("Foo1", "1").selectors).to eq [pact_selector_1.resolve(expected_consumer_version)]
           end
         end

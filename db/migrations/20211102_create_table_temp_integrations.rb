@@ -4,8 +4,8 @@ Sequel.migration do
     # (in the 10s or 100s) and it would probably just do a full table scan anyway.
     create_table(:temp_integrations, charset: "utf8") do
       primary_key :id, primary_key_constraint_name: "integrations_pkey"
-      foreign_key(:consumer_id, :pacticipants, null: false, on_delete: :cascade, foreign_key_constraint_name: "integrations_consumer_id_foreign_key")
-      foreign_key(:provider_id, :pacticipants, null: false, on_delete: :cascade, foreign_key_constraint_name: "integrations_provider_id_foreign_key")
+      foreign_key(:consumer_id, :applications, null: false, on_delete: :cascade, foreign_key_constraint_name: "integrations_consumer_id_foreign_key")
+      foreign_key(:provider_id, :applications, null: false, on_delete: :cascade, foreign_key_constraint_name: "integrations_provider_id_foreign_key")
       String :consumer_name
       String :provider_name
       DateTime :created_at, null: false

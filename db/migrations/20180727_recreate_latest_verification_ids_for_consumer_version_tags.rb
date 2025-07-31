@@ -18,7 +18,7 @@ Sequel.migration do
     # The latest verification id for each consumer version tag
     create_or_replace_view(:latest_verification_ids_for_consumer_version_tags,
       "select
-        pv.pacticipant_id as provider_id,
+        pv.application_id as provider_id,
         lpp.consumer_id,
         t.name as consumer_version_tag_name,
         max(v.id) as latest_verification_id
@@ -29,6 +29,6 @@ Sequel.migration do
         on lpp.consumer_version_id = t.version_id
       join versions pv
         on v.provider_version_id = pv.id
-      group by pv.pacticipant_id, lpp.consumer_id, t.name")
+      group by pv.application_id, lpp.consumer_id, t.name")
   end
 end

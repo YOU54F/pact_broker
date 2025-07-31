@@ -64,12 +64,12 @@ Domain classes are found in `lib/pact_broker/domain`. Many of these classes are 
 
 ### Domain terminology
 
-* `pacticipant` - an application that participates in a pact. A very bad pun which I deeply regret.
+* `application` - an application that participates in a pact. A very bad pun which I deeply regret.
 * `pact` - this term is confusing and overloaded. It generally means a `pact publication` in the code.
 * `pact publication` - the resource that gets created when a PUT request is sent to the Pact Broker to `/pacts/provider/PROVIDER/consumer/CONSUMER/version/VERSION`.
 * `pact version` - the JSON contents of the pact publication. One pact version may belong to many pact publications. That is, if a pact publication with exactly the same contents is published twice, then a new
 pact publication resource will be created with an incremented revision number, but it will reuse the existing pact version.
-* `pacticipant version` - a resource that represents a version of the application
+* `application version` - a resource that represents a version of the application
 * `integration` - the relationship between a consumer and a provider
 * `pseudo branch` - A time ordered list of pacts that are related to a particular tag. The most recent pact for each pseudo branch is a "head" pact.
 * `matrix` - the table that shows the cartesian join of pact versions/verifications, and hence shows which consumer versions and provider versions have been tested together.
@@ -79,7 +79,7 @@ pact publication resource will be created with an incremented revision number, b
 
 * `pact_publications` - this table holds references to the:
 
-    * `provider` (in the pacticipants table)
+    * `provider` (in the applications table)
     * `consumer version` (in the versions table),
     * `pact content` (in the pact_version_contents table)
     * and a `revision number`
@@ -88,20 +88,20 @@ pact publication resource will be created with an incremented revision number, b
 
 * `versions` - this table consists of:
 
-    * a reference to the `pacticipant` that owns the version (the `consumer`)
+    * a reference to the `application` that owns the version (the `consumer`)
     * the version `number` (eg. 1.0.2)
-    * the version `order` - an integer calculated by the code when the row is created that allows us to sort versions in the database without it needing to understand how to order semantic version strings. The versions are ordered within the context of their owning `pacticipant`.
+    * the version `order` - an integer calculated by the code when the row is created that allows us to sort versions in the database without it needing to understand how to order semantic version strings. The versions are ordered within the context of their owning `application`.
 
  Currently only consumer versions are stored, as these are created when a pact resource is created. There is potential to create provider versions when we implement verifications.
 
-* `pacticipants` - this table consists of:
+* `applications` - this table consists of:
 
     * a `name`
 
 * `tags` - this table consists of:
 
     * a `name`
-    * a reference to the `pacticipant version`
+    * a reference to the `application version`
 
  Note that a `consumer version` is tagged, rather than a `pact_version`. This means that when a given version is marked as the "prod" one, all the pacts for that version are considered the "prod" pacts, rather than having to tag them individually.
 

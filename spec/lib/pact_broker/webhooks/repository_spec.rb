@@ -20,10 +20,10 @@ module PactBroker
       end
       let(:events) { [event]}
       let(:webhook) { Domain::Webhook.new(request: request, events: events) }
-      let(:consumer) { td.create_pacticipant("Consumer").and_return(:pacticipant) }
-      let(:provider) { td.create_pacticipant("Provider").and_return(:pacticipant) }
-      let(:webhook_consumer) { Domain::WebhookPacticipant.new(name: consumer.name) }
-      let(:webhook_provider) { Domain::WebhookPacticipant.new(name: provider.name) }
+      let(:consumer) { td.create_application("Consumer").and_return(:application) }
+      let(:provider) { td.create_application("Provider").and_return(:application) }
+      let(:webhook_consumer) { Domain::WebhookApplication.new(name: consumer.name) }
+      let(:webhook_provider) { Domain::WebhookApplication.new(name: provider.name) }
       let(:uuid) { "the-uuid" }
       let(:created_webhook_record) { PactBroker::Webhooks::Webhook.db[:webhooks].order(:id).last }
       let(:created_events) { PactBroker::Webhooks::Webhook.db[:webhook_events].where(webhook_id: created_webhook_record[:id]).order(:name).all }
@@ -82,7 +82,7 @@ module PactBroker
         end
       end
 
-      describe "delete_by_pacticipant" do
+      describe "delete_by_application" do
         before do
           td.create_consumer("other-consumer")
             .create_provider("other-provider")
@@ -105,9 +105,9 @@ module PactBroker
           Webhook.where(uuid: "5555").delete
         end
 
-        context "when the pacticipant is the consumer" do
+        context "when the application is the consumer" do
 
-          subject { Repository.new.delete_by_pacticipant td.consumer }
+          subject { Repository.new.delete_by_application td.consumer }
 
           it "deletes the matching webhook" do
             expect { subject }.to change { Webhook.where(uuid: "1234").count }.by(-1)
@@ -122,8 +122,8 @@ module PactBroker
           end
         end
 
-        context "when the pacticipant is the provider" do
-          subject { Repository.new.delete_by_pacticipant(td.provider) }
+        context "when the application is the provider" do
+          subject { Repository.new.delete_by_application(td.provider) }
 
           it "deletes the matching webhooks" do
             expect { subject }.to change { Webhook.where(uuid: "1234").count }.by(-1)
@@ -285,7 +285,7 @@ module PactBroker
         let(:new_event) do
           PactBroker::Webhooks::WebhookEvent.new(name: "something_else")
         end
-        let(:new_consumer) { Domain::WebhookPacticipant.new(name: "Foo2") }
+        let(:new_consumer) { Domain::WebhookApplication.new(name: "Foo2") }
         let(:new_webhook) do
           PactBroker::Domain::Webhook.new(
             consumer: new_consumer,
@@ -451,7 +451,7 @@ module PactBroker
               .create_webhook(provider: nil, event_names: ["contract_published"], description: "Right webhook")
           end
 
-          let(:webhook_consumer) { Domain::WebhookPacticipant.new(name: td.consumer.name) }
+          let(:webhook_consumer) { Domain::WebhookApplication.new(name: td.consumer.name) }
 
           it "finds one webhook to trigger" do
             is_expected.to contain_exactly(

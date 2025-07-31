@@ -49,7 +49,7 @@ module PactBroker
             expect(listener).to receive(:deployed_version_created) do | params |
               expect(params[:deployed_version].environment).to_not be nil
               expect(params[:deployed_version].version).to_not be nil
-              expect(params[:deployed_version].pacticipant).to_not be nil
+              expect(params[:deployed_version].application).to_not be nil
             end
 
             PactBroker::Events.subscribe(listener) do

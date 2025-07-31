@@ -21,7 +21,7 @@ module PactBroker
         end
 
         def to_json
-          decorator_class(decorator_name).new(deployed_versions).to_json(**decorator_options(title: title, expand: [:pacticipant, :version]))
+          decorator_class(decorator_name).new(deployed_versions).to_json(**decorator_options(title: title, expand: [:application, :version]))
         end
 
         def policy_name
@@ -55,7 +55,7 @@ module PactBroker
           # a blank target was specified.
           query = Rack::Utils.parse_query(request.env["QUERY_STRING"])
           q = {}
-          q[:pacticipant_name] = request.query["pacticipant"] if query["pacticipant"]
+          q[:application_name] = request.query["application"] if query["application"]
           if query["applicationInstance"]
             q[:target] = query["applicationInstance"].blank? ? nil : query["applicationInstance"]
           elsif query["target"]

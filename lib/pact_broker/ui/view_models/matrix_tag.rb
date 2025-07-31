@@ -8,11 +8,11 @@ module PactBroker
       class MatrixTag
         include PactBroker::Api::PactBrokerUrls
 
-        attr_reader :name, :pacticipant_name, :version_number
+        attr_reader :name, :application_name, :version_number
 
         def initialize params
           @name = params[:name]
-          @pacticipant_name = params[:pacticipant_name]
+          @application_name = params[:application_name]
           @version_number = params[:version_number]
           @created_at = params[:created_at]
           @latest = !!params[:latest]
@@ -20,14 +20,14 @@ module PactBroker
 
         def tooltip
           if @latest
-            "This is the latest version of #{pacticipant_name} with tag \"#{@name}\". Tag created #{relative_date(@created_at)}."
+            "This is the latest version of #{application_name} with tag \"#{@name}\". Tag created #{relative_date(@created_at)}."
           else
-            "Tag created #{relative_date(@created_at)}. A more recent version of #{pacticipant_name} with tag \"#{name}\" exists."
+            "Tag created #{relative_date(@created_at)}. A more recent version of #{application_name} with tag \"#{name}\" exists."
           end
         end
 
         def url
-          hal_browser_url("/pacticipants/#{ERB::Util.url_encode(pacticipant_name)}/versions/#{ERB::Util.url_encode(version_number)}/tags/#{ERB::Util.url_encode(name)}")
+          hal_browser_url("/applications/#{ERB::Util.url_encode(application_name)}/versions/#{ERB::Util.url_encode(version_number)}/tags/#{ERB::Util.url_encode(name)}")
         end
 
         def relative_date date

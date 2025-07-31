@@ -8,8 +8,8 @@ module PactBroker
       class PublishContractsDecorator < BaseDecorator
         camelize_property_names
 
-        property :pacticipant_name
-        property :pacticipant_version_number
+        property :application_name
+        property :application_version_number
         property :tags
         property :branch
         property :build_url

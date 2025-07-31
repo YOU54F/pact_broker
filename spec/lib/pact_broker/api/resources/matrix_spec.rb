@@ -13,7 +13,7 @@ module PactBroker
 
         let(:path) { "/matrix" }
         let(:json_response_body) { JSON.parse(subject.body, symbolize_names: true) }
-        let(:params) { {q: [{pacticipant: "Foo", version: "1"}, {pacticipant: "Bar", version: "2"}]} }
+        let(:params) { {q: [{application: "Foo", version: "1"}, {application: "Bar", version: "2"}]} }
         let(:error_messages) { [] }
         let(:selectors) { double("selectors") }
         let(:options) { double("options") }

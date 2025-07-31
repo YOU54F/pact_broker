@@ -15,8 +15,8 @@ module PactBroker
             o.specify_environment = o.environment_name ? "checked" : nil
             o.specify_all_tagged = (o.tag && !o.latest) ? "checked" : nil
             o.specify_latest = o.latest ? "checked" : nil
-            o.specify_version = o.pacticipant_version_number ? "checked" : nil
-            o.specify_all_versions = !(o.tag || o.pacticipant_version_number || o.branch) ? "checked" : nil
+            o.specify_version = o.application_version_number ? "checked" : nil
+            o.specify_all_versions = !(o.tag || o.application_version_number || o.branch) ? "checked" : nil
             o
           end
         end
@@ -30,9 +30,9 @@ module PactBroker
         end
 
         def matrix_badge_url(selectors, lines, base_url)
-          if lines.any? && selectors.size == 2 && selectors.all?{ | selector| selector.latest_for_pacticipant_and_tag? }
-            consumer_selector = selectors.find{ | selector| selector.pacticipant_name == lines.first.consumer_name }
-            provider_selector = selectors.find{ | selector| selector.pacticipant_name == lines.first.provider_name }
+          if lines.any? && selectors.size == 2 && selectors.all?{ | selector| selector.latest_for_application_and_tag? }
+            consumer_selector = selectors.find{ | selector| selector.application_name == lines.first.consumer_name }
+            provider_selector = selectors.find{ | selector| selector.application_name == lines.first.provider_name }
             if consumer_selector && provider_selector
               PactBroker::Api::PactBrokerUrls.matrix_badge_url_for_selectors(consumer_selector, provider_selector, base_url)
             end

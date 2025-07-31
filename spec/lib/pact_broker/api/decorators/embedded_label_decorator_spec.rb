@@ -21,7 +21,7 @@ module PactBroker
         end
 
         it "includes a link to itself" do
-          expect(subject[:_links][:self][:href]).to eq "http://example.org/pacticipants/Consumer/labels/ios"
+          expect(subject[:_links][:self][:href]).to eq "http://example.org/applications/Consumer/labels/ios"
         end
 
         it "includes the label name" do

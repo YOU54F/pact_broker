@@ -23,11 +23,11 @@ module PactBroker
         if (deployed_version = find_currently_deployed_version_for_version_and_environment_and_target(version, environment, target))
           deployed_version
         else
-          record_previous_version_undeployed(version.pacticipant, environment, target)
+          record_previous_version_undeployed(version.application, environment, target)
           deployed_version = DeployedVersion.create(
             uuid: uuid,
             version: version,
-            pacticipant_id: version.pacticipant_id,
+            application_id: version.application_id,
             environment: environment,
             target: target,
             auto_created: auto_created
@@ -66,28 +66,28 @@ module PactBroker
           .single_record
       end
 
-      def self.find_all_deployed_versions_for_pacticipant(pacticipant)
+      def self.find_all_deployed_versions_for_application(application)
         scope_for(DeployedVersion)
-          .where(pacticipant_id: pacticipant.id)
+          .where(application_id: application.id)
           .eager(:environment)
           .all
       end
 
-      def self.find_currently_deployed_versions_for_environment(environment, pacticipant_name: nil, target: :unspecified)
+      def self.find_currently_deployed_versions_for_environment(environment, application_name: nil, target: :unspecified)
         query = scope_for(DeployedVersion)
           .currently_deployed
           .for_environment(environment)
           .order_by_date_desc
 
-        query = query.for_pacticipant_name(pacticipant_name) if pacticipant_name
+        query = query.for_application_name(application_name) if application_name
         query = query.for_target(target) if target != :unspecified
         query.all
       end
 
-      def self.find_currently_deployed_versions_for_pacticipant(pacticipant)
+      def self.find_currently_deployed_versions_for_application(application)
         scope_for(DeployedVersion)
           .currently_deployed
-          .where(pacticipant_id: pacticipant.id)
+          .where(application_id: application.id)
           .eager(:version)
           .eager(:environment)
           .order(:created_at, :id)
@@ -102,16 +102,16 @@ module PactBroker
       def self.maybe_create_deployed_version_for_tag(version, environment_name)
         if PactBroker.configuration.create_deployed_versions_for_tags
           if (environment = environment_service.find_by_name(environment_name))
-            logger.info("Creating deployed version for #{version.pacticipant.name} version #{version.number} in environment #{environment_name} (because create_deployed_versions_for_tags=true)")
+            logger.info("Creating deployed version for #{version.application.name} version #{version.number} in environment #{environment_name} (because create_deployed_versions_for_tags=true)")
             find_or_create(next_uuid, version, environment, nil, auto_created: true)
           end
         end
       end
 
-      def self.record_previous_version_undeployed(pacticipant, environment, target)
+      def self.record_previous_version_undeployed(application, environment, target)
         DeployedVersion.where(
           undeployed_at: nil,
-          pacticipant_id: pacticipant.id,
+          application_id: application.id,
           environment_id: environment.id,
           target: target
         ).record_undeployed

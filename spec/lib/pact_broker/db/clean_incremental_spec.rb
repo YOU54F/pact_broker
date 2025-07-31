@@ -6,7 +6,7 @@ module PactBroker
   module DB
     describe CleanIncremental do
       def pact_publication_count_for(consumer_name, version_number)
-        PactBroker::Pacts::PactPublication.where(consumer_version: PactBroker::Domain::Version.where_pacticipant_name(consumer_name).where(number: version_number)).count
+        PactBroker::Pacts::PactPublication.where(consumer_version: PactBroker::Domain::Version.where_application_name(consumer_name).where(number: version_number)).count
       end
 
       let(:options) { {} }

@@ -43,7 +43,7 @@ module PactBroker
           @consumer_versions_from_metadata ||= begin
             if metadata_consumer_version_numbers
               metadata_consumer_version_numbers.collect do | consumer_version_number |
-                version_service.find_by_pacticipant_name_and_number(pacticipant_name: identifier_from_path[:consumer_name], pacticipant_version_number: consumer_version_number)
+                version_service.find_by_application_name_and_number(application_name: identifier_from_path[:consumer_name], application_version_number: consumer_version_number)
               end.compact.sort_by(&:order)
             end
           end

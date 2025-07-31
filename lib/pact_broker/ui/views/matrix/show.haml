@@ -33,10 +33,10 @@
       - selectors.each_with_index do | selector, index |
         .selector
           .field
-            %label{for: "pacticipant#{index}"}
-              Pacticipant name
+            %label{for: "application#{index}"}
+              Application name
 
-            %input{name: 'q[]pacticipant', id: "pacticipant1#{index}", class: 'pacticipant_name', value: selector.pacticipant_name}
+            %input{name: 'q[]application', id: "application1#{index}", class: 'application_name', value: selector.application_name}
 
           .field
 
@@ -59,13 +59,13 @@
                 All versions with tag...
 
 
-            %input{name: 'q[]version', type: 'text', id: "pacticipant#{index}_version", class: 'version', value: selector.pacticipant_version_number}
+            %input{name: 'q[]version', type: 'text', id: "application#{index}_version", class: 'version', value: selector.application_version_number}
 
-            %input{name: 'q[]branch', type: 'text', id: "pacticipant#{index}_branch", class: 'branch', value: selector.branch}
+            %input{name: 'q[]branch', type: 'text', id: "application#{index}_branch", class: 'branch', value: selector.branch}
 
-            %input{name: 'q[]environment', type: 'text', id: "pacticipant#{index}_environment", class: 'environment', value: selector.environment_name}
+            %input{name: 'q[]environment', type: 'text', id: "application#{index}_environment", class: 'environment', value: selector.environment_name}
 
-            %input{name: 'q[]tag', type: 'text', id: "pacticipant#{index}_tag", class: 'tag', value: selector.tag}
+            %input{name: 'q[]tag', type: 'text', id: "application#{index}_tag", class: 'tag', value: selector.tag}
 
             %input{name: 'q[]latest', value: 'true', hidden: true, class: 'latest-flag'}
 

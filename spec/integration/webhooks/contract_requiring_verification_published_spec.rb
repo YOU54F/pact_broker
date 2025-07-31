@@ -22,8 +22,8 @@ RSpec.describe "triggering a contract_requiring_verification_published webhook f
 
   let(:request_body_hash) do
     {
-      :pacticipantName => "Foo",
-      :pacticipantVersionNumber => "1",
+      :applicationName => "Foo",
+      :applicationVersionNumber => "1",
       :branch => "main",
       :tags => ["a", "b"],
       :buildUrl => "http://ci/builds/1234",

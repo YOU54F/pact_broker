@@ -184,7 +184,7 @@ Pact.provider_states_for "Pact Broker Client" do
   provider_state "'Condor' exists in the pact-broker with version 1.3.0, tagged with 'prod'" do
     set_up do
       TestDataBuilder.new
-        .create_pacticipant("Condor")
+        .create_application("Condor")
         .create_version("1.3.0")
         .create_tag("prod")
     end
@@ -205,13 +205,13 @@ Pact.provider_states_for "Pact Broker Client" do
      end
    end
 
-   provider_state "a pacticipant version with production details exists for the Pricing Service" do
+   provider_state "a application version with production details exists for the Pricing Service" do
      set_up do
        # Your set up code goes here
      end
    end
 
-   provider_state "no pacticipant version exists for the Pricing Service" do
+   provider_state "no application version exists for the Pricing Service" do
      no_op
    end
 
@@ -245,26 +245,26 @@ Pact.provider_states_for "Pact Broker Client" do
     end
   end
 
-  provider_state "the pacticipant relations are present" do
+  provider_state "the application relations are present" do
     no_op
   end
 
-  provider_state "a pacticipant with name Foo exists" do
+  provider_state "a application with name Foo exists" do
     set_up do
       TestDataBuilder.new
         .create_consumer("Foo")
     end
   end
 
-  provider_state "the pb:pacticipant-version relation exists in the index resource" do
+  provider_state "the pb:application-version relation exists in the index resource" do
     no_op
   end
 
-  provider_state "version 26f353580936ad3b9baddb17b00e84f33c69e7cb of pacticipant Foo does not exist" do
+  provider_state "version 26f353580936ad3b9baddb17b00e84f33c69e7cb of application Foo does not exist" do
     no_op
   end
 
-  provider_state "version 26f353580936ad3b9baddb17b00e84f33c69e7cb of pacticipant Foo does exist" do
+  provider_state "version 26f353580936ad3b9baddb17b00e84f33c69e7cb of application Foo does exist" do
     set_up do
       TestDataBuilder.new
         .create_consumer("Foo")
@@ -303,7 +303,7 @@ Pact.provider_states_for "Pact Broker Client" do
     end
   end
 
-  provider_state "version 5556b8149bf8bac76bc30f50a8a2dd4c22c85f30 of pacticipant Foo exists with a test environment available for release" do
+  provider_state "version 5556b8149bf8bac76bc30f50a8a2dd4c22c85f30 of application Foo exists with a test environment available for release" do
     set_up do
       TestDataBuilder.new
         .create_environment("test", uuid: "cb632df3-0a0d-4227-aac3-60114dd36479")
@@ -339,11 +339,11 @@ Pact.provider_states_for "Pact Broker Client" do
     end
   end
 
-  provider_state "the pb:pacticipant-branch relation exists in the index resource" do
+  provider_state "the pb:application-branch relation exists in the index resource" do
     no_op
   end
 
-  provider_state "a branch named main exists for pacticipant Foo" do
+  provider_state "a branch named main exists for application Foo" do
     set_up do
       TestDataBuilder.new
         .create_consumer("Foo")

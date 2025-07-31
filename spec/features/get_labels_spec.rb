@@ -7,10 +7,10 @@ describe "Get labels" do
 
   context "when labels exists" do
     before do
-      td.create_pacticipant("foo")
+      td.create_application("foo")
         .create_label("ios")
         .create_label("consumer")
-        .create_pacticipant("bar")
+        .create_application("bar")
         .create_label("ios")
         .create_label("consumer")
     end

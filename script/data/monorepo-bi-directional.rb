@@ -25,14 +25,14 @@ begin
   other_app = "other-app"
 
   td = PactBroker::Test::HttpTestDataBuilder.new(base_url)
-  td.delete_pacticipant(app_1)
-    .delete_pacticipant(app_2)
+  td.delete_application(app_1)
+    .delete_application(app_2)
     .publish_contract_and_verify(consumer: app_1, consumer_version: "1", content_id: "1111", provider: app_2, provider_version: "1")
     .publish_contract_and_verify(consumer: app_2, consumer_version: "1", content_id: "2323", provider: app_1, provider_version: "1")
     .publish_contract_and_verify(consumer: app_1, consumer_version: "1", content_id: "2222", provider: other_app, provider_version: "1")
-    .record_deployment(pacticipant: app_1, version: "1", environment_name: "production")
-    .record_deployment(pacticipant: app_2, version: "1", environment_name: "production")
-    .record_deployment(pacticipant: other_app, version: "1", environment_name: "production")
+    .record_deployment(application: app_1, version: "1", environment_name: "production")
+    .record_deployment(application: app_2, version: "1", environment_name: "production")
+    .record_deployment(application: other_app, version: "1", environment_name: "production")
     .publish_contract_and_verify(consumer: app_1, consumer_version: "2", content_id: "55", provider: app_2, provider_version: "2")
     .publish_contract_and_verify(consumer: app_2, consumer_version: "2", content_id: "66", provider: app_1, provider_version: "2")
     .publish_contract_and_verify(consumer: app_1, consumer_version: "2", content_id: "2222", provider: other_app, provider_version: "1")
@@ -47,7 +47,7 @@ end
 # Scenario 1. Explicitly referencing each app in the mono-repo correctly allows the monorepo apps to be deployed, even though they are not backwards compatible with their
 # production counterparts.
 #
-# pact-broker can-i-deploy --pacticipant monorepo-app-1 --version 2 --pacticipant monorepo-app-2 --version 2 --to-environment production
+# pact-broker can-i-deploy --application monorepo-app-1 --version 2 --application monorepo-app-2 --version 2 --to-environment production
 # Computer says yes \o/
 
 # CONSUMER       | C.VERSION | PROVIDER       | P.VERSION | SUCCESS? | RESULT#
@@ -67,7 +67,7 @@ end
 
 # Scenario 2. Trying to deploy only one application from the monorepo shows us that can-i-deploy will not allow it.
 #
-# pact-broker can-i-deploy --pacticipant monorepo-app-1 --version 2 --to-environment production
+# pact-broker can-i-deploy --application monorepo-app-1 --version 2 --to-environment production
 # Computer says no ¯_(ツ)_/¯
 
 # CONSUMER       | C.VERSION | PROVIDER       | P.VERSION | SUCCESS? | RESULT#

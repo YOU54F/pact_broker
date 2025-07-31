@@ -11,15 +11,15 @@ module PactBroker
             allow(decorator).to receive(:version_url).and_return("version_url")
             allow(decorator).to receive(:tag_url).and_return("tag_url")
             allow(decorator).to receive(:pact_url).and_return("pact_url")
-            allow(decorator).to receive(:pacticipant_url).and_return("pacticipant_url")
-            allow(version).to receive(:pacticipant).and_return(pacticipant)
+            allow(decorator).to receive(:application_url).and_return("application_url")
+            allow(version).to receive(:application).and_return(application)
             allow(tag).to receive(:version).and_return(version)
           end
 
           let(:results) do
             PactBroker::Contracts::ContractsPublicationResults.from_hash(
               notices: notices,
-              pacticipant: pacticipant,
+              application: application,
               version: version,
               contracts: contracts,
               tags: tags
@@ -27,7 +27,7 @@ module PactBroker
           end
           let(:contracts) { [pact] }
           let(:pact) { instance_double(PactBroker::Domain::Pact, name: "pact name") }
-          let(:pacticipant) { PactBroker::Domain::Pacticipant.new(name: "Foo" ) }
+          let(:application) { PactBroker::Domain::Application.new(name: "Foo" ) }
           let(:tags) { [tag]}
           let(:tag) { PactBroker::Domain::Tag.new(name: "main")}
           let(:version) { PactBroker::Domain::Version.new(number: "1" ) }

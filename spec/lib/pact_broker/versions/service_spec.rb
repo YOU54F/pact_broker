@@ -8,42 +8,42 @@ module PactBroker
           allow(PactBroker.configuration).to receive(:use_first_tag_as_branch).and_return(use_first_tag_as_branch)
         end
 
-        let(:pacticipant_name) { "test_pacticipant" }
+        let(:application_name) { "test_application" }
         let(:version_number) { "1.2.3" }
         let(:tag_name) { "prod" }
 
-        subject { Service.maybe_set_version_branch_from_tag(td.find_version(pacticipant_name, version_number), tag_name) }
+        subject { Service.maybe_set_version_branch_from_tag(td.find_version(application_name, version_number), tag_name) }
 
         context "when use_first_tag_as_branch is true" do
           let(:use_first_tag_as_branch) { true }
 
           context "when there is already a tag" do
             before do
-              td.create_consumer(pacticipant_name)
+              td.create_consumer(application_name)
                 .create_consumer_version(version_number, tag_name: "foo")
             end
 
             it "does not set the branch" do
               subject
-              expect(td.find_version(pacticipant_name, version_number).branch_names).to be_empty
+              expect(td.find_version(application_name, version_number).branch_names).to be_empty
             end
           end
 
           context "when the branch is already set" do
             before do
-              td.create_consumer(pacticipant_name)
+              td.create_consumer(application_name)
                 .create_consumer_version(version_number, branch: "foo")
             end
 
             it "does not update the branch" do
               subject
-              expect(td.find_version(pacticipant_name, version_number).branch_names).to eq ["foo"]
+              expect(td.find_version(application_name, version_number).branch_names).to eq ["foo"]
             end
           end
 
           context "when use_first_tag_as_branch is false" do
             before do
-              td.create_consumer(pacticipant_name)
+              td.create_consumer(application_name)
                 .create_consumer_version(version_number)
             end
 
@@ -51,13 +51,13 @@ module PactBroker
 
             it "does not set the branch" do
               subject
-              expect(td.find_version(pacticipant_name, version_number).branch_names).to be_empty
+              expect(td.find_version(application_name, version_number).branch_names).to be_empty
             end
           end
 
           context "when the version was outside of the time difference limit" do
             before do
-              version = td.create_consumer(pacticipant_name)
+              version = td.create_consumer(application_name)
                 .create_consumer_version(version_number)
                 .and_return(:consumer_version)
 
@@ -71,14 +71,14 @@ module PactBroker
 
             it "does not set the branch" do
               subject
-              expect(td.find_version(pacticipant_name, version_number).branch_names).to be_empty
+              expect(td.find_version(application_name, version_number).branch_names).to be_empty
             end
           end
 
           context "when the version was created within the limit" do
             before do
               version = td
-                .create_consumer(pacticipant_name)
+                .create_consumer(application_name)
                 .create_consumer_version(version_number)
                 .and_return(:consumer_version)
 
@@ -92,7 +92,7 @@ module PactBroker
 
             it "sets the branch" do
               subject
-              expect(td.find_version(pacticipant_name, version_number).branch_names).to include "prod"
+              expect(td.find_version(application_name, version_number).branch_names).to include "prod"
             end
           end
         end

@@ -7,7 +7,7 @@
 module PactBroker
   module Matrix
     module MatrixRowDatasetModule
-      EAGER_LOADED_RELATIONSHIPS_FOR_VERSION = { current_deployed_versions: :environment, current_supported_released_versions: :environment, branch_versions: [:branch_head, :version, branch: :pacticipant] }
+      EAGER_LOADED_RELATIONSHIPS_FOR_VERSION = { current_deployed_versions: :environment, current_supported_released_versions: :environment, branch_versions: [:branch_head, :version, branch: :application] }
       LAST_ACTION_DATE = Sequel.lit("CASE WHEN (provider_version_created_at IS NOT NULL AND provider_version_created_at > consumer_version_created_at) THEN provider_version_created_at ELSE consumer_version_created_at END").as(:last_action_date)
 
       # The matrix query used to determine the final dataset
@@ -36,8 +36,8 @@ module PactBroker
           :pact_version,
           consumer_version: EAGER_LOADED_RELATIONSHIPS_FOR_VERSION,
           provider_version: EAGER_LOADED_RELATIONSHIPS_FOR_VERSION,
-          consumer_version_tags: [:head_tag, { version: :pacticipant }],
-          provider_version_tags: [:head_tag, { version: :pacticipant }]
+          consumer_version_tags: [:head_tag, { version: :application }],
+          provider_version_tags: [:head_tag, { version: :application }]
         )
       end
 
@@ -90,13 +90,13 @@ module PactBroker
         pact_publications = matching_only_selectors_as_consumer(resolved_selectors, limit: limit)
         verifications = verification_dataset.matching_only_selectors_as_provider(resolved_selectors)
 
-        specified_pacticipant_ids = resolved_selectors.select(&:specified?).collect(&:pacticipant_id).uniq
+        specified_application_ids = resolved_selectors.select(&:specified?).collect(&:application_id).uniq
 
         pact_publications
           .from_self(alias: :p)
           .select_all_columns_after_join
           .left_outer_join_verifications_dataset(verifications)
-          .where(consumer_id: specified_pacticipant_ids).or(provider_id: specified_pacticipant_ids)
+          .where(consumer_id: specified_application_ids).or(provider_id: specified_application_ids)
       end
 
       # Return pact publications where the consumer/consumer version is described by any of the resolved_selectors, AND the provider is described by any of the resolved selectors.
@@ -105,46 +105,46 @@ module PactBroker
       # @return [Sequel::Dataset<MatrixRow>]
       def matching_only_selectors_as_consumer(resolved_selectors, limit: )
         [
-          matching_only_selectors_as_consumer_where_only_pacticipant_name_in_selector(resolved_selectors, limit: limit),
-          matching_only_selectors_as_consumer_where_not_only_pacticipant_name_in_selector(resolved_selectors, limit: limit),
+          matching_only_selectors_as_consumer_where_only_application_name_in_selector(resolved_selectors, limit: limit),
+          matching_only_selectors_as_consumer_where_not_only_application_name_in_selector(resolved_selectors, limit: limit),
         ].compact.reduce(&:union)
       end
 
 
-      # Return pact publications where the consumer is described by any of the resolved_selectors *that only specify the pacticipant NAME*, AND the provider is described by any of the resolved selectors.
-      # If the original selector only specified the pacticipant name, we don't need to join to the versions table to identify the required pact_publications.
-      # Return nil if there are no resolved selectors where only the pacticipant name is specified.
+      # Return pact publications where the consumer is described by any of the resolved_selectors *that only specify the application NAME*, AND the provider is described by any of the resolved selectors.
+      # If the original selector only specified the application name, we don't need to join to the versions table to identify the required pact_publications.
+      # Return nil if there are no resolved selectors where only the application name is specified.
       # @private
       # @param [Array<PactBroker::Matrix::ResolvedSelector>] resolved_selectors
       # @return [Sequel::Dataset<MatrixRow>, nil]
-      def matching_only_selectors_as_consumer_where_only_pacticipant_name_in_selector(resolved_selectors, limit:)
-        all_pacticipant_ids = resolved_selectors.collect(&:pacticipant_id).uniq
-        pacticipant_ids_for_pacticipant_only_selectors = resolved_selectors.select(&:only_pacticipant_name_specified?).collect(&:pacticipant_id).uniq
+      def matching_only_selectors_as_consumer_where_only_application_name_in_selector(resolved_selectors, limit:)
+        all_application_ids = resolved_selectors.collect(&:application_id).uniq
+        application_ids_for_application_only_selectors = resolved_selectors.select(&:only_application_name_specified?).collect(&:application_id).uniq
 
-        if pacticipant_ids_for_pacticipant_only_selectors.any?
+        if application_ids_for_application_only_selectors.any?
           select_pact_columns_with_aliases
-            .where(consumer_id: pacticipant_ids_for_pacticipant_only_selectors)
-            .where(provider_id: all_pacticipant_ids)
+            .where(consumer_id: application_ids_for_application_only_selectors)
+            .where(provider_id: all_application_ids)
             .most_recent(limit)
         end
       end
 
       # Return pact publications where the consumer *version* is described by any of the resolved_selectors
-      # *that specify more than just the pacticipant name*,
+      # *that specify more than just the application name*,
       # AND the provider is described by any of the resolved selectors.
       # If the selector uses any of the tag/branch/environment/latest attributes, we need to join to the versions table to identify the required pact_publications.
-      # Return nil if there are no resolved selectors where anything other than the pacticipant name is specified.
+      # Return nil if there are no resolved selectors where anything other than the application name is specified.
       # @private
       # @param [Array<PactBroker::Matrix::ResolvedSelector>] resolved_selectors
       # @return [Sequel::Dataset<MatrixRow>, nil]
-      def matching_only_selectors_as_consumer_where_not_only_pacticipant_name_in_selector(resolved_selectors, limit:)
-        all_pacticipant_ids = resolved_selectors.collect(&:pacticipant_id).uniq
-        resolved_selectors_with_versions_specified = resolved_selectors.reject(&:only_pacticipant_name_specified?)
+      def matching_only_selectors_as_consumer_where_not_only_application_name_in_selector(resolved_selectors, limit:)
+        all_application_ids = resolved_selectors.collect(&:application_id).uniq
+        resolved_selectors_with_versions_specified = resolved_selectors.reject(&:only_application_name_specified?)
 
         if resolved_selectors_with_versions_specified.any?
           select_pact_columns_with_aliases
             .inner_join_versions_for_selectors_as_consumer(resolved_selectors_with_versions_specified)
-            .where(provider_id: all_pacticipant_ids)
+            .where(provider_id: all_application_ids)
             .most_recent(limit)
         end
       end

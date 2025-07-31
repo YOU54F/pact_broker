@@ -85,40 +85,40 @@ module PactBroker
         self
       end
 
-      def create_tagged_pacticipant_version(pacticipant:, version:, tag:)
+      def create_tagged_application_version(application:, version:, tag:)
         [*tag].each do | t |
-          create_tag(pacticipant: pacticipant, version: version, tag: t)
+          create_tag(application: application, version: version, tag: t)
         end
         self
       end
 
-      def create_tag(pacticipant:, version:, tag:)
-        puts "Creating tag '#{tag}' for #{pacticipant} version #{version}"
-        client.put("pacticipants/#{encode(pacticipant)}/versions/#{encode(version)}/tags/#{encode(tag)}", {}).tap { |response| check_for_error(response) }
+      def create_tag(application:, version:, tag:)
+        puts "Creating tag '#{tag}' for #{application} version #{version}"
+        client.put("applications/#{encode(application)}/versions/#{encode(version)}/tags/#{encode(tag)}", {}).tap { |response| check_for_error(response) }
         self
       end
 
-      def create_version(pacticipant:, version:, branch: nil)
+      def create_version(application:, version:, branch: nil)
         if branch
-          puts "Adding #{pacticipant} version #{version} to branch #{branch}"
+          puts "Adding #{application} version #{version} to branch #{branch}"
           puts ""
-          client.put("pacticipants/#{encode(pacticipant)}/branches/#{encode(branch)}/versions/#{encode(version)}", {}).tap { |response| check_for_error(response) }
+          client.put("applications/#{encode(application)}/branches/#{encode(branch)}/versions/#{encode(version)}", {}).tap { |response| check_for_error(response) }
         else
-          client.put("pacticipants/#{encode(pacticipant)}/versions/#{encode(version)}").tap { |response| check_for_error(response) }
+          client.put("applications/#{encode(application)}/versions/#{encode(version)}").tap { |response| check_for_error(response) }
         end
         self
       end
 
-      def deploy_to_prod(pacticipant:, version:)
-        puts "Deploying #{pacticipant} version #{version} to prod"
-        create_tag(pacticipant: pacticipant, version: version, tag: "prod")
+      def deploy_to_prod(application:, version:)
+        puts "Deploying #{application} version #{version} to prod"
+        create_tag(application: application, version: version, tag: "prod")
         separate
         self
       end
 
-      def record_deployment(pacticipant:, version:, environment_name:)
-        puts "Recording deployment of #{pacticipant} version #{version} to #{environment_name}"
-        version_body = client.get("/pacticipants/#{encode(pacticipant)}/versions/#{encode(version)}").tap { |response| check_for_error(response) }.body
+      def record_deployment(application:, version:, environment_name:)
+        puts "Recording deployment of #{application} version #{version} to #{environment_name}"
+        version_body = client.get("/applications/#{encode(application)}/versions/#{encode(version)}").tap { |response| check_for_error(response) }.body
 
         environment_relation = version_body["_links"]["pb:record-deployment"].find { |relation| relation["name"] == environment_name }
         if environment_relation.nil?
@@ -132,9 +132,9 @@ module PactBroker
         self
       end
 
-      def record_release(pacticipant:, version:, environment_name:)
-        puts "Recording release of #{pacticipant} version #{version} to #{environment_name}"
-        version_body = client.get("/pacticipants/#{encode(pacticipant)}/versions/#{encode(version)}").tap { |response| check_for_error(response) }.body
+      def record_release(application:, version:, environment_name:)
+        puts "Recording release of #{application} version #{version} to #{environment_name}"
+        version_body = client.get("/applications/#{encode(application)}/versions/#{encode(version)}").tap { |response| check_for_error(response) }.body
         environment_relation = version_body["_links"]["pb:record-release"].find { |relation| relation["name"] == environment_name }
         client.post(environment_relation["href"]).tap { |response| check_for_error(response) }
         separate
@@ -148,16 +148,16 @@ module PactBroker
         self
       end
 
-      def create_pacticipant(name, main_branch: nil)
-        puts "Creating pacticipant with name #{name}"
-        client.post("pacticipants", { name: name, mainBranch: main_branch }).tap { |response| check_for_error(response) }
+      def create_application(name, main_branch: nil)
+        puts "Creating application with name #{name}"
+        client.post("applications", { name: name, mainBranch: main_branch }).tap { |response| check_for_error(response) }
         separate
         self
       end
 
       def create_label(name, label)
         puts "Creating label '#{label}' for #{name}"
-        client.put("pacticipants/#{encode(name)}/labels/#{encode(label)}", {}).tap { |response| check_for_error(response) }
+        client.put("applications/#{encode(name)}/labels/#{encode(label)}", {}).tap { |response| check_for_error(response) }
         separate
         self
       end
@@ -165,8 +165,8 @@ module PactBroker
       def publish_contract(consumer: last_consumer_name, consumer_version:, provider: last_provider_name, content_id:, tag: nil, branch: nil)
         content = generate_content(consumer, provider, content_id)
         request_body_hash = {
-          :pacticipantName => consumer,
-          :pacticipantVersionNumber => consumer_version,
+          :applicationName => consumer,
+          :applicationVersionNumber => consumer_version,
           :branch => branch,
           :tags => tag ? [tag] : nil,
           :contracts => [
@@ -190,10 +190,10 @@ module PactBroker
         @last_provider_name = provider
         @last_consumer_version_number = consumer_version
 
-        create_version(pacticipant: consumer, version: consumer_version, branch: branch) if branch
+        create_version(application: consumer, version: consumer_version, branch: branch) if branch
 
         [*tag].each do | t |
-          create_tag(pacticipant: consumer, version: consumer_version, tag: t)
+          create_tag(application: consumer, version: consumer_version, tag: t)
         end
         puts "" if [*tag].any?
 
@@ -352,10 +352,10 @@ module PactBroker
         self
       end
 
-      def can_i_deploy(pacticipant:, version:, to: nil, to_environment: nil)
-        can_i_deploy_response = client.get("can-i-deploy", { pacticipant: pacticipant, version: version, to: to, environment: to_environment}.compact ).tap { |response| check_for_error(response) }
+      def can_i_deploy(application:, version:, to: nil, to_environment: nil)
+        can_i_deploy_response = client.get("can-i-deploy", { application: application, version: version, to: to, environment: to_environment}.compact ).tap { |response| check_for_error(response) }
         can = !!(can_i_deploy_response.body["summary"] || {})["deployable"]
-        puts "can-i-deploy #{pacticipant} version #{version} to #{to || to_environment}: #{can ? 'yes' : 'no'}"
+        puts "can-i-deploy #{application} version #{version} to #{to || to_environment}: #{can ? 'yes' : 'no'}"
         summary = can_i_deploy_response.body["summary"]
         verification_result_urls = (can_i_deploy_response.body["matrix"] || []).collect do | row |
           row.dig("verificationResult", "_links", "self", "href")
@@ -366,10 +366,10 @@ module PactBroker
         self
       end
 
-      def can_i_merge(pacticipant:, version:)
-        can_i_merge_response = client.get("matrix", { q: [pacticipant: pacticipant, version: version], latestby: "cvp", mainBranch: true, latest: true }.compact ).tap { |response| check_for_error(response) }
+      def can_i_merge(application:, version:)
+        can_i_merge_response = client.get("matrix", { q: [application: application, version: version], latestby: "cvp", mainBranch: true, latest: true }.compact ).tap { |response| check_for_error(response) }
         can = !!(can_i_merge_response.body["summary"] || {})["deployable"]
-        puts "can-i-merge #{pacticipant} version #{version}: #{can ? 'yes' : 'no'}"
+        puts "can-i-merge #{application} version #{version}: #{can ? 'yes' : 'no'}"
         summary = can_i_merge_response.body["summary"]
         verification_result_urls = (can_i_merge_response.body["matrix"] || []).collect do | row |
           row.dig("verificationResult", "_links", "self", "href")
@@ -387,9 +387,9 @@ module PactBroker
         self
       end
 
-      def delete_pacticipant(name)
-        puts "Deleting pacticipant #{name}"
-        @publish_pact_response = client.delete("pacticipants/#{encode(name)}").tap { |response| check_for_error(response) }
+      def delete_application(name)
+        puts "Deleting application #{name}"
+        @publish_pact_response = client.delete("applications/#{encode(name)}").tap { |response| check_for_error(response) }
         separate
         self
       end
@@ -422,8 +422,8 @@ module PactBroker
       def webhook_description(consumer, provider)
         return "A webhook for all consumers and providers" if consumer.nil? && provider.nil?
 
-        suffix = {consumer: consumer, provider: provider}.compact.map do |name, pacticipant|
-          desc = pacticipant.compact.map { |k, v| "#{k}: '#{v}'"}.first
+        suffix = {consumer: consumer, provider: provider}.compact.map do |name, application|
+          desc = application.compact.map { |k, v| "#{k}: '#{v}'"}.first
           "#{name}s by #{desc}"
         end
 
@@ -432,11 +432,11 @@ module PactBroker
 
       def publish_verification_results(url_of_pact_to_verify, provider, provider_version, provider_version_tag, provider_version_branch, success)
         [*provider_version_tag].each do | tag |
-          create_tag(pacticipant: provider, version: provider_version, tag: tag)
+          create_tag(application: provider, version: provider_version, tag: tag)
         end
         puts "" if [*provider_version_tag].any?
 
-        create_version(pacticipant: provider, version: provider_version, branch: provider_version_branch) if provider_version_branch
+        create_version(application: provider, version: provider_version, branch: provider_version_branch) if provider_version_branch
 
         pact_response = client.get(url_of_pact_to_verify).tap { |response| check_for_error(response) }
         verification_results_url = pact_response.body["_links"]["pb:publish-verification-results"]["href"]

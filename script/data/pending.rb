@@ -6,8 +6,8 @@ begin
   base_url = ENV["PACT_BROKER_BASE_URL"] || "http://localhost:9292"
 
   td = PactBroker::Test::HttpTestDataBuilder.new(base_url)
-  td.delete_pacticipant("some-demo-provider")
-    .delete_pacticipant("some-demo-consumer")
+  td.delete_application("some-demo-provider")
+    .delete_application("some-demo-consumer")
     .publish_contract(consumer: "some-demo-consumer", provider: "some-demo-provider", consumer_version: "1", content_id: "1111", branch: "main")
     .publish_contract(consumer: "some-demo-consumer", provider: "some-demo-provider", consumer_version: "1", content_id: "1111", branch: "feat/x")
     .publish_contract(consumer: "some-demo-consumer", provider: "some-demo-provider", consumer_version: "2", content_id: "1111", branch: "feat/x")

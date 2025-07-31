@@ -20,8 +20,8 @@ module PactBroker
           Webhooks::WebhookRequestTemplate.new(request)
         end
 
-        let(:consumer) { Domain::WebhookPacticipant.new(name: "Consumer") }
-        let(:provider) { Domain::WebhookPacticipant.new(name: "Provider") }
+        let(:consumer) { Domain::WebhookApplication.new(name: "Consumer") }
+        let(:provider) { Domain::WebhookApplication.new(name: "Provider") }
         let(:event)    { Webhooks::WebhookEvent.new(name: "something_happened") }
         let(:created_at) { DateTime.now }
         let(:updated_at) { created_at + 1 }
@@ -63,12 +63,12 @@ module PactBroker
 
           it "includes a link to the consumer" do
             expect(parsed_json[:_links][:'pb:consumer'][:name]).to eq "Consumer"
-            expect(parsed_json[:_links][:'pb:consumer'][:href]).to eq "http://example.org/pacticipants/Consumer"
+            expect(parsed_json[:_links][:'pb:consumer'][:href]).to eq "http://example.org/applications/Consumer"
           end
 
           it "includes a link to the provider" do
             expect(parsed_json[:_links][:'pb:provider'][:name]).to eq "Provider"
-            expect(parsed_json[:_links][:'pb:provider'][:href]).to eq "http://example.org/pacticipants/Provider"
+            expect(parsed_json[:_links][:'pb:provider'][:href]).to eq "http://example.org/applications/Provider"
           end
 
           it "includes a link to itself" do
@@ -193,8 +193,8 @@ module PactBroker
           context "when the decorated object has a consumer/provider but the incoming JSON does not" do
             let(:webhook) do
               Domain::Webhook.new(
-                consumer: Domain::WebhookPacticipant.new(name: "consumer"),
-                provider: Domain::WebhookPacticipant.new(name: "provider")
+                consumer: Domain::WebhookApplication.new(name: "consumer"),
+                provider: Domain::WebhookApplication.new(name: "provider")
               )
             end
 

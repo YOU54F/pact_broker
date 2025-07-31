@@ -25,7 +25,7 @@ begin
       provider_version: "1",
       success: true
     )
-    .deploy_to_prod(pacticipant: "bar-provider", version: "1")
+    .deploy_to_prod(application: "bar-provider", version: "1")
     .publish_pact(consumer: "foo-consumer", consumer_version: "1", provider: "baz-provider", content_id: "222", tag: "main") # missing
     .get_pacts_for_verification(
       enable_pending: true,
@@ -38,7 +38,7 @@ begin
       provider_version: "4",
       success: false
     )
-    .deploy_to_prod(pacticipant: "baz-provider", version: "4")
+    .deploy_to_prod(application: "baz-provider", version: "4")
     .publish_pact(consumer: "foo-consumer", consumer_version: "1", provider: "dog-provider", content_id: "777", tag: "main") # missing
 
 rescue StandardError => e

@@ -11,26 +11,26 @@ module PactBroker
         property :logs, getter: ->(represented:, **) { represented.notices.collect{ | notice | { level: notice.type, message: notice.text, deprecationWarning: "Replaced by notices" } } }
         property :notices, getter: ->(represented:, **) { represented.notices.collect(&:to_h) }
 
-        property :pacticipant, embedded: true, extend: EmbeddedPacticipantDecorator
+        property :application, embedded: true, extend: EmbeddedApplicationDecorator
         property :version, embedded: true, extend: EmbeddedVersionDecorator
 
-        link :'pb:pacticipant' do | options |
+        link :'pb:application' do | options |
           {
-            title: "Pacticipant",
-            name: represented.pacticipant.name,
-            href: pacticipant_url(options.fetch(:base_url), represented.pacticipant)
+            title: "Application",
+            name: represented.application.name,
+            href: application_url(options.fetch(:base_url), represented.application)
           }
         end
 
-        link :'pb:pacticipant-version' do | options |
+        link :'pb:application-version' do | options |
           {
-            title: "Pacticipant version",
+            title: "Application version",
             name: represented.version.number,
             href: version_url(options.fetch(:base_url), represented.version)
           }
         end
 
-        links :'pb:pacticipant-version-tags' do | options |
+        links :'pb:application-version-tags' do | options |
           represented.tags.collect do | tag |
             {
               title: "Tag",

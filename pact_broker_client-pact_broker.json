@@ -10,7 +10,7 @@
     "description": "a request to publish a pact",
     "request": {
       "method": "put",
-      "path": "/pacticipant/Condor/versions/1.3.0/pacts/Pricing%20Service",
+      "path": "/application/Condor/versions/1.3.0/pacts/Pricing%20Service",
       "body": {
         "consumer": {
           "name": "Condor"
@@ -35,10 +35,10 @@
   },
   {
     "description": "a request to publish a pact",
-    "providerState": "an error occurs while publishing a pact",
+    "providerState": "an error occurs while publishing a pact2",
     "request": {
       "method": "put",
-      "path": "/pacticipant/Condor/versions/1.3.0/pacts/Pricing%20Service",
+      "path": "/application/Condor/versions/1.3.0/pacts/Pricing%20Service",
       "body": {
         "consumer": {
           "name": "Condor"
@@ -75,7 +75,7 @@
     "providerState": "the 'Pricing Service' does not exist in the pact-broker",
     "request": {
       "method": "get",
-      "path": "/pacticipant/Pricing%20Service/repository_url",
+      "path": "/application/Pricing%20Service/repository_url",
       "headers": {
         "X-Pact-Broker-Client-Version": "2.0.0",
         "Accept": "text/plain"
@@ -89,11 +89,11 @@
   },
 
     {
-      "description": "a request to register the repository URL of a pacticipant",
+      "description": "a request to register the repository URL of a application",
       "providerState": "the 'Pricing Service' does not exist in the pact-broker",
       "request": {
         "method": "patch",
-        "path": "/pacticipant/Pricing%20Service",
+        "path": "/application/Pricing%20Service",
         "body": {
           "repository_url": "git@git.realestate.com.au:business-systems/condor.git"
         },
@@ -111,7 +111,7 @@
     "providerState": "the 'Pricing Service' already exists in the pact-broker",
     "request": {
       "method": "get",
-      "path": "/pacticipant/Pricing%20Service/repository_url",
+      "path": "/application/Pricing%20Service/repository_url",
       "headers": {
         "X-Pact-Broker-Client-Version": "2.0.0",
         "Accept": "text/plain"
@@ -128,6 +128,9 @@
   "metadata": {
     "pact_gem": {
       "version": "1.0.15"
+    },
+    "pactSpecification": {
+      "version": "2.0.0"
     }
   }
 }

@@ -132,6 +132,6 @@ end
 RSpec::Matchers.define :be_a_pact_never_verified_for_consumer do | expected_consumer_name |
   match do | actual_reason |
     expect(actual_reason).to be_a(PactBroker::Matrix::PactNotEverVerifiedByProvider)
-    expect(actual_reason.consumer_selector.pacticipant_name).to eq expected_consumer_name
+    expect(actual_reason.consumer_selector.application_name).to eq expected_consumer_name
   end
 end

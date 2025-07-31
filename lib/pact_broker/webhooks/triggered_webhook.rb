@@ -58,8 +58,8 @@ module PactBroker
       associate(:many_to_one, :webhook, :class => "PactBroker::Webhooks::Webhook", :key => :webhook_id, :primary_key => :id)
       associate(:many_to_one, :pact_publication, :class => "PactBroker::Pacts::PactPublication", :key => :pact_publication_id, :primary_key => :id)
       associate(:many_to_one, :verification, :class => "PactBroker::Domain::Verification", :key => :verification_id, :primary_key => :id)
-      associate(:many_to_one, :provider, :class => "PactBroker::Domain::Pacticipant", :key => :provider_id, :primary_key => :id)
-      associate(:many_to_one, :consumer, :class => "PactBroker::Domain::Pacticipant", :key => :consumer_id, :primary_key => :id)
+      associate(:many_to_one, :provider, :class => "PactBroker::Domain::Application", :key => :provider_id, :primary_key => :id)
+      associate(:many_to_one, :consumer, :class => "PactBroker::Domain::Application", :key => :consumer_id, :primary_key => :id)
 
       def request_description
         # webhook could be deleted
@@ -145,9 +145,9 @@ end
 #  triggered_webhooks_webhook_id_index          | btree (webhook_id)
 #  triggered_webhooks_webhook_uuid_index        | btree (webhook_uuid)
 # Foreign key constraints:
-#  triggered_webhooks_consumer_id_fkey         | (consumer_id) REFERENCES pacticipants(id)
+#  triggered_webhooks_consumer_id_fkey         | (consumer_id) REFERENCES applications(id)
 #  triggered_webhooks_pact_publication_id_fkey | (pact_publication_id) REFERENCES pact_publications(id)
-#  triggered_webhooks_provider_id_fkey         | (provider_id) REFERENCES pacticipants(id)
+#  triggered_webhooks_provider_id_fkey         | (provider_id) REFERENCES applications(id)
 #  triggered_webhooks_verification_id_fkey     | (verification_id) REFERENCES verifications(id)
 #  triggered_webhooks_webhook_id_fkey          | (webhook_id) REFERENCES webhooks(id)
 # Referenced By:

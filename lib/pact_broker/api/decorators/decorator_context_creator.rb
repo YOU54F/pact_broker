@@ -1,5 +1,5 @@
 # Builds the Hash that is passed into the Decorator as the `user_options`. It contains the request details, rack env, the (optional) title
-# and anything else that is required by the decorator to render the resource (eg. the pacticipant that the versions belong to)
+# and anything else that is required by the decorator to render the resource (eg. the application that the versions belong to)
 
 module PactBroker
   module Api
@@ -17,7 +17,7 @@ module PactBroker
 
         # decorator_context [String] :resource_url
         # The resource URL without any query string.
-        # eg. http://some.host:9292/pact_broker/pacticipants/Foo/versions
+        # eg. http://some.host:9292/pact_broker/applications/Foo/versions
         # Always present
 
         # decorator_context [String] :query_string
@@ -27,7 +27,7 @@ module PactBroker
 
         # decorator_context [String] :request_url
         # The full request URL.
-        # eg. http://some.host:9292/pact_broker/pacticipants/Foo/versions?page=1&size=50
+        # eg. http://some.host:9292/pact_broker/applications/Foo/versions?page=1&size=50
         # Always present
 
         # decorator_context [Hash] :env
@@ -35,7 +35,7 @@ module PactBroker
         # Always present
 
         # decorator_context [Hash] :resource_title
-        # eg. "Pacticipant versions for Foo"
+        # eg. "Application versions for Foo"
         # Optional
         # Used when a single decorator is being used for multiple resources and the title needs to be
         # set from the resource.

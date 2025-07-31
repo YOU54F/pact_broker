@@ -18,10 +18,10 @@ begin
 
 
   td = PactBroker::Test::HttpTestDataBuilder.new(base_url)
-  td.delete_pacticipant(consumer_1)
-    .delete_pacticipant(consumer_2)
-    .delete_pacticipant(provider_1)
-    .delete_pacticipant(provider_2)
+  td.delete_application(consumer_1)
+    .delete_application(consumer_2)
+    .delete_application(provider_1)
+    .delete_application(provider_2)
     .publish_contract(consumer: consumer_1, provider: provider_1, consumer_version: "1", content_id: "1111", branch: "main")
     .get_pacts_for_verification(provider: provider_1, consumer_version_selectors: [ { branch: "main" }])
     .verify_pact(
@@ -29,7 +29,7 @@ begin
       provider_version: "1",
       success: false
     )
-    .record_deployment(pacticipant: provider_1, version: "1", environment_name: "production")
+    .record_deployment(application: provider_1, version: "1", environment_name: "production")
     .publish_contract(consumer: consumer_2, provider: provider_2, consumer_version: "1", content_id: "222", branch: "main")
     .get_pacts_for_verification(provider: provider_2, consumer_version_selectors: [ { branch: "main" }])
     .verify_pact(
@@ -37,7 +37,7 @@ begin
       provider_version: "1",
       success: true
     )
-    .record_deployment(pacticipant: provider_2, version: "1", environment_name: "production")
+    .record_deployment(application: provider_2, version: "1", environment_name: "production")
 
 rescue StandardError => e
   puts "#{e.class} #{e.message}"
@@ -45,7 +45,7 @@ rescue StandardError => e
   exit 1
 end
 
-# pact-broker can-i-deploy --pacticipant monorepo-app-1 --version 1 --pacticipant monorepo-app-2 --version 1 --to-environment production
+# pact-broker can-i-deploy --application monorepo-app-1 --version 1 --application monorepo-app-2 --version 1 --to-environment production
 # Computer says no ¯_(ツ)_/¯
 #
 # CONSUMER            | C.VERSION | PROVIDER   | P.VERSION | SUCCESS? | RESULT#

@@ -1,5 +1,5 @@
 require "pact_broker/test/test_data_builder"
-require "pact_broker/pacticipants/service"
+require "pact_broker/applications/service"
 
 module PactBroker
   module DB
@@ -49,7 +49,7 @@ module PactBroker
       # rubocop: enable Metrics/MethodLength
 
       def database_empty?
-        PactBroker::Pacticipants::Service.find_all_pacticipants.empty?
+        PactBroker::Applications::Service.find_all_applications.empty?
       end
 
       def pact_1

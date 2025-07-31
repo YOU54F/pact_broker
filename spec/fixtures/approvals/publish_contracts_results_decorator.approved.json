@@ -13,11 +13,11 @@
     }
   ],
   "_embedded": {
-    "pacticipant": {
+    "application": {
       "name": "Foo",
       "_links": {
         "self": {
-          "href": "http://example.org/pacticipants/Foo"
+          "href": "http://example.org/applications/Foo"
         }
       }
     },
@@ -27,23 +27,23 @@
         "self": {
           "title": "Version",
           "name": "1",
-          "href": "http://example.org/pacticipants/Foo/versions/1"
+          "href": "http://example.org/applications/Foo/versions/1"
         }
       }
     }
   },
   "_links": {
-    "pb:pacticipant": {
-      "title": "Pacticipant",
+    "pb:application": {
+      "title": "Application",
       "name": "Foo",
-      "href": "pacticipant_url"
+      "href": "application_url"
     },
-    "pb:pacticipant-version": {
-      "title": "Pacticipant version",
+    "pb:application-version": {
+      "title": "Application version",
       "name": "1",
       "href": "version_url"
     },
-    "pb:pacticipant-version-tags": [
+    "pb:application-version-tags": [
       {
         "title": "Tag",
         "name": "main",

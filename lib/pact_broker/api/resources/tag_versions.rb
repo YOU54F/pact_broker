@@ -44,7 +44,7 @@ module PactBroker
         end
 
         def tags
-          @tags ||= tag_service.find_all_by_pacticipant_name_and_tag(**identifier_from_path.slice(:pacticipant_name, :tag_name))
+          @tags ||= tag_service.find_all_by_application_name_and_tag(**identifier_from_path.slice(:application_name, :tag_name))
         end
 
         def schema

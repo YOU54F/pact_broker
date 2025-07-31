@@ -125,8 +125,8 @@ module PactBroker
       end
 
       def dry_run_results
-        to_delete = dry_run_to_delete_by_pacticipant
-        to_keep = dry_run_to_keep_by_pacticipant
+        to_delete = dry_run_to_delete_by_application
+        to_keep = dry_run_to_keep_by_application
 
         kept_per_selector = keep.collect do | selector |
           {
@@ -135,10 +135,10 @@ module PactBroker
           }
         end
 
-        pacticipant_results = pacticipants.each_with_object({}) do | pacticipant, results |
-          results[pacticipant.name] = {
-            "toDelete" => to_delete[pacticipant.name] || { "count" => 0 },
-            "toKeep" => to_keep[pacticipant.id]
+        application_results = applications.each_with_object({}) do | application, results |
+          results[application.name] = {
+            "toDelete" => to_delete[application.name] || { "count" => 0 },
+            "toKeep" => to_keep[application.id]
           }
         end
 
@@ -154,7 +154,7 @@ module PactBroker
             "versionsToKeep" => versions_to_keep_count,
             "versionsToKeepBySelector" => kept_per_selector,
           },
-          "versionSummary" => pacticipant_results
+          "versionSummary" => application_results
         }
       end
 
@@ -164,15 +164,15 @@ module PactBroker
           .where(Sequel[:delete_versions][:id] => nil)
       end
 
-      # Returns the latest version that will be kept for each pacticipant
-      def dry_run_latest_versions_to_keep_by_pacticipant
+      # Returns the latest version that will be kept for each application
+      def dry_run_latest_versions_to_keep_by_application
         latest_undeleted_versions_by_order = expected_remaining_versions
-          .select_group(:pacticipant_id)
+          .select_group(:application_id)
           .select_append{ max(order).as(latest_order) }
 
         lv_versions_join = {
           Sequel[:lv][:latest_order] => Sequel[:versions][:order],
-          Sequel[:lv][:pacticipant_id] => Sequel[:versions][:pacticipant_id]
+          Sequel[:lv][:application_id] => Sequel[:versions][:application_id]
         }
 
         PactBroker::Domain::Version
@@ -180,15 +180,15 @@ module PactBroker
           .join(latest_undeleted_versions_by_order, lv_versions_join, { table_alias: :lv })
       end
 
-      # Returns the earliest version that will be kept for each pacticipant
-      def dry_run_earliest_versions_to_keep_by_pacticipant
+      # Returns the earliest version that will be kept for each application
+      def dry_run_earliest_versions_to_keep_by_application
         earliest_undeleted_versions_by_order = expected_remaining_versions
-          .select_group(:pacticipant_id)
+          .select_group(:application_id)
           .select_append{ min(order).as(first_order) }
 
         ev_versions_join = {
           Sequel[:lv][:first_order] => Sequel[:versions][:order],
-          Sequel[:lv][:pacticipant_id] => Sequel[:versions][:pacticipant_id]
+          Sequel[:lv][:application_id] => Sequel[:versions][:application_id]
         }
 
         PactBroker::Domain::Version
@@ -196,16 +196,16 @@ module PactBroker
           .join(earliest_undeleted_versions_by_order, ev_versions_join, { table_alias: :lv })
       end
 
-      # Returns Hash of pacticipant name => Hash, where the Hash value contains the count, fromVersion and toVersion
+      # Returns Hash of application name => Hash, where the Hash value contains the count, fromVersion and toVersion
       # that will be deleted.
       # @return Hash
-      def dry_run_to_delete_by_pacticipant
+      def dry_run_to_delete_by_application
         versions_to_delete
           .select(Sequel[:versions].*)
           .all
-          .group_by{ | v | v.pacticipant_id }
-          .each_with_object({}) do | (_pacticipant_id, versions), hash |
-            hash[versions.first.pacticipant.name] = {
+          .group_by{ | v | v.application_id }
+          .each_with_object({}) do | (_application_id, versions), hash |
+            hash[versions.first.application.name] = {
               "count" => versions.count,
               "fromVersion" => version_info(versions.first),
               "toVersion" => version_info(versions.last)
@@ -214,38 +214,38 @@ module PactBroker
       end
 
       # rubocop: disable Metrics/CyclomaticComplexity
-      def dry_run_to_keep_by_pacticipant
-        latest_to_keep = dry_run_latest_versions_to_keep_by_pacticipant.eager(:tags).each_with_object({}) do | version, r |
-          r[version.pacticipant_id] = {
+      def dry_run_to_keep_by_application
+        latest_to_keep = dry_run_latest_versions_to_keep_by_application.eager(:tags).each_with_object({}) do | version, r |
+          r[version.application_id] = {
             "firstVersion" => version_info(version)
           }
         end
 
-        earliest_to_keep = dry_run_earliest_versions_to_keep_by_pacticipant.eager(:tags).each_with_object({}) do | version, r |
-          r[version.pacticipant_id] = {
+        earliest_to_keep = dry_run_earliest_versions_to_keep_by_application.eager(:tags).each_with_object({}) do | version, r |
+          r[version.application_id] = {
             "latestVersion" => version_info(version)
           }
         end
 
         counts = counts_to_keep
 
-        pacticipants.collect(&:id).each_with_object({}) do | pacticipant_id, results |
-          results[pacticipant_id] = { "count" => counts[pacticipant_id] || 0 }
-                      .merge(earliest_to_keep[pacticipant_id] || {})
-                      .merge(latest_to_keep[pacticipant_id] || {})
+        applications.collect(&:id).each_with_object({}) do | application_id, results |
+          results[application_id] = { "count" => counts[application_id] || 0 }
+                      .merge(earliest_to_keep[application_id] || {})
+                      .merge(latest_to_keep[application_id] || {})
         end
       end
       # rubocop: enable Metrics/CyclomaticComplexity
 
       def counts_to_keep
         expected_remaining_versions
-          .select_group(:pacticipant_id)
+          .select_group(:application_id)
           .select_append{ count(1).as(count) }
-          .as_hash(:pacticipant_id, :count)
+          .as_hash(:application_id, :count)
       end
 
-      def pacticipants
-        @pacticipants ||= PactBroker::Domain::Pacticipant.order_ignore_case(:name).all
+      def applications
+        @applications ||= PactBroker::Domain::Application.order_ignore_case(:name).all
       end
     end
   end

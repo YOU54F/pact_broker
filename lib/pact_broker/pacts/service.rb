@@ -54,9 +54,9 @@ module PactBroker
       end
 
       def create_or_update_pact params
-        provider = pacticipant_repository.find_by_name_or_create params[:provider_name]
-        consumer = pacticipant_repository.find_by_name_or_create params[:consumer_name]
-        consumer_version = version_repository.find_by_pacticipant_id_and_number_or_create consumer.id, params[:consumer_version_number]
+        provider = application_repository.find_by_name_or_create params[:provider_name]
+        consumer = application_repository.find_by_name_or_create params[:consumer_name]
+        consumer_version = version_repository.find_by_application_id_and_number_or_create consumer.id, params[:consumer_version_number]
         existing_pact = pact_repository.find_by_version_and_provider(consumer_version.id, provider.id)
 
         if existing_pact
@@ -67,9 +67,9 @@ module PactBroker
       end
 
       def merge_pact params
-        provider = pacticipant_repository.find_by_name_or_create params[:provider_name]
-        consumer = pacticipant_repository.find_by_name_or_create params[:consumer_name]
-        consumer_version = version_repository.find_by_pacticipant_id_and_number_or_create consumer.id, params[:consumer_version_number]
+        provider = application_repository.find_by_name_or_create params[:provider_name]
+        consumer = application_repository.find_by_name_or_create params[:consumer_name]
+        consumer_version = version_repository.find_by_application_id_and_number_or_create consumer.id, params[:consumer_version_number]
         existing_pact = pact_repository.find_by_version_and_provider(consumer_version.id, provider.id)
 
         params[:json_content] = Merger.merge_pacts(
@@ -196,7 +196,7 @@ module PactBroker
         pact = pact_repository.create(
           version_id: version.id,
           provider_id: provider.id,
-          consumer_id: version.pacticipant_id,
+          consumer_id: version.application_id,
           pact_version_sha: params.fetch(:pact_version_sha),
           json_content: json_content,
           version: version

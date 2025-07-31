@@ -1,5 +1,5 @@
 describe "Creating a tag" do
-  let(:path) { "/pacticipants/Foo/versions/1234/tags/foo" }
+  let(:path) { "/applications/Foo/versions/1234/tags/foo" }
   let(:headers) { { "CONTENT_TYPE" => "application/json" } }
   let(:response_body) { JSON.parse(subject.body, symbolize_names: true)}
 

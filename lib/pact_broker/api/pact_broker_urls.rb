@@ -14,43 +14,43 @@ module PactBroker
 
       extend self
 
-      def pacticipants_url base_url
-        "#{base_url}/pacticipants"
+      def applications_url base_url
+        "#{base_url}/applications"
       end
 
-      def pacticipant_url base_url, pacticipant
-        "#{pacticipants_url(base_url)}/#{url_encode(pacticipant.name)}"
+      def application_url base_url, application
+        "#{applications_url(base_url)}/#{url_encode(application.name)}"
       end
 
-      def pacticipants_with_label_url base_url, label_name
-        "#{pacticipants_url(base_url)}/label/#{url_encode(label_name)}"
+      def applications_with_label_url base_url, label_name
+        "#{applications_url(base_url)}/label/#{url_encode(label_name)}"
       end
 
-      def pacticipant_url_from_params params, base_url = ""
+      def application_url_from_params params, base_url = ""
         [
           base_url,
-          "pacticipants",
-          url_encode(params.fetch(:pacticipant_name))
+          "applications",
+          url_encode(params.fetch(:application_name))
         ].join("/")
       end
 
-      def latest_version_url base_url, pacticipant
-        "#{pacticipant_url(base_url, pacticipant)}/versions/latest"
+      def latest_version_url base_url, application
+        "#{application_url(base_url, application)}/versions/latest"
       end
 
-      def versions_url base_url, pacticipant
-        "#{pacticipant_url(base_url, pacticipant)}/versions"
+      def versions_url base_url, application
+        "#{application_url(base_url, application)}/versions"
       end
 
       def version_url base_url, version
-        "#{pacticipant_url(base_url, version.pacticipant)}/versions/#{url_encode(version.number)}"
+        "#{application_url(base_url, version.application)}/versions/#{url_encode(version.number)}"
       end
 
       def version_url_from_params params, base_url = ""
         [
           base_url,
-          "pacticipants",
-          url_encode(params.fetch(:pacticipant_name)),
+          "applications",
+          url_encode(params.fetch(:application_name)),
           "versions",
           url_encode(params.fetch(:version_number)),
         ].join("/")
@@ -195,7 +195,7 @@ module PactBroker
       end
 
       def latest_verifications_for_consumer_version_url version, base_url
-        "#{base_url}/verification-results/consumer/#{url_encode(version.pacticipant.name)}/version/#{url_encode(version.number)}/latest"
+        "#{base_url}/verification-results/consumer/#{url_encode(version.application.name)}/version/#{url_encode(version.number)}/latest"
       end
 
       def latest_verification_for_pact_url pact, base_url, permalink = true
@@ -228,11 +228,11 @@ module PactBroker
       end
 
       def branch_url(branch, base_url = "")
-        "#{pacticipant_branches_url(branch.pacticipant, base_url)}/#{url_encode(branch.name)}"
+        "#{application_branches_url(branch.application, base_url)}/#{url_encode(branch.name)}"
       end
 
-      def pacticipant_branches_url(pacticipant, base_url = "")
-        "#{pacticipant_url(base_url, pacticipant)}/branches"
+      def application_branches_url(application, base_url = "")
+        "#{application_url(base_url, application)}/branches"
       end
 
       def branch_versions_url(branch, base_url = "")
@@ -247,40 +247,40 @@ module PactBroker
         "#{branch_url(branch, base_url)}/latest-version"
       end
 
-      def templated_tag_url_for_pacticipant pacticipant_name, base_url = ""
-        pacticipant_url_from_params({ pacticipant_name: pacticipant_name }, base_url) + "/versions/{version}/tags/{tag}"
+      def templated_tag_url_for_application application_name, base_url = ""
+        application_url_from_params({ application_name: application_name }, base_url) + "/versions/{version}/tags/{tag}"
       end
 
-      def templated_branch_version_url_for_pacticipant pacticipant_name, base_url = ""
-        pacticipant_url_from_params({ pacticipant_name: pacticipant_name }, base_url) + "/branches/{branch}/versions/{version}"
+      def templated_branch_version_url_for_application application_name, base_url = ""
+        application_url_from_params({ application_name: application_name }, base_url) + "/branches/{branch}/versions/{version}"
       end
 
-      def templated_version_url_for_pacticipant pacticipant_name, base_url = ""
-        pacticipant_url_from_params({ pacticipant_name: pacticipant_name }, base_url) + "/versions/{version}"
+      def templated_version_url_for_application application_name, base_url = ""
+        application_url_from_params({ application_name: application_name }, base_url) + "/versions/{version}"
       end
 
-      def templated_label_url_for_pacticipant pacticipant_name, base_url = ""
-        pacticipant_url_from_params({ pacticipant_name: pacticipant_name }, base_url) + "/labels/{label}"
+      def templated_label_url_for_application application_name, base_url = ""
+        application_url_from_params({ application_name: application_name }, base_url) + "/labels/{label}"
       end
 
-      def templated_can_i_deploy_url pacticipant_name, base_url = ""
-        pacticipant_url_from_params({ pacticipant_name: pacticipant_name }, base_url) + "/latest-version/{tag}/can-i-deploy/to/{environmentTag}"
+      def templated_can_i_deploy_url application_name, base_url = ""
+        application_url_from_params({ application_name: application_name }, base_url) + "/latest-version/{tag}/can-i-deploy/to/{environmentTag}"
       end
 
-      def templated_can_i_deploy_badge_url pacticipant_name, base_url = ""
-        templated_can_i_deploy_url(pacticipant_name, base_url) + "/badge"
+      def templated_can_i_deploy_badge_url application_name, base_url = ""
+        templated_can_i_deploy_url(application_name, base_url) + "/badge"
       end
 
-      def templated_can_i_deploy_branch_to_environment_badge_url pacticipant_name, base_url = ""
-        pacticipant_url_from_params({ pacticipant_name: pacticipant_name }, base_url) + "/branches/{branch}/latest-version/can-i-deploy/to-environment/{environment}/badge"
+      def templated_can_i_deploy_branch_to_environment_badge_url application_name, base_url = ""
+        application_url_from_params({ application_name: application_name }, base_url) + "/branches/{branch}/latest-version/can-i-deploy/to-environment/{environment}/badge"
       end
 
       def label_url label, base_url
-        "#{labels_url(label.pacticipant, base_url)}/#{url_encode(label.name)}"
+        "#{labels_url(label.application, base_url)}/#{url_encode(label.name)}"
       end
 
-      def labels_url pacticipant, base_url
-        "#{pacticipant_url(base_url, pacticipant)}/labels"
+      def labels_url application, base_url
+        "#{application_url(base_url, application)}/labels"
       end
 
       def webhooks_url base_url
@@ -332,12 +332,12 @@ module PactBroker
       end
 
       def matrix_badge_url_for_selectors consumer_selector, provider_selector, base_url = ""
-        "#{base_url}/matrix/provider/#{url_encode(provider_selector.pacticipant_name)}/latest/#{url_encode(provider_selector.tag)}/consumer/#{url_encode(consumer_selector.pacticipant_name)}/latest/#{url_encode(consumer_selector.tag)}/badge.svg"
+        "#{base_url}/matrix/provider/#{url_encode(provider_selector.application_name)}/latest/#{url_encode(provider_selector.tag)}/consumer/#{url_encode(consumer_selector.application_name)}/latest/#{url_encode(consumer_selector.tag)}/badge.svg"
       end
 
-      def matrix_for_pacticipant_version_url(version, base_url = "")
+      def matrix_for_application_version_url(version, base_url = "")
         query = {
-          q: [{ pacticipant: version.pacticipant.name, version: version.number }],
+          q: [{ application: version.application.name, version: version.number }],
           latestby: "cvpv"
         }
         "#{base_url}/matrix?#{Rack::Utils.build_nested_query(query)}"
@@ -346,8 +346,8 @@ module PactBroker
       def matrix_for_pact_url(pact, base_url = "")
         query = {
           q: [
-            { pacticipant: pact.consumer_name, version: pact.consumer_version_number },
-            { pacticipant: pact.provider_name, latest: true }
+            { application: pact.consumer_name, version: pact.consumer_version_number },
+            { application: pact.provider_name, latest: true }
           ],
           latestby: "cvpv"
         }
@@ -358,8 +358,8 @@ module PactBroker
         matrix_url(params.fetch(:consumer_name), params.fetch(:provider_name), base_url)
       end
 
-      def group_url(pacticipant_name, base_url = "")
-        "#{base_url}/pacticipants/#{url_encode(pacticipant_name)}"
+      def group_url(application_name, base_url = "")
+        "#{base_url}/applications/#{url_encode(application_name)}"
       end
 
       def environments_url(base_url = "")
@@ -415,7 +415,7 @@ module PactBroker
       end
 
       def tag_versions_url(tag, base_url = "")
-        "#{pacticipant_url(base_url, tag.pacticipant)}/tags/#{tag.name}/versions"
+        "#{application_url(base_url, tag.application)}/tags/#{tag.name}/versions"
       end
 
       private

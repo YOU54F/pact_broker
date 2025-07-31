@@ -153,7 +153,7 @@ module PactBroker
 
       def required_verifications_for_deployed_versions(pact_version)
         deployed_versions = deployed_version_service.with_no_scope do | unscoped_service |
-          unscoped_service.find_currently_deployed_versions_for_pacticipant(pact_version.provider)
+          unscoped_service.find_currently_deployed_versions_for_application(pact_version.provider)
         end
         deployed_versions.collect do | deployed_version |
           identify_required_verification(pact_version, deployed_version.version, "deployed in #{deployed_version.environment_name}", PactBroker::Versions::Selector.for_currently_deployed)
@@ -163,7 +163,7 @@ module PactBroker
 
       def required_verifications_for_released_versions(pact_version)
         released_versions = released_version_service.with_no_scope do | unscoped_service |
-          unscoped_service.find_currently_supported_versions_for_pacticipant(pact_version.provider)
+          unscoped_service.find_currently_supported_versions_for_application(pact_version.provider)
         end
         released_versions.collect do | released_version |
           identify_required_verification(pact_version, released_version.version, "released in #{released_version.environment_name}", PactBroker::Versions::Selector.for_currently_supported)

@@ -8,11 +8,11 @@ begin
   td = PactBroker::Test::HttpTestDataBuilder.new(base_url)
   td.delete_webhook(uuid: "7a5da39c-8e50-4cc9-ae16-dfa5be043e8c")
     .create_global_webhook_for_contract_requiring_verification_published(uuid: "7a5da39c-8e50-4cc9-ae16-dfa5be043e8c")
-    .delete_pacticipant("foo-consumer")
-    .delete_pacticipant("bar-provider")
-    .create_pacticipant("foo-consumer")
-    .create_pacticipant("bar-provider")
-    .create_version(pacticipant: "bar-provider", branch: "main", version: "1")
+    .delete_application("foo-consumer")
+    .delete_application("bar-provider")
+    .create_application("foo-consumer")
+    .create_application("bar-provider")
+    .create_version(application: "bar-provider", branch: "main", version: "1")
     .publish_pact_the_old_way(consumer: "foo-consumer", consumer_version: "1", provider: "bar-provider", content_id: "111", tag: "main")
     .get_pacts_for_verification(
       provider: "bar-provider",

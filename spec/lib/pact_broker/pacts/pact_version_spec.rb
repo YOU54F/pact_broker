@@ -3,7 +3,7 @@ require "pact_broker/pacts/pact_version"
 module PactBroker
   module Pacts
     describe PactVersion do
-      describe "pacticipant names" do
+      describe "application names" do
         subject(:pact_version) do
           td.create_consumer("consumer")
             .create_provider("provider")

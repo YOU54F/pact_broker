@@ -16,13 +16,13 @@ This endpoint is designed to be used by a command line tool, and hence, the resp
 
 ## Parameters
 
-* `pacticipantName`: the name of the application. Required.
-* `pacticipantVersionNumber`: the version number of the application. Required. It is recommended that this should be or include the git SHA. See [http://docs.pact.io/versioning](http://docs.pact.io/versioning).
+* `applicationName`: the name of the application. Required.
+* `applicationVersionNumber`: the version number of the application. Required. It is recommended that this should be or include the git SHA. See [http://docs.pact.io/versioning](http://docs.pact.io/versioning).
 * `branch`: The git branch name. Optional but strongly recommended.
 * `tags`: The consumer version tags. Use of the branch parameter is preferred now. Optional.
 * `buildUrl`: The CI/CD build URL. Optional.
 * `contracts`
-  * `consumerName`: the name of the consumer. Required. Must match the pacticipant name and the consumer name inside the pact. While this field may seem redundant currently, this endpoint will be extended to support publication of provider generated, non-pact contracts, and the consumerName and providerName fields will be used to indicate which role the pacticipant is taking in the contract.
+  * `consumerName`: the name of the consumer. Required. Must match the application name and the consumer name inside the pact. While this field may seem redundant currently, this endpoint will be extended to support publication of provider generated, non-pact contracts, and the consumerName and providerName fields will be used to indicate which role the application is taking in the contract.
   * `providerName`: the name of the provider. Required.
   * `specification`: currently, only contracts of type "pact" are supported, but this will be extended in the future. Required.
   * `contentType`: currently, only contracts with a content type of "application/json" are supported. Required.
@@ -39,9 +39,9 @@ This endpoint is designed to be used by a command line tool, and hence, the resp
 The `_links` section will contain links to all the resources created by the publication. The relations are:
 
 * `pb:contracts` (array)
-* `pb:pacticipant-version-tags` (array)
-* `pb:pacticipant-version`
-* `pb:pacticipant`
+* `pb:application-version-tags` (array)
+* `pb:application-version`
+* `pb:application`
 
 ### Errors
 
@@ -85,8 +85,8 @@ If there is a conflict with an existing published pact and `allow_dangerous_cont
 
     POST http://broker/contracts/publish
     {
-      "pacticipantName": "Foo",
-      "pacticipantVersionNumber": "dc5eb529230038a4673b8c971395bd2922d8b240",
+      "applicationName": "Foo",
+      "applicationVersionNumber": "dc5eb529230038a4673b8c971395bd2922d8b240",
       "branch": "main",
       "tags": ["main"],
       "buildUrl": "https://ci/builds/1234",
@@ -122,11 +122,11 @@ If there is a conflict with an existing published pact and `allow_dangerous_cont
           }
         ],
         "_embedded": {
-          "pacticipant": {
+          "application": {
             "name": "Foo",
             "_links": {
               "self": {
-                "href": "http://example.org/pacticipants/Foo"
+                "href": "http://example.org/applications/Foo"
               }
             }
           },
@@ -138,32 +138,32 @@ If there is a conflict with an existing published pact and `allow_dangerous_cont
               "self": {
                 "title": "Version",
                 "name": "dc5eb529230038a4673b8c971395bd2922d8b240",
-                "href": "http://example.org/pacticipants/Foo/versions/dc5eb529230038a4673b8c971395bd2922d8b240"
+                "href": "http://example.org/applications/Foo/versions/dc5eb529230038a4673b8c971395bd2922d8b240"
               }
             }
           }
         },
         "_links": {
-          "pb:pacticipant": {
-            "title": "Pacticipant",
+          "pb:application": {
+            "title": "Application",
             "name": "Foo",
-            "href": "http://example.org/pacticipants/Foo"
+            "href": "http://example.org/applications/Foo"
           },
-          "pb:pacticipant-version": {
-            "title": "Pacticipant version",
+          "pb:application-version": {
+            "title": "Application version",
             "name": "1",
-            "href": "http://example.org/pacticipants/Foo/versions/dc5eb529230038a4673b8c971395bd2922d8b240"
+            "href": "http://example.org/applications/Foo/versions/dc5eb529230038a4673b8c971395bd2922d8b240"
           },
-          "pb:pacticipant-version-tags": [
+          "pb:application-version-tags": [
             {
               "title": "Tag",
               "name": "a",
-              "href": "http://example.org/pacticipants/Foo/versions/dc5eb529230038a4673b8c971395bd2922d8b240/tags/a"
+              "href": "http://example.org/applications/Foo/versions/dc5eb529230038a4673b8c971395bd2922d8b240/tags/a"
             },
             {
               "title": "Tag",
               "name": "b",
-              "href": "http://example.org/pacticipants/Foo/versions/dc5eb529230038a4673b8c971395bd2922d8b240/tags/b"
+              "href": "http://example.org/applications/Foo/versions/dc5eb529230038a4673b8c971395bd2922d8b240/tags/b"
             }
           ],
           "pb:contracts": [

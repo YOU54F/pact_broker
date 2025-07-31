@@ -89,7 +89,7 @@ module Webmachine
 
     def self.properties_for_webmachine_route(webmachine_route, application_context)
       with_no_logging do
-        path_info = { application_context: application_context, pacticipant_name: "foo", pacticipant_version_number: "1", resource_name: "foo" }
+        path_info = { application_context: application_context, application_name: "foo", application_version_number: "1", resource_name: "foo" }
         path_info.default = "1"
         request = build_request(http_method: "GET", path_info: path_info)
 
@@ -127,7 +127,7 @@ module Webmachine
     end
 
     def self.build_resource(webmachine_route, http_method, application_context)
-      path_info = { application_context: application_context, pacticipant_name: "foo", pacticipant_version_number: "1", resource_name: "foo" }
+      path_info = { application_context: application_context, application_name: "foo", application_version_number: "1", resource_name: "foo" }
       path_info.default = "1"
       request = build_request(http_method: http_method, path_info: path_info)
       webmachine_route.resource.new(request, Webmachine::Response.new)

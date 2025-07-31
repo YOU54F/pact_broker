@@ -4,7 +4,7 @@ module PactBroker
   module Versions
     describe BranchService do
       describe ".find_branch" do
-        subject { BranchService.find_branch(pacticipant_name: "Foo", branch_name: "main") }
+        subject { BranchService.find_branch(application_name: "Foo", branch_name: "main") }
 
         context "when it exists" do
           before do
@@ -16,7 +16,7 @@ module PactBroker
           end
 
           it "is returned" do
-            expect(subject.pacticipant.name).to eq "Foo"
+            expect(subject.application.name).to eq "Foo"
             expect(subject.name).to eq "main"
           end
         end
@@ -36,17 +36,17 @@ module PactBroker
             .create_consumer_version("2", branch: "main")
         end
 
-        subject { BranchService.find_branch_version(pacticipant_name: "Foo", version_number: "1", branch_name: "main") }
+        subject { BranchService.find_branch_version(application_name: "Foo", version_number: "1", branch_name: "main") }
 
         its(:version_number) { is_expected.to eq "1" }
       end
 
       describe "#create_branch_version" do
-        subject { BranchService.find_or_create_branch_version(pacticipant_name: "Foo", version_number: "1", branch_name: "main") }
+        subject { BranchService.find_or_create_branch_version(application_name: "Foo", version_number: "1", branch_name: "main") }
 
         context "when nothing exists" do
           it "creates and returns the branch version" do
-            expect(subject.pacticipant.name).to eq "Foo"
+            expect(subject.application.name).to eq "Foo"
             expect(subject.version_number).to eq "1"
             expect(subject.branch_name).to eq "main"
           end
@@ -63,7 +63,7 @@ module PactBroker
           end
 
           it "creates and returns the branch version" do
-            expect(subject.pacticipant.name).to eq "Foo"
+            expect(subject.application.name).to eq "Foo"
             expect(subject.version_number).to eq "1"
             expect(subject.branch_name).to eq "main"
             expect(subject.branch_head).to_not be nil
@@ -93,7 +93,7 @@ module PactBroker
       end
 
       describe "#branch_deletion_notices" do
-        let(:pacticipant) { instance_double(PactBroker::Domain::Pacticipant, name: "some-service") }
+        let(:application) { instance_double(PactBroker::Domain::Application, name: "some-service") }
         let(:exclude) { ["foo", "bar" ] }
         let(:branch_repository) { instance_double(PactBroker::Versions::BranchRepository, count_branches_to_delete: 3, remaining_branches_after_future_deletion: remaining_branches) }
         let(:remaining_branches) do
@@ -107,10 +107,10 @@ module PactBroker
           allow(BranchService).to receive(:branch_repository).and_return(branch_repository)
         end
 
-        subject { BranchService.branch_deletion_notices(pacticipant, exclude: exclude) }
+        subject { BranchService.branch_deletion_notices(application, exclude: exclude) }
 
         it "returns a list of notices" do
-          expect(subject).to contain_exactly(have_attributes(text: "Scheduled deletion of 3 branches for pacticipant some-service. Remaining branches are: bar, foo"))
+          expect(subject).to contain_exactly(have_attributes(text: "Scheduled deletion of 3 branches for application some-service. Remaining branches are: bar, foo"))
         end
       end
     end

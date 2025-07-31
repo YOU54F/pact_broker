@@ -10,7 +10,7 @@ For endpoints that support pagination a paginated response can be retrieved usin
 eg.
 
 ```
-https://pact-broker/pacticipants?pageSize=100&pageNumber=1
+https://pact-broker/applications?pageSize=100&pageNumber=1
 ```
 
 Including one or both of these in the api call will result in a paginated response. Where only one parameter is included the other will use the default value specified above.
@@ -23,7 +23,7 @@ The recommended approach to iterate the full list of resources is to fetch the f
 ```
 "_links": {
   "next": {
-    "href": "http://pact-broker/pacticipants?pageSize=100&pageNumber=2",
+    "href": "http://pact-broker/applications?pageSize=100&pageNumber=2",
     "title": "Next page"
   }
 }
@@ -34,10 +34,10 @@ The recommended approach to iterate the full list of resources is to fetch the f
 
 The following endpoints in the Pact Broker support pagination via the above query parameters:
 
-### [Pacticipants](https://docs.pact.io/pact_broker/api/pacticipants)
+### [Applications](https://docs.pact.io/pact_broker/api/applications)
 
-Ordered Alphabetically by the Pacticipant name.
+Ordered Alphabetically by the Application name.
 
-### [Pacticipant Versions](https://docs.pact.io/pact_broker/overview#pacticipant-versions)
+### [Application Versions](https://docs.pact.io/pact_broker/overview#application-versions)
 
-Ordered by date in reverse (most recent Pacticipant Version will be first).
+Ordered by date in reverse (most recent Application Version will be first).

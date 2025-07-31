@@ -49,16 +49,16 @@ module PactBroker
               title: "All versions of a pact for a given consumer, provider and consumer version tag",
               templated: false
             },
-            "pb:pacticipants" =>
+            "pb:applications" =>
             {
-              href: base_url + "/pacticipants",
-              title: "Pacticipants",
+              href: base_url + "/applications",
+              title: "Applications",
               templated: false
             },
-            "pb:pacticipant" =>
+            "pb:application" =>
             {
-              href: base_url + "/pacticipants/{pacticipant}",
-              title: "Fetch pacticipant by name",
+              href: base_url + "/applications/{application}",
+              title: "Fetch application by name",
               templated: true
             },
             "pb:latest-provider-pacts" =>
@@ -86,13 +86,13 @@ module PactBroker
               templated: true
             },
             "pb:latest-version" => {
-              href: base_url + "/pacticipants/{pacticipant}/latest-version",
-              title: "Latest pacticipant version",
+              href: base_url + "/applications/{application}/latest-version",
+              title: "Latest application version",
               templated: true
             },
             "pb:latest-tagged-version" => {
-              href: base_url + "/pacticipants/{pacticipant}/latest-version/{tag}",
-              title: "Latest pacticipant version with the specified tag",
+              href: base_url + "/applications/{application}/latest-version/{tag}",
+              title: "Latest application version with the specified tag",
               templated: true
             },
             "pb:webhooks" => {
@@ -110,28 +110,28 @@ module PactBroker
               title: "Integrations",
               templated: false
             },
-            "pb:pacticipant-version-tag" =>
+            "pb:application-version-tag" =>
             {
-              href: base_url + "/pacticipants/{pacticipant}/versions/{version}/tags/{tag}",
-              title: "Get, create or delete a tag for a pacticipant version",
+              href: base_url + "/applications/{application}/versions/{version}/tags/{tag}",
+              title: "Get, create or delete a tag for a application version",
               templated: true
             },
-            "pb:pacticipant-branch" =>
+            "pb:application-branch" =>
             {
-              href: base_url + "/pacticipants/{pacticipant}/branches/{branch}",
-              title: "Get or delete a pacticipant branch",
+              href: base_url + "/applications/{application}/branches/{branch}",
+              title: "Get or delete a application branch",
               templated: true
             },
-            "pb:pacticipant-branch-version" =>
+            "pb:application-branch-version" =>
             {
-              href: base_url + "/pacticipants/{pacticipant}/branches/{branch}/versions/{version}",
-              title: "Get or add/create a pacticipant version for a branch",
+              href: base_url + "/applications/{application}/branches/{branch}/versions/{version}",
+              title: "Get or add/create a application version for a branch",
               templated: true
             },
-            "pb:pacticipant-version" =>
+            "pb:application-version" =>
             {
-              href: base_url + "/pacticipants/{pacticipant}/versions/{version}",
-              title: "Get, create or delete a pacticipant version",
+              href: base_url + "/applications/{application}/versions/{version}",
+              title: "Get, create or delete a application version",
               templated: true
             },
             "pb:metrics" =>
@@ -139,15 +139,15 @@ module PactBroker
               href: base_url + "/metrics",
               title: "Get Pact Broker metrics",
             },
-            "pb:can-i-deploy-pacticipant-version-to-tag" =>
+            "pb:can-i-deploy-application-version-to-tag" =>
             {
-              href: base_url + "/can-i-deploy?pacticipant={pacticipant}&version={version}&to={tag}",
+              href: base_url + "/can-i-deploy?application={application}&version={version}&to={tag}",
               title: "Determine if an application version can be safely deployed to an environment identified by the given tag",
               templated: true
             },
-            "pb:can-i-deploy-pacticipant-version-to-environment" =>
+            "pb:can-i-deploy-application-version-to-environment" =>
             {
-              href: base_url + "/can-i-deploy?pacticipant={pacticipant}&version={version}&environment={environment}",
+              href: base_url + "/can-i-deploy?application={application}&version={version}&environment={environment}",
               title: "Determine if an application version can be safely deployed to an environment",
               templated: true
             },

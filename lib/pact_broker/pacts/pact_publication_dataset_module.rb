@@ -12,11 +12,11 @@ module PactBroker
       end
 
       def for_provider_name(provider_name)
-        where(provider: PactBroker::Domain::Pacticipant.find_by_name(provider_name))
+        where(provider: PactBroker::Domain::Application.find_by_name(provider_name))
       end
 
       def for_consumer_name(consumer_name)
-        where(consumer: PactBroker::Domain::Pacticipant.find_by_name(consumer_name))
+        where(consumer: PactBroker::Domain::Application.find_by_name(consumer_name))
       end
 
       def for_provider provider
@@ -51,9 +51,9 @@ module PactBroker
 
       def for_consumer_name_and_maybe_version_number(consumer_name, consumer_version_number)
         if consumer_version_number
-          where(consumer_version: PactBroker::Domain::Version.where_pacticipant_name_and_version_number(consumer_name, consumer_version_number))
+          where(consumer_version: PactBroker::Domain::Version.where_application_name_and_version_number(consumer_name, consumer_version_number))
         else
-          where(consumer: PactBroker::Domain::Pacticipant.find_by_name(consumer_name))
+          where(consumer: PactBroker::Domain::Application.find_by_name(consumer_name))
         end
       end
 
@@ -263,12 +263,12 @@ module PactBroker
       # NOT the latest pact that belongs to a version with the specified tag.
       def for_latest_consumer_versions_with_tag(tag_name)
         head_tags = PactBroker::Domain::Tag
-                      .select_group(:pacticipant_id, :name)
+                      .select_group(:application_id, :name)
                       .select_append{ max(version_order).as(:latest_version_order) }
                       .where(name: tag_name)
 
         head_tags_join = {
-          Sequel[:pact_publications][:consumer_id] => Sequel[:head_tags][:pacticipant_id],
+          Sequel[:pact_publications][:consumer_id] => Sequel[:head_tags][:application_id],
           Sequel[:pact_publications][:consumer_version_order] => Sequel[:head_tags][:latest_version_order]
         }
 
@@ -288,11 +288,11 @@ module PactBroker
       # @return [Sequel::Dataset<PactBroker::Pacts::PactPublication>]
       def for_all_tag_heads
         head_tags = PactBroker::Domain::Tag
-                      .select_group(:pacticipant_id, :name)
+                      .select_group(:application_id, :name)
                       .select_append{ max(version_order).as(:latest_version_order) }
 
         head_tags_join = {
-          Sequel[:pact_publications][:consumer_id] => Sequel[:head_tags][:pacticipant_id],
+          Sequel[:pact_publications][:consumer_id] => Sequel[:head_tags][:application_id],
           Sequel[:pact_publications][:consumer_version_order] => Sequel[:head_tags][:latest_version_order]
         }
 
@@ -379,14 +379,14 @@ module PactBroker
         provider_join = {
           Sequel[base_table][:provider_id] => Sequel[table_alias][:id]
         }.merge(extra_join_criteria)
-        join(:pacticipants, provider_join, { table_alias: table_alias })
+        join(:applications, provider_join, { table_alias: table_alias })
       end
 
       def join_consumers(table_alias = :consumers, base_table = :pact_publications, extra_join_criteria = {})
         consumer_join = {
           Sequel[base_table][:consumer_id] => Sequel[table_alias][:id]
         }.merge(extra_join_criteria)
-        join(:pacticipants, consumer_join, { table_alias: table_alias })
+        join(:applications, consumer_join, { table_alias: table_alias })
       end
 
       def join_pact_versions

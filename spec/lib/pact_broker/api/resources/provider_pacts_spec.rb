@@ -7,7 +7,7 @@ module PactBroker
         before do
           allow(PactBroker::Pacts::Service).to receive(:find_latest_pacts_for_provider).and_return(pacts)
           allow(PactBroker::Api::Decorators::ProviderPactsDecorator).to receive(:new).and_return(decorator)
-          allow(PactBroker::Pacticipants::Service).to receive(:find_pacticipant_by_name).and_return(provider)
+          allow(PactBroker::Applications::Service).to receive(:find_application_by_name).and_return(provider)
         end
 
         let(:provider) { double("provider") }
@@ -18,8 +18,8 @@ module PactBroker
 
         subject { get path; last_response }
 
-        it "finds the pacticipant" do
-          expect(PactBroker::Pacticipants::Service).to receive(:find_pacticipant_by_name).with("Bar")
+        it "finds the application" do
+          expect(PactBroker::Applications::Service).to receive(:find_application_by_name).with("Bar")
           subject
         end
 
@@ -62,7 +62,7 @@ module PactBroker
           end
         end
 
-        context "with the pacticipant does not exist" do
+        context "with the application does not exist" do
           let(:provider) { nil }
 
           it "returns a 404" do

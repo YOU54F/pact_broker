@@ -150,7 +150,7 @@ module PactBroker
         latest_verification.provider_version.number
       end
 
-      def pacticipants
+      def applications
         [consumer, provider]
       end
 
@@ -158,8 +158,8 @@ module PactBroker
         include?(other.consumer) || include?(other.provider)
       end
 
-      def include? pacticipant
-        pacticipant.id == consumer.id || pacticipant.id == provider.id
+      def include? application
+        application.id == consumer.id || application.id == provider.id
       end
 
       # Add logic for ignoring case

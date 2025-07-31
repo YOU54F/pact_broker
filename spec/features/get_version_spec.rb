@@ -2,7 +2,7 @@ require "spec/support/test_data_builder"
 
 describe "Get version" do
 
-  let(:path) { "/pacticipants/Consumer/versions/1.2.3" }
+  let(:path) { "/applications/Consumer/versions/1.2.3" }
   let(:last_response_body) { JSON.parse(subject.body, symbolize_names: true) }
 
   subject { get path; last_response }

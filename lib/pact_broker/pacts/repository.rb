@@ -56,7 +56,7 @@ module PactBroker
       def update id, params
         existing_model = PactPublication.find(id: id)
         pact_version = find_or_create_pact_version(
-          existing_model.consumer_version.pacticipant_id,
+          existing_model.consumer_version.application_id,
           existing_model.provider_id,
           params.fetch(:pact_version_sha),
           params.fetch(:json_content)
@@ -120,8 +120,8 @@ module PactBroker
       end
 
       def delete_all_pact_publications_between consumer_name, options
-        consumer = pacticipant_repository.find_by_name!(consumer_name)
-        provider = pacticipant_repository.find_by_name!(options.fetch(:and))
+        consumer = application_repository.find_by_name!(consumer_name)
+        provider = application_repository.find_by_name!(options.fetch(:and))
         query = scope_for(PactPublication).where(consumer: consumer, provider: provider)
         query = query.tag(options[:tag]) if options[:tag]
         query = query.for_branch_name(options[:branch_name]) if options[:branch_name]
@@ -132,8 +132,8 @@ module PactBroker
       end
 
       def delete_all_pact_versions_between consumer_name, options
-        consumer = pacticipant_repository.find_by_name(consumer_name)
-        provider = pacticipant_repository.find_by_name(options.fetch(:and))
+        consumer = application_repository.find_by_name(consumer_name)
+        provider = application_repository.find_by_name(options.fetch(:and))
         scope_for(PactVersion).where(consumer: consumer, provider: provider).delete
       end
 

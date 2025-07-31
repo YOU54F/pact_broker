@@ -8,8 +8,8 @@ module PactBroker
 
         let(:params) do
           {
-            :pacticipantName => pacticipant_name,
-            :pacticipantVersionNumber => version_number,
+            :applicationName => application_name,
+            :applicationVersionNumber => version_number,
             :tags => tags,
             :branch => branch,
             :buildUrl => build_url,
@@ -30,8 +30,8 @@ module PactBroker
             }
           ]
         end
-        let(:pacticipant_name) { "Foo" }
-        let(:consumer_name) { pacticipant_name }
+        let(:application_name) { "Foo" }
+        let(:consumer_name) { application_name }
         let(:provider_name) { "Bar" }
         let(:version_number) { "34" }
         let(:tags) { ["a", "b"] }
@@ -73,7 +73,7 @@ module PactBroker
           its([:contracts, 0]) { is_expected.to include "one of" }
         end
 
-        context "when the specification is pact and consumer name does not match the pacticipant name" do
+        context "when the specification is pact and consumer name does not match the application name" do
           let(:consumer_name) { "waffle" }
 
           its([:contracts, 0]) { is_expected.to include "must match" }
@@ -109,10 +109,10 @@ module PactBroker
           it { is_expected.to be_empty }
         end
 
-        context "when the consumer name in the contract node does not match the pacticipant name" do
+        context "when the consumer name in the contract node does not match the application name" do
           let(:consumer_name) { "WRONG" }
 
-          its([:contracts]) { is_expected.to include(match("consumerName ('WRONG') must match pacticipantName ('Foo') (at index 0)")) }
+          its([:contracts]) { is_expected.to include(match("consumerName ('WRONG') must match applicationName ('Foo') (at index 0)")) }
         end
 
         context "when the providerName in the contract node does not match the provider name in the contract content" do

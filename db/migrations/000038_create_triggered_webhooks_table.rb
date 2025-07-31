@@ -7,8 +7,8 @@ Sequel.migration do
       foreign_key :pact_publication_id, :pact_publications, null: false
       foreign_key :webhook_id, :webhooks
       String :webhook_uuid, null: false # keep so we can group executions even when webhook is deleted
-      foreign_key :consumer_id, :pacticipants, null: false
-      foreign_key :provider_id, :pacticipants, null: false
+      foreign_key :consumer_id, :applications, null: false
+      foreign_key :provider_id, :applications, null: false
       String :status, null: false
       DateTime :created_at, null: false
       DateTime :updated_at, null: false

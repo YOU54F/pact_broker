@@ -27,15 +27,15 @@ module PactBroker
         end
 
         def policy_name
-          :'pacticipants::pacticipant'
+          :'applications::application'
         end
 
         private
 
         def version
-          version_service.find_by_pacticipant_name_and_number(
-            pacticipant_name: consumer_name,
-            pacticipant_version_number: consumer_version_number
+          version_service.find_by_application_name_and_number(
+            application_name: consumer_name,
+            application_version_number: consumer_version_number
           )
         end
 

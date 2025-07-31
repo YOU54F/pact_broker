@@ -30,7 +30,7 @@ module PactBroker
           {
             title: "Consumer",
             name: represented.consumer.name,
-            href: pacticipant_url(options.fetch(:base_url), represented.consumer)
+            href: application_url(options.fetch(:base_url), represented.consumer)
           }
         end
 
@@ -58,7 +58,7 @@ module PactBroker
           {
             title: "Provider",
             name: represented.provider.name,
-            href: pacticipant_url(options.fetch(:base_url), represented.provider)
+            href: application_url(options.fetch(:base_url), represented.provider)
           }
         end
 
@@ -182,7 +182,7 @@ module PactBroker
         link :'pb:matrix-for-consumer-version' do | options |
           {
             title: "View matrix rows for the consumer version to which this pact belongs",
-            href: matrix_for_pacticipant_version_url(represented.consumer_version, options.fetch(:base_url))
+            href: matrix_for_application_version_url(represented.consumer_version, options.fetch(:base_url))
           }
         end
 

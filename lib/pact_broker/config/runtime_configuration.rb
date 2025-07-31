@@ -85,7 +85,7 @@ module PactBroker
       attr_config(
         order_versions_by_date: true,
         base_equality_only_on_content_that_affects_verification_results: true,
-        check_for_potential_duplicate_pacticipant_names: true,
+        check_for_potential_duplicate_application_names: true,
         create_deployed_versions_for_tags: true,
         use_first_tag_as_branch: true,
         use_first_tag_as_branch_time_limit: 10,
@@ -94,7 +94,7 @@ module PactBroker
         allow_dangerous_contract_modification: false,
         semver_formats: ["%M.%m.%p%s%d", "%M.%m", "%M"],
         seed_example_data: true,
-        network_diagram_max_pacticipants: 150,
+        network_diagram_max_applications: 150,
         features: {}
       )
 
@@ -111,7 +111,7 @@ module PactBroker
 
       coerce_types(
         features: COERCE_FEATURES,
-        network_diagram_max_pacticipants: :integer,
+        network_diagram_max_applications: :integer,
         webhook_certificates: COERCE_WEBHOOKS
       )
       sensitive_values(:database_url, :database_password)

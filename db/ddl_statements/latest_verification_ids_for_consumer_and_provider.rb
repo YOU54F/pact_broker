@@ -1,5 +1,5 @@
 LATEST_VERIFICATION_IDS_FOR_CONSUMER_AND_PROVIDER_V1 = "select
-        pv.pacticipant_id as provider_id,
+        pv.application_id as provider_id,
         lpp.consumer_id,
         max(v.id) as latest_verification_id
       from verifications v
@@ -7,7 +7,7 @@ LATEST_VERIFICATION_IDS_FOR_CONSUMER_AND_PROVIDER_V1 = "select
         on v.pact_version_id = lpp.pact_version_id
       join versions pv
         on v.provider_version_id = pv.id
-      group by pv.pacticipant_id, lpp.consumer_id"
+      group by pv.application_id, lpp.consumer_id"
 
 LATEST_VERIFICATION_IDS_FOR_CONSUMER_AND_PROVIDER_V2 = "select
         provider_id,

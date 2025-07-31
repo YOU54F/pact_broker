@@ -11,15 +11,15 @@ module PactBroker
 
       # TODO rename branch to branch_name
       def self.from_hash(hash)
-        new(hash.symbolize_keys.snakecase_keys.slice(:pacticipant_name, :pacticipant_version_number, :latest, :tag, :branch, :environment_name, :main_branch))
+        new(hash.symbolize_keys.snakecase_keys.slice(:application_name, :application_version_number, :latest, :tag, :branch, :environment_name, :main_branch))
       end
 
-      def pacticipant_name
-        self[:pacticipant_name]
+      def application_name
+        self[:application_name]
       end
 
-      def pacticipant_version_number
-        self[:pacticipant_version_number]
+      def application_version_number
+        self[:application_version_number]
       end
 
       def latest?
@@ -72,12 +72,12 @@ module PactBroker
         self[:environment_name] = environment_name
       end
 
-      def pacticipant_name= pacticipant_name
-        self[:pacticipant_name] = pacticipant_name
+      def application_name= application_name
+        self[:application_name] = application_name
       end
 
-      def pacticipant_version_number= pacticipant_version_number
-        self[:pacticipant_version_number] = pacticipant_version_number
+      def application_version_number= application_version_number
+        self[:application_version_number] = application_version_number
       end
 
       # TODO delete this once docker image uses new selector class for clean
@@ -90,13 +90,13 @@ module PactBroker
       end
 
       # rubocop: disable Metrics/CyclomaticComplexity
-      def all_for_pacticipant?
-        !!pacticipant_name && !pacticipant_version_number && !tag && !branch && !latest && !environment_name && !max_age && !main_branch
+      def all_for_application?
+        !!application_name && !application_version_number && !tag && !branch && !latest && !environment_name && !max_age && !main_branch
       end
       # rubocop: enable Metrics/CyclomaticComplexity
 
-      def latest_for_pacticipant_and_tag?
-        !!(pacticipant_name && tag && latest)
+      def latest_for_application_and_tag?
+        !!(application_name && tag && latest)
       end
     end
   end

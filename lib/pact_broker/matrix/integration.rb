@@ -1,6 +1,6 @@
 # Represents the integration relationship between a consumer and a provider in the context
 # of a matrix or can-i-deploy query.
-# If the required flag is set, then one of the pacticipants specified in the matrix query
+# If the required flag is set, then one of the applications specified in the matrix query
 # is a consumer and it requires the provider to be already deployed. An integration would not be required if a provider
 # was specified, and it had an integration with a consumer, but that consumer wasn't deployed yet.
 #
@@ -60,7 +60,7 @@ module PactBroker
         }
       end
 
-      def pacticipant_names
+      def application_names
         [consumer_name, provider_name]
       end
 
@@ -84,11 +84,11 @@ module PactBroker
         self.consumer_name == consumer_name
       end
 
-      def involves_pacticipant_with_name?(pacticipant_name)
-        pacticipant_names.include?(pacticipant_name)
+      def involves_application_with_name?(application_name)
+        application_names.include?(application_name)
       end
 
-      def matches_pacticipant_ids?(other)
+      def matches_application_ids?(other)
         consumer_id == other.consumer_id && provider_id == other.provider_id
       end
     end

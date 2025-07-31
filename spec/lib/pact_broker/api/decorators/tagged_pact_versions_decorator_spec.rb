@@ -7,8 +7,8 @@ module PactBroker
         before do
           allow(PactBroker::Api::Decorators::PactVersionDecorator).to receive(:new).and_return(_version_decorator)
           allow_any_instance_of(TaggedPactVersionsDecorator).to receive(:pact_url).and_return("pact_url")
-          allow_any_instance_of(TaggedPactVersionsDecorator).to receive(:pacticipant_url).and_return("pacticipant_url")
-          allow_any_instance_of(TaggedPactVersionsDecorator).to receive(:pacticipant_url).and_return("pacticipant_url")
+          allow_any_instance_of(TaggedPactVersionsDecorator).to receive(:application_url).and_return("application_url")
+          allow_any_instance_of(TaggedPactVersionsDecorator).to receive(:application_url).and_return("application_url")
         end
 
         let(:user_options) do
@@ -50,12 +50,12 @@ module PactBroker
                "title" => "All versions of the pact between Foo and Bar with tag prod"
              },
              "pb:consumer" => {
-               "href" => "pacticipant_url",
+               "href" => "application_url",
                "title" => "Consumer",
                "name" => "Foo"
              },
              "pb:provider" => {
-               "href" => "pacticipant_url",
+               "href" => "application_url",
                "title" => "Provider",
                "name" => "Bar"
              },

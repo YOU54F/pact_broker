@@ -28,12 +28,12 @@ module PactBroker
             latest_verification_latest_tags: [double("tag", name: "dev", latest?: true)]
           )
         end
-        let(:consumer) { instance_double("PactBroker::Domain::Pacticipant", name: "Foo") }
-        let(:provider) { instance_double("PactBroker::Domain::Pacticipant", name: "Bar") }
+        let(:consumer) { instance_double("PactBroker::Domain::Application", name: "Foo") }
+        let(:provider) { instance_double("PactBroker::Domain::Application", name: "Bar") }
         let(:pact) { instance_double("PactBroker::Domain::Pact", created_at: created_at) }
         let(:verification) { instance_double("PactBroker::Domain::Verification", success: true, created_at: created_at) }
-        let(:consumer_version) { instance_double("PactBroker::Domain::Version", number: "1", pacticipant: consumer) }
-        let(:provider_version) { instance_double("PactBroker::Domain::Version", number: "2", pacticipant: provider) }
+        let(:consumer_version) { instance_double("PactBroker::Domain::Version", number: "1", application: consumer) }
+        let(:provider_version) { instance_double("PactBroker::Domain::Version", number: "2", application: provider) }
         let(:last_webhook_execution_date) { created_at }
         let(:base_url) { "http://example.org" }
         let(:options) { { user_options: { base_url: base_url } } }
@@ -43,8 +43,8 @@ module PactBroker
         before do
           allow_any_instance_of(DashboardDecorator).to receive(:pact_url).with(base_url, pact).and_return("pact_url")
           allow_any_instance_of(DashboardDecorator).to receive(:latest_verification_for_pact_url).with(pact, base_url, false).and_return("latest_verification_url")
-          allow_any_instance_of(DashboardDecorator).to receive(:pacticipant_url).with(base_url, consumer).and_return("consumer_url")
-          allow_any_instance_of(DashboardDecorator).to receive(:pacticipant_url).with(base_url, provider).and_return("provider_url")
+          allow_any_instance_of(DashboardDecorator).to receive(:application_url).with(base_url, consumer).and_return("consumer_url")
+          allow_any_instance_of(DashboardDecorator).to receive(:application_url).with(base_url, provider).and_return("provider_url")
           allow_any_instance_of(DashboardDecorator).to receive(:version_url).with(base_url, consumer_version).and_return("consumer_version_url")
           allow_any_instance_of(DashboardDecorator).to receive(:webhooks_status_url).with(consumer, provider, base_url).and_return("webhooks_status_url")
           allow_any_instance_of(DashboardDecorator).to receive(:tag_url) do | _instance, base_url, tag |

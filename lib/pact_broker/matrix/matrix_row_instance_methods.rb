@@ -62,12 +62,12 @@ module PactBroker
         (obj.class == model) && (obj.values == values)
       end
 
-      def pacticipant_names
+      def application_names
         [consumer_name, provider_name]
       end
 
-      def involves_pacticipant_with_name?(pacticipant_name)
-        pacticipant_name.include?(pacticipant_name)
+      def involves_application_with_name?(application_name)
+        application_name.include?(application_name)
       end
 
       def provider_version_id
@@ -142,7 +142,7 @@ module PactBroker
         !!verification_id
       end
 
-      # This model needs the verifications and pacticipants joined to it
+      # This model needs the verifications and applications joined to it
       # before it can be used, as it's not a "real" model.
       def return_or_raise_if_not_set(key)
         if values.key?(key)

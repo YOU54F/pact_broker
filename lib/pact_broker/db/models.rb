@@ -10,7 +10,7 @@ require "pact_broker/domain/verification"
 require "pact_broker/domain/tag"
 require "pact_broker/domain/version"
 require "pact_broker/domain/label"
-require "pact_broker/domain/pacticipant"
+require "pact_broker/domain/application"
 require "pact_broker/deployments/environment"
 require "pact_broker/deployments/deployed_version"
 require "pact_broker/deployments/released_version"
@@ -38,7 +38,7 @@ module PactBroker
     PactBroker::Versions::Branch,
     PactBroker::Domain::Version,
     PactBroker::Domain::Label,
-    PactBroker::Domain::Pacticipant
+    PactBroker::Domain::Application
   ]
 
   module DB

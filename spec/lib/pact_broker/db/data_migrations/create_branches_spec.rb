@@ -10,11 +10,11 @@ module PactBroker
 
         context "when there are no branch objects" do
           before do
-            td.create_pacticipant("Foo")
+            td.create_application("Foo")
               .create_version("1")
               .create_version("2")
               .create_version("3")
-              .create_pacticipant("Bar")
+              .create_application("Bar")
               .create_version("10")
               .create_version("11")
               .create_version("12")
@@ -35,7 +35,7 @@ module PactBroker
 
         context "when there is a branch already" do
           before do
-            td.create_pacticipant("Foo")
+            td.create_application("Foo")
               .create_version("1", branch: "main")
               .create_version("2")
               .create_version("3", branch: "main")

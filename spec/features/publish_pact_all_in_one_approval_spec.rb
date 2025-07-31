@@ -10,8 +10,8 @@ RSpec.describe "publishing a pact using the all in one endpoint" do
   # TODO merge branches
   let(:request_body_hash) do
     {
-      :pacticipantName => "Foo",
-      :pacticipantVersionNumber => "1",
+      :applicationName => "Foo",
+      :applicationVersionNumber => "1",
       :branch => branch,
       :tags => ["a", "b"],
       :buildUrl => "http://ci/builds/1234",
@@ -58,7 +58,7 @@ RSpec.describe "publishing a pact using the all in one endpoint" do
 
   context "with a validation error" do
     before do
-      request_body_hash.delete(:pacticipantVersionNumber)
+      request_body_hash.delete(:applicationVersionNumber)
     end
 
     it { Approvals.verify(fixture, :name => "publish_contract_with_validation_error", format: :json) }

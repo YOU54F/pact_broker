@@ -1,4 +1,4 @@
-describe "Get versions for Pacticipant Tag" do
+describe "Get versions for Application Tag" do
   before do
     td.create_consumer("Boo")
       .create_version("1.2.3")
@@ -37,14 +37,14 @@ describe "Get versions for Pacticipant Tag" do
     expect(response.dig("_embedded", "versions").first["_links"]["pb:deployed-environments"].size).to eq 2
   end
 
-  context "when the pacticipant does not exist" do 
-    let(:path) { "pacticipants/Foo/tags/#{tag.name}/versions" }
+  context "when the application does not exist" do 
+    let(:path) { "applications/Foo/tags/#{tag.name}/versions" }
 
     its(:status) { is_expected.to eq 404 }
   end
 
   context "when the tag does not exist" do
-    let(:path) { "pacticipants/Boo/tags/feature_tag/versions" }
+    let(:path) { "applications/Boo/tags/feature_tag/versions" }
 
     its(:status) { is_expected.to eq 404 }
   end

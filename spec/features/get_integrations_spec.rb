@@ -36,7 +36,7 @@ describe "Get integrations" do
     end
   end
 
-  context "with a query string that matches multiple pacticipants" do
+  context "with a query string that matches multiple applications" do
     let(:query) { { "q" => "o" } }
 
     it "returns only the integrations with a consumer or provider name including the given string" do

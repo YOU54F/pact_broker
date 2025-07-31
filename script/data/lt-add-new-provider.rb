@@ -10,8 +10,8 @@ begin
   PROVIDER_2_NAME = "p2"
 
   td = PactBroker::Test::HttpTestDataBuilder.new(base_url)
-  td.delete_pacticipant(CONSUMER_NAME)
-    .delete_pacticipant(PROVIDER_NAME)
+  td.delete_application(CONSUMER_NAME)
+    .delete_application(PROVIDER_NAME)
     .publish_pact_the_old_way(consumer: CONSUMER_NAME, consumer_version: "1", provider: PROVIDER_NAME, content_id: "111", tag: "c1-p1-pact")
     .get_pacts_for_verification(
       provider: PROVIDER_NAME,
@@ -23,10 +23,10 @@ begin
       provider_version: "1",
       success: true
     )
-    .can_i_deploy(pacticipant: PROVIDER_NAME, version: "1", to: "env:test")
-    .create_tag(pacticipant: PROVIDER_NAME, version: "1", tag: "env:test") # deploy p1
-    .can_i_deploy(pacticipant: CONSUMER_NAME, version: "1", to: "env:test")
-    .create_tag(pacticipant: CONSUMER_NAME, version: "1", tag: "env:test") # deploy c1
+    .can_i_deploy(application: PROVIDER_NAME, version: "1", to: "env:test")
+    .create_tag(application: PROVIDER_NAME, version: "1", tag: "env:test") # deploy p1
+    .can_i_deploy(application: CONSUMER_NAME, version: "1", to: "env:test")
+    .create_tag(application: CONSUMER_NAME, version: "1", tag: "env:test") # deploy c1
     .publish_pact_the_old_way(consumer: CONSUMER_NAME, consumer_version: "2", provider: PROVIDER_2_NAME, content_id: "222", tag: "c1-p2-pact")
     .get_pacts_for_verification(
       provider: PROVIDER_2_NAME,
@@ -38,8 +38,8 @@ begin
       provider_version: "1",
       success: true
     )
-    .can_i_deploy(pacticipant: PROVIDER_2_NAME, version: "1", to: "env:test")
-    .can_i_deploy(pacticipant: CONSUMER_NAME, version: "2", to: "env:test")
+    .can_i_deploy(application: PROVIDER_2_NAME, version: "1", to: "env:test")
+    .can_i_deploy(application: CONSUMER_NAME, version: "2", to: "env:test")
 
 rescue StandardError => e
   puts "#{e.class} #{e.message}"

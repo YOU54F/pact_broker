@@ -1,5 +1,5 @@
 # The purpose of this spec is to ensure that every new resource either has a policy_record, or it does not need a policy_record
-# (because the all the context can be implied from the route, which will most likely contain a :pacticipant, or a :consumer, and/or a :provider).
+# (because the all the context can be implied from the route, which will most likely contain a :application, or a :consumer, and/or a :provider).
 # This test will fail when a new resource is added that does not either have a policy_record which returns an object,
 # or has not been explicitly ignored in the spec/support/all_routes_spec_support.yml file.
 
@@ -12,8 +12,8 @@ PACT_VERSION_SHA = PactBroker::Pacts::GenerateSha.call(PACT_CONTENT)
 UUID = "343434"
 
 POTENTIAL_PARAMS = {
-  pacticipant_name: "foo",
-  pacticipant_version_number: "1",
+  application_name: "foo",
+  application_version_number: "1",
   consumer_name: "foo",
   consumer_version_number: "1",
   provider_name: "bar",
@@ -29,11 +29,11 @@ POTENTIAL_PARAMS = {
   uuid: UUID
 }
 
-REQUESTS_WHICH_ARE_EXECTED_TO_HAVE_NO_POLICY_RECORD = YAML.safe_load(File.read("spec/support/all_routes_spec_support.yml"))["requests_which_are_exected_to_have_no_policy_record_or_pacticipant"]
+REQUESTS_WHICH_ARE_EXECTED_TO_HAVE_NO_POLICY_RECORD = YAML.safe_load(File.read("spec/support/all_routes_spec_support.yml"))["requests_which_are_exected_to_have_no_policy_record_or_application"]
 
 # Ensure that every resource/http method has a way of determining whether or not a user is allowed to call it.
 # The actual permissions logic will be performed in Pactflow as the Pact Broker does not support a permissions model.
-# Almost every route should either be associated with a pacticipant, or it should have a method to provide the policy_record.
+# Almost every route should either be associated with a application, or it should have a method to provide the policy_record.
 # Some routes, as listed in spec/support/all_routes_spec_support.yml do not need either.
 # This test is here to ensure that every new route added to the Pact Broker API has been considered, and explictly whitelisted if necessary.
 PactBroker.routes.each do | pact_broker_route |
@@ -58,10 +58,10 @@ PactBroker.routes.each do | pact_broker_route |
             PactBroker::Pacts::PactVersion.first.update(sha: PACT_VERSION_SHA)
           end
 
-          it "has a policy record object or a consumer/provider/pacticipant in the route" do
+          it "has a policy record object or a consumer/provider/application in the route" do
             resource = pact_broker_route.build_resource({ "REQUEST_METHOD" => allowed_method }, PactBroker::ApplicationContext.default_application_context, POTENTIAL_PARAMS)
 
-            thing = resource.consumer || resource.provider || resource.pacticipant || resource.respond_to?(:policy_record)
+            thing = resource.consumer || resource.provider || resource.application || resource.respond_to?(:policy_record)
 
             expect(thing).to_not be_falsy
           end

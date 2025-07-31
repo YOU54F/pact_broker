@@ -5,7 +5,7 @@ Sequel.migration do
       add_column(:target_for_index, String, default: "", null: false)
       set_column_allow_null(:replaced_previous_deployed_version)
       set_column_allow_null(:currently_deployed)
-      drop_index [:pacticipant_id, :currently_deployed], name: "deployed_versions_pacticipant_id_currently_deployed_index"
+      drop_index [:application_id, :currently_deployed], name: "deployed_versions_application_id_currently_deployed_index"
     end
   end
 
@@ -15,7 +15,7 @@ Sequel.migration do
       drop_column(:target_for_index)
       set_column_not_null(:replaced_previous_deployed_version)
       set_column_not_null(:currently_deployed)
-      add_index [:pacticipant_id, :currently_deployed], name: "deployed_versions_pacticipant_id_currently_deployed_index"
+      add_index [:application_id, :currently_deployed], name: "deployed_versions_application_id_currently_deployed_index"
     end
   end
 end

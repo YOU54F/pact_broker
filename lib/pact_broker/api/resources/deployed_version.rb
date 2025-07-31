@@ -54,7 +54,7 @@ module PactBroker
 
         def policy_record_context
           {
-            pacticipant: deployed_version&.pacticipant
+            application: deployed_version&.application
           }
         end
 

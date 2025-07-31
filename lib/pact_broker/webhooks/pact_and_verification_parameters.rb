@@ -69,8 +69,8 @@ module PactBroker
           BITBUCKET_VERIFICATION_STATUS => bitbucket_verification_status,
           AZURE_DEV_OPS_VERIFICATION_STATUS => azure_dev_ops_verification_status,
           GITLAB_VERIFICATION_STATUS => gitlab_verification_status,
-          CONSUMER_LABELS => pacticipant_labels(pact && pact.consumer),
-          PROVIDER_LABELS => pacticipant_labels(pact && pact.provider),
+          CONSUMER_LABELS => application_labels(pact && pact.consumer),
+          PROVIDER_LABELS => application_labels(pact && pact.provider),
           EVENT_NAME => event_name,
           BUILD_URL => build_url,
           CURRENTLY_DEPLOYED_PROVIDER_VERSION_NUMBER => currently_deployed_provider_version_number
@@ -181,8 +181,8 @@ module PactBroker
         webhook_context[:provider_version_descriptions]&.join(", ") || ""
       end
 
-      def pacticipant_labels pacticipant
-        pacticipant && pacticipant.labels ? pacticipant.labels.collect(&:name).join(", ") : ""
+      def application_labels application
+        application && application.labels ? application.labels.collect(&:name).join(", ") : ""
       end
 
       def event_name

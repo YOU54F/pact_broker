@@ -4,11 +4,11 @@ Sequel.migration do
   change do
     create_view(:latest_tagged_version_orders,
       PactBroker::MigrationHelper.sqlite_safe("
-        select v.pacticipant_id, t.name as tag_name, max(v.order) as latest_version_order, 1 as latest
+        select v.application_id, t.name as tag_name, max(v.order) as latest_version_order, 1 as latest
         from tags t
         inner join versions v
         on v.id = t.version_id
-        group by v.pacticipant_id, t.name
+        group by v.application_id, t.name
       ")
     )
 
@@ -20,7 +20,7 @@ Sequel.migration do
         on v.id = t.version_id
         left outer join latest_tagged_version_orders ltvo
         on t.name = ltvo.tag_name
-        and v.pacticipant_id = ltvo.pacticipant_id
+        and v.application_id = ltvo.application_id
         and v.order = ltvo.latest_version_order
       ")
     )

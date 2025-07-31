@@ -21,7 +21,7 @@ module PactBroker
           def join_branch_versions_excluding_branch(provider_id, branch_name)
             branch_versions_join = {
               Sequel[:verifications][:provider_version_id] => Sequel[:branch_versions][:version_id],
-              Sequel[:branch_versions][:pacticipant_id] => provider_id
+              Sequel[:branch_versions][:application_id] => provider_id
             }
             join(:branch_versions, branch_versions_join) do
               Sequel.lit("branch_versions.branch_name != ?", branch_name)
@@ -31,7 +31,7 @@ module PactBroker
           def join_provider_versions_for_provider_id_and_branch(provider_id, provider_version_branch)
             branch_versions_join = {
               Sequel[:verifications][:provider_version_id] => Sequel[:branch_versions][:version_id],
-              Sequel[:branch_versions][:pacticipant_id] => provider_id,
+              Sequel[:branch_versions][:application_id] => provider_id,
               Sequel[:branch_versions][:branch_name] => provider_version_branch
             }
 
@@ -59,7 +59,7 @@ module PactBroker
       end
 
       def successfully_verified_by_provider_another_branch_before_this_branch_first_created(provider_id, provider_version_branch)
-        first_version_for_branch = PactBroker::Domain::Version.first_for_pacticipant_id_and_branch(provider_id, provider_version_branch)
+        first_version_for_branch = PactBroker::Domain::Version.first_for_application_id_and_branch(provider_id, provider_version_branch)
 
         successful_verifications = VerificationForWipCalculations
                                      .select(:pact_version_id)
@@ -87,7 +87,7 @@ module PactBroker
       end
 
       def successfully_verified_by_provider_another_tag_before_this_tag_first_created(provider_id, provider_tag)
-        first_tag_with_name = PactBroker::Domain::Tag.where(pacticipant_id: provider_id, name: provider_tag).order(:created_at).first
+        first_tag_with_name = PactBroker::Domain::Tag.where(application_id: provider_id, name: provider_tag).order(:created_at).first
 
         pact_version_provider_tag_verifications_join = {
           Sequel[:sv][:pact_version_id] => Sequel[:pp][:pact_version_id],

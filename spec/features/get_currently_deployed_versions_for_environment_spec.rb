@@ -29,8 +29,8 @@ RSpec.describe "Get currently deployed versions for environment" do
   end
 
   context "with query params" do
-    context "with a pacticipant name and applicationInstance" do
-      let(:query_params) { { pacticipant: "Bar", applicationInstance: "customer-1" } }
+    context "with a application name and applicationInstance" do
+      let(:query_params) { { application: "Bar", applicationInstance: "customer-1" } }
 
       it "returns a list of matching deployed versions" do
         expect(response_body_hash[:_embedded][:deployedVersions].size).to eq 1
@@ -38,8 +38,8 @@ RSpec.describe "Get currently deployed versions for environment" do
       end
     end
 
-    context "with pacticipant name and a blank applicationInstance" do
-      let(:query_params) { { pacticipant: "Bar", applicationInstance: "" } }
+    context "with application name and a blank applicationInstance" do
+      let(:query_params) { { application: "Bar", applicationInstance: "" } }
 
       it "returns a list of matching deployed versions" do
         expect(response_body_hash[:_embedded][:deployedVersions].size).to eq 1
@@ -47,16 +47,16 @@ RSpec.describe "Get currently deployed versions for environment" do
       end
     end
 
-    context "with pacticipant name and no target or applicationInstance" do
-      let(:query_params) { { pacticipant: "Bar" } }
+    context "with application name and no target or applicationInstance" do
+      let(:query_params) { { application: "Bar" } }
 
       it "returns a list of matching deployed versions" do
         expect(response_body_hash[:_embedded][:deployedVersions].size).to eq 2
       end
     end
 
-    context "with a pacticipant name and target (deprecated)" do
-      let(:query_params) { { pacticipant: "Bar", target: "customer-1" } }
+    context "with a application name and target (deprecated)" do
+      let(:query_params) { { application: "Bar", target: "customer-1" } }
 
       it "returns a list of matching deployed versions" do
         expect(response_body_hash[:_embedded][:deployedVersions].size).to eq 1
@@ -64,8 +64,8 @@ RSpec.describe "Get currently deployed versions for environment" do
       end
     end
 
-    context "with pacticipant name and a blank target (deprecated)" do
-      let(:query_params) { { pacticipant: "Bar", target: "" } }
+    context "with application name and a blank target (deprecated)" do
+      let(:query_params) { { application: "Bar", target: "" } }
 
       it "returns a list of matching deployed versions" do
         expect(response_body_hash[:_embedded][:deployedVersions].size).to eq 1

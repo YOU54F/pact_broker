@@ -69,12 +69,12 @@ module PactBroker
             expect(subject[:number]).to eq "1.2.3"
           end
 
-          it "includes a link to the pacticipant" do
-            expect(subject[:_links][:'pb:pacticipant']).to eq title: "Pacticipant", name: "Consumer", href: "http://example.org/pacticipants/Consumer"
+          it "includes a link to the application" do
+            expect(subject[:_links][:'pb:application']).to eq title: "Application", name: "Consumer", href: "http://example.org/applications/Consumer"
           end
 
           it "includes a link to get, create or delete a tag" do
-            expect(subject[:_links][:'pb:tag']).to include href: "http://example.org/pacticipants/Consumer/versions/1.2.3/tags/{tag}", templated: true
+            expect(subject[:_links][:'pb:tag']).to include href: "http://example.org/applications/Consumer/versions/1.2.3/tags/{tag}", templated: true
           end
 
           it "includes a list of the tags" do
@@ -101,7 +101,7 @@ module PactBroker
           end
 
           it "includes a link to the latest verification results for the pacts for this version" do
-            expect(subject[:_links][:'pb:latest-verification-results-where-pacticipant-is-consumer'][:href]).to match(%r{http://.*/verification-results/.*/latest})
+            expect(subject[:_links][:'pb:latest-verification-results-where-application-is-consumer'][:href]).to match(%r{http://.*/verification-results/.*/latest})
           end
 
           it "includes a list of environments that this version can be deployed to" do

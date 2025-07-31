@@ -1,5 +1,5 @@
 require "pact_broker/domain/webhook"
-require "pact_broker/domain/pacticipant"
+require "pact_broker/domain/application"
 require "pact_broker/db"
 require "pact_broker/webhooks/webhook"
 require "pact_broker/webhooks/webhook_event"
@@ -16,8 +16,8 @@ module PactBroker
       include Repositories
 
       def create uuid, webhook, consumer, provider
-        consumer = find_pacticipant_by_name(webhook.consumer) || consumer
-        provider = find_pacticipant_by_name(webhook.provider) || provider
+        consumer = find_application_by_name(webhook.consumer) || consumer
+        provider = find_application_by_name(webhook.provider) || provider
         db_webhook = Webhook.from_domain webhook, consumer, provider
         db_webhook.uuid = uuid
         db_webhook.save
@@ -35,8 +35,8 @@ module PactBroker
       # policy applied at resource level
       def update_by_uuid uuid, webhook
         existing_webhook = deliberately_unscoped(Webhook).find(uuid: uuid)
-        existing_webhook.consumer_id = find_pacticipant_by_name(webhook.consumer)&.id
-        existing_webhook.provider_id = find_pacticipant_by_name(webhook.provider)&.id
+        existing_webhook.consumer_id = find_application_by_name(webhook.consumer)&.id
+        existing_webhook.provider_id = find_application_by_name(webhook.provider)&.id
         existing_webhook.update_from_domain(webhook).save
         existing_webhook.events.collect(&:delete)
         (webhook.events || []).each do | webhook_event |
@@ -50,15 +50,15 @@ module PactBroker
         deliberately_unscoped(Webhook).where(uuid: uuid).destroy
       end
 
-      # policy applied at resource level for pacticipant
-      # If we're deleting the pacticipant, then we actually do want to delete the triggered webhooks
-      def delete_by_pacticipant pacticipant
-        deliberately_unscoped(TriggeredWebhook).where(consumer_id: pacticipant.id).delete
-        deliberately_unscoped(TriggeredWebhook).where(provider_id: pacticipant.id).delete
-        deliberately_unscoped(TriggeredWebhook).where(webhook: deliberately_unscoped(Webhook).where(consumer_id: pacticipant.id)).delete
-        deliberately_unscoped(TriggeredWebhook).where(webhook: deliberately_unscoped(Webhook).where(provider_id: pacticipant.id)).delete
-        deliberately_unscoped(Webhook).where(consumer_id: pacticipant.id).delete
-        deliberately_unscoped(Webhook).where(provider_id: pacticipant.id).delete
+      # policy applied at resource level for application
+      # If we're deleting the application, then we actually do want to delete the triggered webhooks
+      def delete_by_application application
+        deliberately_unscoped(TriggeredWebhook).where(consumer_id: application.id).delete
+        deliberately_unscoped(TriggeredWebhook).where(provider_id: application.id).delete
+        deliberately_unscoped(TriggeredWebhook).where(webhook: deliberately_unscoped(Webhook).where(consumer_id: application.id)).delete
+        deliberately_unscoped(TriggeredWebhook).where(webhook: deliberately_unscoped(Webhook).where(provider_id: application.id)).delete
+        deliberately_unscoped(Webhook).where(consumer_id: application.id).delete
+        deliberately_unscoped(Webhook).where(provider_id: application.id).delete
       end
 
       # this needs the scope!
@@ -186,10 +186,10 @@ module PactBroker
 
       private
 
-      def find_pacticipant_by_name(pacticipant)
-        return unless pacticipant&.name
+      def find_application_by_name(application)
+        return unless application&.name
 
-        pacticipant_repository.find_by_name(pacticipant.name)
+        application_repository.find_by_name(application.name)
       end
 
       def deliberately_unscoped(scope)

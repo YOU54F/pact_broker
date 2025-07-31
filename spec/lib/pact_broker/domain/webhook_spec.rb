@@ -4,8 +4,8 @@ module PactBroker
   module Domain
     describe Webhook do
       let(:uuid) { "uuid" }
-      let(:consumer) { Pacticipant.new(name: "Consumer")}
-      let(:provider) { Pacticipant.new(name: "Provider")}
+      let(:consumer) { Application.new(name: "Consumer")}
+      let(:provider) { Application.new(name: "Provider")}
       let(:request_template) { instance_double(PactBroker::Webhooks::WebhookRequestTemplate, build: webhook_request)}
       let(:webhook_request) { instance_double(PactBroker::Domain::WebhookRequest, execute: http_response, http_request: http_request) }
       let(:webhook_template_parameters) { instance_double(PactBroker::Webhooks::PactAndVerificationParameters, to_hash: webhook_template_parameters_hash) }
@@ -35,20 +35,20 @@ module PactBroker
           it { is_expected.to eq "A webhook for the pact between Consumer and Provider" }
 
           context "when provider is specified by a label" do
-            let(:provider) { WebhookPacticipant.new(label: "provider-label")}
+            let(:provider) { WebhookApplication.new(label: "provider-label")}
 
             it { is_expected.to eq "A webhook for the pact between Consumer and providers labeled 'provider-label'" }
           end
 
           context "when consumer is specified by a label" do
-            let(:consumer) { WebhookPacticipant.new(label: "consumer-label")}
+            let(:consumer) { WebhookApplication.new(label: "consumer-label")}
 
             it { is_expected.to eq "A webhook for the pact between consumers labeled 'consumer-label' and Provider" }
           end
 
           context "when both are specified by labels" do
-            let(:consumer) { WebhookPacticipant.new(label: "consumer-label")}
-            let(:provider) { WebhookPacticipant.new(label: "provider-label")}
+            let(:consumer) { WebhookApplication.new(label: "consumer-label")}
+            let(:provider) { WebhookApplication.new(label: "provider-label")}
 
             it do
               is_expected.to eq(
@@ -64,7 +64,7 @@ module PactBroker
           it { is_expected.to eq "A webhook for all pacts with consumer Consumer" }
 
           context "when specified by a label" do
-            let(:consumer) { WebhookPacticipant.new(label: "consumer-label")}
+            let(:consumer) { WebhookApplication.new(label: "consumer-label")}
 
             it { is_expected.to eq "A webhook for all pacts with consumer labeled 'consumer-label'" }
           end
@@ -76,7 +76,7 @@ module PactBroker
           it { is_expected.to eq "A webhook for all pacts with provider Provider" }
 
           context "when specified by a label" do
-            let(:provider) { WebhookPacticipant.new(label: "provider-label")}
+            let(:provider) { WebhookApplication.new(label: "provider-label")}
 
             it { is_expected.to eq "A webhook for all pacts with provider labeled 'provider-label'" }
           end

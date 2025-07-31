@@ -1,5 +1,5 @@
 #
-# pact-broker record-deployment --pacticipant Foo --version 1 --environment test --target instance1
+# pact-broker record-deployment --application Foo --version 1 --environment test --target instance1
 #
 
 describe "Record deployment" do
@@ -12,7 +12,7 @@ describe "Record deployment" do
   end
   let(:headers) { {"CONTENT_TYPE" => "application/json"} }
   let(:response_body) { JSON.parse(subject.body, symbolize_names: true) }
-  let(:version_path) { "/pacticipants/Foo/versions/2" }
+  let(:version_path) { "/applications/Foo/versions/2" }
   let(:version_response) { get(version_path, nil, { "HTTP_ACCEPT" => "application/hal+json" } ) }
   let(:application_instance) { nil }
   let(:path) do

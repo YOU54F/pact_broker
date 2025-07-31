@@ -35,10 +35,10 @@ module PactBroker
 
         subject { PactPublication.latest_by_consumer_branch.all_allowing_lazy_load }
 
-        let(:foo) { PactBroker::Domain::Pacticipant.where(name: "Foo").single_record }
-        let(:bar) { PactBroker::Domain::Pacticipant.where(name: "Bar").single_record }
-        let(:foo_z) { PactBroker::Domain::Pacticipant.where(name: "FooZ").single_record }
-        let(:not_bar) { td.find_pacticipant("NotBar") }
+        let(:foo) { PactBroker::Domain::Application.where(name: "Foo").single_record }
+        let(:bar) { PactBroker::Domain::Application.where(name: "Bar").single_record }
+        let(:foo_z) { PactBroker::Domain::Application.where(name: "FooZ").single_record }
+        let(:not_bar) { td.find_application("NotBar") }
 
         it "returns the latest pact publications for each consumer/branch" do
           expect(subject.size).to eq 4
@@ -125,7 +125,7 @@ module PactBroker
 
         context "when chained" do
           it "works" do
-            all = PactPublication.for_provider(td.find_pacticipant("Bar")).latest_for_consumer_branch("main").all_allowing_lazy_load
+            all = PactPublication.for_provider(td.find_application("Bar")).latest_for_consumer_branch("main").all_allowing_lazy_load
             expect(all.first.provider.name).to eq "Bar"
           end
         end
@@ -190,7 +190,7 @@ module PactBroker
 
         context "when chained" do
           it "works" do
-            all = PactPublication.for_provider(td.find_pacticipant("Bar")).latest_for_consumer_branch("main").all_allowing_lazy_load
+            all = PactPublication.for_provider(td.find_application("Bar")).latest_for_consumer_branch("main").all_allowing_lazy_load
             expect(all.collect(&:provider_name).uniq).to eq ["Bar"]
           end
         end
@@ -218,9 +218,9 @@ module PactBroker
 
         subject { PactPublication.latest_by_consumer_tag.all_allowing_lazy_load }
 
-        let(:foo) { PactBroker::Domain::Pacticipant.where(name: "Foo").single_record }
-        let(:bar) { PactBroker::Domain::Pacticipant.where(name: "Bar").single_record }
-        let(:foo_z) { PactBroker::Domain::Pacticipant.where(name: "FooZ").single_record }
+        let(:foo) { PactBroker::Domain::Application.where(name: "Foo").single_record }
+        let(:bar) { PactBroker::Domain::Application.where(name: "Bar").single_record }
+        let(:foo_z) { PactBroker::Domain::Application.where(name: "FooZ").single_record }
 
         it "returns the latest pact publications for each consumer/branch" do
           expect(subject.size).to eq 3
@@ -266,9 +266,9 @@ module PactBroker
 
         subject { PactPublication.for_all_tag_heads.all_allowing_lazy_load }
 
-        let(:foo) { PactBroker::Domain::Pacticipant.where(name: "Foo").single_record }
-        let(:bar) { PactBroker::Domain::Pacticipant.where(name: "Bar").single_record }
-        let(:foo_z) { PactBroker::Domain::Pacticipant.where(name: "FooZ").single_record }
+        let(:foo) { PactBroker::Domain::Application.where(name: "Foo").single_record }
+        let(:bar) { PactBroker::Domain::Application.where(name: "Bar").single_record }
+        let(:foo_z) { PactBroker::Domain::Application.where(name: "FooZ").single_record }
 
         it "returns the pacts belonging to the latest tagged version for each tag" do
           expect(subject.size).to eq 2
@@ -332,14 +332,14 @@ module PactBroker
 
         context "when chained" do
           it "works with a consumer" do
-            expect(PactPublication.for_consumer(td.find_pacticipant("Foo")).overall_latest.all_allowing_lazy_load.first.consumer.name).to eq "Foo"
+            expect(PactPublication.for_consumer(td.find_application("Foo")).overall_latest.all_allowing_lazy_load.first.consumer.name).to eq "Foo"
           end
 
           it "works with a consumer and provider" do
             td.create_pact_with_hierarchy("Foo", "666", "Nope")
             all = PactPublication
-              .for_consumer(td.find_pacticipant("Foo"))
-              .for_provider(td.find_pacticipant("Bar"))
+              .for_consumer(td.find_application("Foo"))
+              .for_provider(td.find_application("Bar"))
               .overall_latest.all_allowing_lazy_load
             expect(all.size).to eq 1
             expect(all.first.consumer.name).to eq "Foo"
@@ -408,7 +408,7 @@ module PactBroker
 
         context "when chained" do
           it "works" do
-            all = PactPublication.for_provider(td.find_pacticipant("Bar")).latest_for_consumer_tag("main").all_allowing_lazy_load
+            all = PactPublication.for_provider(td.find_application("Bar")).latest_for_consumer_tag("main").all_allowing_lazy_load
             expect(all.first.provider.name).to eq "Bar"
           end
         end
@@ -474,14 +474,14 @@ module PactBroker
 
         context "when chained" do
           it "works" do
-            all = PactPublication.for_provider(td.find_pacticipant("Bar")).latest_for_consumer_tag("main").all_allowing_lazy_load
+            all = PactPublication.for_provider(td.find_application("Bar")).latest_for_consumer_tag("main").all_allowing_lazy_load
             expect(all.first.provider.name).to eq "Bar"
           end
         end
       end
 
       describe "#successfully_verified_by_provider_branch_when_not_wip" do
-        let(:bar) { td.find_pacticipant("Bar") }
+        let(:bar) { td.find_application("Bar") }
 
         subject { PactPublication.successfully_verified_by_provider_branch_when_not_wip(bar.id, "main").all_allowing_lazy_load }
 
@@ -584,7 +584,7 @@ module PactBroker
                 .create_pact
             end
 
-            let(:bar) { td.find_pacticipant("Bar") }
+            let(:bar) { td.find_application("Bar") }
 
             it "with branches" do
               potential = PactPublication.for_provider(bar).latest_by_consumer_branch

@@ -6,7 +6,7 @@ module PactBroker
     describe Repository do
       def build_selectors(hash)
         hash.collect do | key, value |
-          UnresolvedSelector.new(pacticipant_name: key, pacticipant_version_number: value)
+          UnresolvedSelector.new(application_name: key, application_version_number: value)
         end
       end
 
@@ -339,7 +339,7 @@ module PactBroker
           end
         end
 
-        context "when only one pacticipant/version is specified and it is a consumer" do
+        context "when only one application/version is specified and it is a consumer" do
           before do
             td.create_pact_with_hierarchy("A", "1.2.3", "B")
               .create_verification(provider_version: "4.5.6")
@@ -360,7 +360,7 @@ module PactBroker
           end
         end
 
-        context "when only one pacticipant name is specified and it is a consumer" do
+        context "when only one application name is specified and it is a consumer" do
           before do
             td.create_pact_with_hierarchy("A", "1.2.3", "B")
               .create_verification(provider_version: "4.5.6")
@@ -371,7 +371,7 @@ module PactBroker
 
           let(:selectors) { build_selectors("A" => nil) }
 
-          it "returns a row for each verification for the pacticipant" do
+          it "returns a row for each verification for the application" do
             expect(subject.collect(&:consumer_name).uniq).to eq ["A"]
             provider_version_numbers = subject.collect(&:provider_version_number)
             expect(provider_version_numbers).to include nil
@@ -379,7 +379,7 @@ module PactBroker
           end
         end
 
-        context "when only one pacticipant/version is specified and it is a provider" do
+        context "when only one application/version is specified and it is a provider" do
           before do
             td.create_pact_with_hierarchy("A", "1.2.3", "B")
               .create_verification(provider_version: "4.5.6")
@@ -399,7 +399,7 @@ module PactBroker
           end
         end
 
-        context "when only one pacticipant name is specified and it is a provider" do
+        context "when only one application name is specified and it is a provider" do
           before do
             td.create_pact_with_hierarchy("A", "1.2.3", "B")
               .create_verification(provider_version: "4.5.6")
@@ -423,7 +423,7 @@ module PactBroker
           end
         end
 
-        context "when only one pacticipant/version is specified and it is a consumer and provider" do
+        context "when only one application/version is specified and it is a consumer and provider" do
           before do
             td.create_pact_with_hierarchy("A", "1", "B")
               .create_verification(provider_version: "1")
@@ -439,7 +439,7 @@ module PactBroker
 
           let(:selectors) { build_selectors("B" => "1") }
 
-          it "returns rows where the pacticipant is the consumer and rows where the pacticipant is the provider" do
+          it "returns rows where the application is the consumer and rows where the application is the provider" do
             # A/1 and B/1
             # B/1 and C/1
             expect(subject.size).to eq 2
@@ -466,14 +466,14 @@ module PactBroker
           context "when the other service is specifically named" do
             let(:selectors) do
               [
-                UnresolvedSelector.new(pacticipant_name: "android app", tag: "prod"),
-                UnresolvedSelector.new(pacticipant_name: "BFF", pacticipant_version_number: "5")
+                UnresolvedSelector.new(application_name: "android app", tag: "prod"),
+                UnresolvedSelector.new(application_name: "BFF", application_version_number: "5")
               ]
             end
 
             let(:options) { {} }
 
-            it "returns the matrix for all of the versions for the specified pacticipants with the given tag" do
+            it "returns the matrix for all of the versions for the specified applications with the given tag" do
               expect(subject).to include_hash_matching(consumer_version_number: "1")
               expect(subject).to include_hash_matching(consumer_version_number: "2")
               expect(subject).to_not include_hash_matching(consumer_version_number: "3")
@@ -484,7 +484,7 @@ module PactBroker
           context "when the other service is not specifically named" do
             let(:selectors) do
               [
-                UnresolvedSelector.new(pacticipant_name: "BFF", pacticipant_version_number: "5")
+                UnresolvedSelector.new(application_name: "BFF", application_version_number: "5")
               ]
             end
 
@@ -583,8 +583,8 @@ module PactBroker
 
           let(:selectors) do
             [
-              UnresolvedSelector.new(pacticipant_name: "A", pacticipant_version_number: "1.2.3"),
-              UnresolvedSelector.new(pacticipant_name: "B", latest: true, tag: "prod")
+              UnresolvedSelector.new(application_name: "A", application_version_number: "1.2.3"),
+              UnresolvedSelector.new(application_name: "B", latest: true, tag: "prod")
             ]
           end
 
@@ -610,8 +610,8 @@ module PactBroker
 
           let(:selectors) do
             [
-              UnresolvedSelector.new(pacticipant_name: "A", pacticipant_version_number: "1.2.3"),
-              UnresolvedSelector.new(pacticipant_name: "B", latest: true)
+              UnresolvedSelector.new(application_name: "A", application_version_number: "1.2.3"),
+              UnresolvedSelector.new(application_name: "B", latest: true)
             ]
           end
 
@@ -630,8 +630,8 @@ module PactBroker
 
           let(:selectors) do
             [
-              UnresolvedSelector.new(pacticipant_name: "A", pacticipant_version_number: "1.2.3"),
-              UnresolvedSelector.new(pacticipant_name: "B", latest: true)
+              UnresolvedSelector.new(application_name: "A", application_version_number: "1.2.3"),
+              UnresolvedSelector.new(application_name: "B", latest: true)
             ]
           end
 
@@ -645,7 +645,7 @@ module PactBroker
       describe "find with global latest and tag specified" do
         subject { shorten_rows(Repository.new.find(selectors, options)) }
 
-        context "with one consumer/version and latest tag specified for all the other pacticipants" do
+        context "with one consumer/version and latest tag specified for all the other applications" do
           before do
             td.create_pact_with_hierarchy("A", "1", "B")
               .create_verification(provider_version: "1")
@@ -663,14 +663,14 @@ module PactBroker
           let(:selectors) { build_selectors("A"=> "1") }
           let(:options) { { tag: "prod", latest: true } }
 
-          it "finds the matrix for the latest tagged versions of each of the other other pacticipants" do
+          it "finds the matrix for the latest tagged versions of each of the other other applications" do
             expect(subject).to include "A1 B1 n1"
             expect(subject).to include "A1 C3 n1"
             expect(subject.size).to eq 2
           end
         end
 
-        context "with one consumer/version and latest specified for all the other pacticipants" do
+        context "with one consumer/version and latest specified for all the other applications" do
           before do
             td.create_pact_with_hierarchy("A", "1", "B")
               .create_verification(provider_version: "1")
@@ -685,14 +685,14 @@ module PactBroker
           let(:selectors) { build_selectors("A"=> "1") }
           let(:options) { { latest: true } }
 
-          it "finds the matrix for the latest tagged versions of each of the other other pacticipants" do
+          it "finds the matrix for the latest tagged versions of each of the other other applications" do
             expect(subject).to include "A1 B2 n2"
             expect(subject).to include "A1 C4 n2"
             expect(subject.size).to eq 2
           end
         end
 
-        context "with one pacticipant without a version and latest tag specified for all the other pacticipants" do
+        context "with one application without a version and latest tag specified for all the other applications" do
           before do
             td.create_pact_with_hierarchy("A", "1", "B")
               .create_verification(provider_version: "1")
@@ -712,7 +712,7 @@ module PactBroker
           let(:selectors) { build_selectors("A"=> nil) }
           let(:options) { { tag: "prod", latest: true } }
 
-          it "finds the matrix for the latest tagged versions of each of the other other pacticipants" do
+          it "finds the matrix for the latest tagged versions of each of the other other applications" do
             expect(subject).to include "A1 B1 n1"
             expect(subject).to include "A1 C3 n1"
             expect(subject).to include "A2 C? n?"
@@ -720,7 +720,7 @@ module PactBroker
           end
         end
 
-        context "with one pacticipant/version that is both a consumer and provider and latest tag specified for all the other pacticipants" do
+        context "with one application/version that is both a consumer and provider and latest tag specified for all the other applications" do
           before do
             td.create_pact_with_hierarchy("A", "1", "B")
               .create_consumer_version_tag("prod")
@@ -739,14 +739,14 @@ module PactBroker
           let(:selectors) { build_selectors("B"=> "1") }
           let(:options) { { tag: "prod", latest: true } }
 
-          it "finds the matrix for the latest tagged versions of each of the other other pacticipants" do
+          it "finds the matrix for the latest tagged versions of each of the other other applications" do
             expect(subject).to include "A1 B1 n1"
             expect(subject).to include "B1 C3 n1"
             expect(subject.size).to eq 2
           end
         end
 
-        context "with one pacticipant/latest tag and latest tag specified for all the other pacticipants" do
+        context "with one application/latest tag and latest tag specified for all the other applications" do
           before do
             td.create_pact_with_hierarchy("A", "1", "B")
               .create_consumer_version_tag("dev")
@@ -761,10 +761,10 @@ module PactBroker
               .create_verification(provider_version: "4", number: 2)
           end
 
-          let(:selectors) { [UnresolvedSelector.new(pacticipant_name: "A", latest: true, tag: "dev")] }
+          let(:selectors) { [UnresolvedSelector.new(application_name: "A", latest: true, tag: "dev")] }
           let(:options) { { tag: "prod", latest: true } }
 
-          it "finds the matrix for the latest tagged versions of each of the other other pacticipants" do
+          it "finds the matrix for the latest tagged versions of each of the other other applications" do
             expect(subject).to include "A1 B1 n1"
             expect(subject).to include "A1 C3 n1"
             expect(subject).to_not include "A1 C4 n2"
@@ -797,7 +797,7 @@ module PactBroker
           expect(subject[1].provider_version_number).to eq "4.5.6"
         end
 
-        it "doesn't matter which way you order the pacticipant names" do
+        it "doesn't matter which way you order the application names" do
           expect(subject).to eq(Repository.new.find_for_consumer_and_provider "Provider", "Consumer")
         end
       end
@@ -820,7 +820,7 @@ module PactBroker
           .create_verification(provider_version: "20.0.0", tag_names: ["prod"])
         end
 
-        let(:selectors) { [ UnresolvedSelector.new(pacticipant_name: "foo", pacticipant_version_number: "1.0.0")] }
+        let(:selectors) { [ UnresolvedSelector.new(application_name: "foo", application_version_number: "1.0.0")] }
         let(:options) { { latestby: "cvp", latest: true, tag: "prod" } }
         let(:results) { Repository.new.find(selectors, options) }
 
@@ -849,7 +849,7 @@ module PactBroker
         let(:options) { { latestby: "cvp" } }
 
         let(:selectors) do
-          [ UnresolvedSelector.new(pacticipant_name: "Bar", pacticipant_version_number: "5") ]
+          [ UnresolvedSelector.new(application_name: "Bar", application_version_number: "5") ]
         end
 
         it "returns a row for each consumer version" do
@@ -859,7 +859,7 @@ module PactBroker
         end
       end
 
-      describe "deploying a provider when there is a three way dependency between 3 pacticipants" do
+      describe "deploying a provider when there is a three way dependency between 3 applications" do
         before do
           # A->B, A->C, B->C, deploying C
           td.create_pact_with_hierarchy("B", "1", "C")
@@ -872,13 +872,13 @@ module PactBroker
             .create_pact
         end
 
-        let(:selectors) { [ UnresolvedSelector.new(pacticipant_name: "C", pacticipant_version_number: "10") ] }
+        let(:selectors) { [ UnresolvedSelector.new(application_name: "C", application_version_number: "10") ] }
         let(:options) { { latestby: "cvp", limit: "100", latest: true} }
         let(:rows) { Repository.new.find(selectors, options) }
 
         subject { shorten_rows(rows) }
 
-        it "only includes rows that involve the specified pacticipant" do
+        it "only includes rows that involve the specified application" do
           expect(subject.all?{ | row | row.include?("C") } ).to be true
         end
       end

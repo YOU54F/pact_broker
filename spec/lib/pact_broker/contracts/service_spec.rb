@@ -6,8 +6,8 @@ module PactBroker
       describe "#publish" do
         let(:contracts_to_publish) do
           ContractsToPublish.from_hash(
-            pacticipant_name: "Foo",
-            pacticipant_version_number: "1",
+            application_name: "Foo",
+            application_version_number: "1",
             tags: ["a", "b"],
             branch: branch,
             contracts: contracts
@@ -69,8 +69,8 @@ module PactBroker
 
             let(:contracts_to_publish) do
               ContractsToPublish.from_hash(
-                pacticipant_name: "Foo",
-                pacticipant_version_number: "1",
+                application_name: "Foo",
+                application_version_number: "1",
                 tags: ["a", "b"],
                 branch: nil,
                 contracts: contracts
@@ -128,18 +128,18 @@ module PactBroker
 
       describe "#conflict_errors" do
         before do
-          allow(Service).to receive(:pacticipant_service).and_return(pacticipant_service)
-          allow(pacticipant_service).to receive(:messages_for_potential_duplicate_pacticipants).and_return(duplicate_pacticipant_messages)
-          allow(PactBroker.configuration).to receive(:check_for_potential_duplicate_pacticipant_names).and_return(true)
+          allow(Service).to receive(:application_service).and_return(application_service)
+          allow(application_service).to receive(:messages_for_potential_duplicate_applications).and_return(duplicate_application_messages)
+          allow(PactBroker.configuration).to receive(:check_for_potential_duplicate_application_names).and_return(true)
         end
 
-        let(:pacticipant_service) { class_double("PactBroker::Pacticipants::Service").as_stubbed_const }
-        let(:duplicate_pacticipant_messages) { [] }
+        let(:application_service) { class_double("PactBroker::Applications::Service").as_stubbed_const }
+        let(:duplicate_application_messages) { [] }
 
         let(:contracts_to_publish) do
           ContractsToPublish.from_hash(
-            pacticipant_name: "Foo",
-            pacticipant_version_number: "1",
+            application_name: "Foo",
+            application_version_number: "1",
             tags: ["a", "b"],
             branch: branch,
             contracts: contracts
@@ -200,13 +200,13 @@ module PactBroker
           it { is_expected.to be_empty }
         end
 
-        it "checks if there are potential duplicate pacticipants" do
-          expect(pacticipant_service).to receive(:messages_for_potential_duplicate_pacticipants).with(["Foo", "Bar"], "base_url")
+        it "checks if there are potential duplicate applications" do
+          expect(application_service).to receive(:messages_for_potential_duplicate_applications).with(["Foo", "Bar"], "base_url")
           subject
         end
 
-        context "when there are potential duplicate pacticipants" do
-          let(:duplicate_pacticipant_messages) { ["some message" ] }
+        context "when there are potential duplicate applications" do
+          let(:duplicate_application_messages) { ["some message" ] }
 
           it "returns the messages as error notices" do
             expect(subject).to contain_exactly(have_attributes(type: "error", text: "some message"))

@@ -21,8 +21,8 @@ module PactBroker
       get_service(:pact_service)
     end
 
-    def pacticipant_service
-      get_service(:pacticipant_service)
+    def application_service
+      get_service(:application_service)
     end
 
     def tag_service
@@ -119,9 +119,9 @@ module PactBroker
         Pacts::Service
       end
 
-      register_service(:pacticipant_service) do
-        require "pact_broker/pacticipants/service"
-        Pacticipants::Service
+      register_service(:application_service) do
+        require "pact_broker/applications/service"
+        Applications::Service
       end
 
       register_service(:tag_service) do

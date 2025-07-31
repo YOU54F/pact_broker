@@ -8,17 +8,17 @@ module PactBroker
         include PactBroker::Test::ApiContractSupport
 
         before do
-          allow(PactBroker::Pacticipants::Service).to receive(:find_pacticipant_by_name).and_return(pacticipant)
+          allow(PactBroker::Applications::Service).to receive(:find_application_by_name).and_return(application)
         end
 
-        let(:pacticipant) { double("pacticipant") }
+        let(:application) { double("application") }
 
         subject { format_errors_the_old_way(CanIDeployQuerySchema.call(params)) }
 
         context "with valid params" do
           let(:params) do
             {
-              pacticipant: "foo",
+              application: "foo",
               version: "1",
               to: "prod"
             }
@@ -30,7 +30,7 @@ module PactBroker
         context "with missing params" do
           let(:params) do
             {
-              pacticipant: nil,
+              application: nil,
               version: nil,
               to: nil
             }
@@ -42,13 +42,13 @@ module PactBroker
         context "with the wrong types" do
           let(:params) do
             {
-              pacticipant: 1,
+              application: 1,
               version: 1,
               to: 1
             }
           end
 
-          its([:pacticipant]) { is_expected.to eq ["must be a string"] }
+          its([:application]) { is_expected.to eq ["must be a string"] }
           its([:version]) { is_expected.to eq ["must be a string"] }
           its([:to]) { is_expected.to eq ["must be a string"] }
         end
@@ -60,7 +60,7 @@ module PactBroker
 
           let(:params) do
             {
-              pacticipant: "foo",
+              application: "foo",
               version: "1",
               environment: "prod",
               to: "prod"
@@ -77,7 +77,7 @@ module PactBroker
 
           let(:params) do
             {
-              pacticipant: "foo",
+              application: "foo",
               version: "1"
             }
           end
@@ -92,7 +92,7 @@ module PactBroker
 
           let(:params) do
             {
-              pacticipant: "foo",
+              application: "foo",
               version: "1",
               environment: "prod"
             }
@@ -108,7 +108,7 @@ module PactBroker
 
           let(:params) do
             {
-              pacticipant: "foo",
+              application: "foo",
               version: "1",
               environment: "prod"
             }
@@ -117,17 +117,17 @@ module PactBroker
           its([:environment, 0]) { is_expected.to eq "with name 'prod' does not exist" }
         end
 
-        context "when the pacticipant does not exist" do
-          let(:pacticipant) { nil }
+        context "when the application does not exist" do
+          let(:application) { nil }
 
           let(:params) do
             {
-              pacticipant: "foo",
+              application: "foo",
               version: "1"
             }
           end
 
-          its([:pacticipant, 0]) { is_expected.to eq "does not match an existing pacticipant" }
+          its([:application, 0]) { is_expected.to eq "does not match an existing application" }
         end
       end
     end

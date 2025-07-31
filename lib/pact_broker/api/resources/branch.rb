@@ -32,7 +32,7 @@ module PactBroker
         private
 
         def branch
-          @branch_version ||= branch_service.find_branch(**identifier_from_path.slice(:pacticipant_name, :branch_name))
+          @branch_version ||= branch_service.find_branch(**identifier_from_path.slice(:application_name, :branch_name))
         end
       end
     end

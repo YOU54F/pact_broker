@@ -14,7 +14,7 @@ module PactBroker
         {
           uuid: "1234",
           version_id: version.id,
-          pacticipant_id: version.pacticipant_id,
+          application_id: version.application_id,
           environment_id: environment.id,
           target: target
         }

@@ -13,13 +13,13 @@ module PactBroker
         end
 
         let(:results) { double("results") }
-        let(:pacticipant) { double("pacticipant") }
+        let(:application) { double("application") }
         let(:decorator) { instance_double("PactBroker::Api::Decorators::MatrixDecorator", to_json: "response_body") }
         let(:matrix_service) { class_double("PactBroker::Matrix::Service").as_stubbed_const }
 
         let(:query) do
           {
-            pacticipant: "Foo",
+            application: "Foo",
             version: "1.2.3",
             to: "prod"
           }
@@ -32,7 +32,7 @@ module PactBroker
 
           it "returns a 400" do
             expect(subject.status).to eq 400
-            expect(JSON.parse(subject.body)["errors"]["pacticipant"].first).to_not be_empty
+            expect(JSON.parse(subject.body)["errors"]["application"].first).to_not be_empty
           end
         end
       end

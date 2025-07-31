@@ -20,8 +20,8 @@ module PactBroker
       delegate [:consumer_version_number, :name, :provider_name, :consumer_name] => :cached_domain_for_delegation
 
       set_primary_key :id
-      associate(:many_to_one, :provider, :class => "PactBroker::Domain::Pacticipant", :key => :provider_id, :primary_key => :id)
-      associate(:many_to_one, :consumer, :class => "PactBroker::Domain::Pacticipant", :key => :consumer_id, :primary_key => :id)
+      associate(:many_to_one, :provider, :class => "PactBroker::Domain::Application", :key => :provider_id, :primary_key => :id)
+      associate(:many_to_one, :consumer, :class => "PactBroker::Domain::Application", :key => :consumer_id, :primary_key => :id)
       associate(:many_to_one, :consumer_version, :class => "PactBroker::Domain::Version", :key => :consumer_version_id, :primary_key => :id)
       associate(:many_to_one, :pact_version, class: "PactBroker::Pacts::PactVersion", :key => :pact_version_id, :primary_key => :id)
       associate(:many_to_one, :integration, class: "PactBroker::Integrations::Integration", key: [:consumer_id, :provider_id], primary_key: [:consumer_id, :provider_id], read_only: true, forbid_lazy_load: false)
@@ -227,10 +227,10 @@ end
 #  pact_publications_cid_pid_cvo_index | btree (consumer_id, provider_id, consumer_version_order)
 #  pact_publications_consumer_id_index | btree (consumer_id)
 # Foreign key constraints:
-#  pact_publications_consumer_id_fkey         | (consumer_id) REFERENCES pacticipants(id)
+#  pact_publications_consumer_id_fkey         | (consumer_id) REFERENCES applications(id)
 #  pact_publications_consumer_version_id_fkey | (consumer_version_id) REFERENCES versions(id)
 #  pact_publications_pact_version_id_fkey     | (pact_version_id) REFERENCES pact_versions(id)
-#  pact_publications_provider_id_fkey         | (provider_id) REFERENCES pacticipants(id)
+#  pact_publications_provider_id_fkey         | (provider_id) REFERENCES applications(id)
 # Referenced By:
 #  latest_pact_publication_ids_for_consumer_versions | latest_pact_publication_ids_for_consum_pact_publication_id_fkey | (pact_publication_id) REFERENCES pact_publications(id) ON DELETE CASCADE
 #  triggered_webhooks                                | triggered_webhooks_pact_publication_id_fkey                     | (pact_publication_id) REFERENCES pact_publications(id)

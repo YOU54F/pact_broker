@@ -33,7 +33,7 @@ module PactBroker
             .create_consumer_version_tag("dev")
         end
 
-        let(:selector) { PactBroker::DB::Clean::Selector.new(tag: "dev", latest: true, pacticipant_name: "Foo") }
+        let(:selector) { PactBroker::DB::Clean::Selector.new(tag: "dev", latest: true, application_name: "Foo") }
 
         it "returns matching rows" do
           expect(subject.count).to eq 1

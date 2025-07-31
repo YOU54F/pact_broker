@@ -325,7 +325,7 @@ module PactBroker
       subject { put path, pact_content, { "CONTENT_TYPE" => "application/json" }; last_response  }
 
       it "wraps the API with a database transaction" do
-        expect { subject }.to_not change { PactBroker::Domain::Pacticipant.count }
+        expect { subject }.to_not change { PactBroker::Domain::Application.count }
       end
     end
 

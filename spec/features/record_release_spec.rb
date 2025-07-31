@@ -1,5 +1,5 @@
 #
-# pact-broker record-release --pacticipant Foo --version 1 --environment production
+# pact-broker record-release --application Foo --version 1 --environment production
 #
 
 describe "Record release" do
@@ -10,7 +10,7 @@ describe "Record release" do
   end
   let(:headers) { {"CONTENT_TYPE" => "application/json"} }
   let(:response_body) { JSON.parse(subject.body, symbolize_names: true) }
-  let(:version_path) { "/pacticipants/Foo/versions/1" }
+  let(:version_path) { "/applications/Foo/versions/1" }
   let(:version_response) { get(version_path, nil, { "HTTP_ACCEPT" => "application/hal+json" } ) }
   let(:target) { nil }
   let(:path) do

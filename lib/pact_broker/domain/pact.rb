@@ -46,7 +46,7 @@ module PactBroker
       end
 
       def consumer
-        @consumer || consumer_version.pacticipant
+        @consumer || consumer_version.application
       end
 
       def consumer_version_tag_names

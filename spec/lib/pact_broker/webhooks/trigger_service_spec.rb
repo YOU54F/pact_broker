@@ -60,8 +60,8 @@ module PactBroker
         let(:verification) { instance_double(PactBroker::Domain::Verification)}
         let(:pact) { instance_double(PactBroker::Domain::Pact, consumer: consumer, provider: provider, consumer_version: consumer_version)}
         let(:consumer_version) { PactBroker::Domain::Version.new(number: "1.2.3") }
-        let(:consumer) { PactBroker::Domain::Pacticipant.new(name: "Consumer") }
-        let(:provider) { PactBroker::Domain::Pacticipant.new(name: "Provider", main_branch: provider_main_branch) }
+        let(:consumer) { PactBroker::Domain::Application.new(name: "Consumer") }
+        let(:provider) { PactBroker::Domain::Application.new(name: "Provider", main_branch: provider_main_branch) }
         let(:provider_main_branch) { "main" }
         let(:webhooks) { [webhook]}
         let(:webhook) do
@@ -95,7 +95,7 @@ module PactBroker
           context "when there should be a webhook triggered for each currently deployed version" do
             before do
               allow(TriggerService).to receive(:deployed_version_service).and_return(deployed_version_service)
-              allow(deployed_version_service).to receive(:find_currently_deployed_versions_for_pacticipant).and_return(currently_deployed_versions)
+              allow(deployed_version_service).to receive(:find_currently_deployed_versions_for_application).and_return(currently_deployed_versions)
             end
             let(:expand_currently_deployed) { true }
             let(:deployed_version_service) { class_double("PactBroker::Deployments::DeployedVersionService").as_stubbed_const }
@@ -237,8 +237,8 @@ module PactBroker
             let(:event_name) { PactBroker::Webhooks::WebhookEvent::VERIFICATION_SUCCEEDED }
             let(:pact) { instance_double(PactBroker::Domain::Pact, provider_name: provider.name, consumer_name: consumer.name, consumer: consumer, provider: provider, consumer_version: consumer_version)}
             let(:consumer_version) { PactBroker::Domain::Version.new(number: "1.2.3") }
-            let(:consumer) { PactBroker::Domain::Pacticipant.new(name: "Consumer") }
-            let(:provider) { PactBroker::Domain::Pacticipant.new(name: "Provider") }
+            let(:consumer) { PactBroker::Domain::Application.new(name: "Consumer") }
+            let(:provider) { PactBroker::Domain::Application.new(name: "Provider") }
 
             # See lib/pact_broker/pacts/metadata.rb build_metadata_for_pact_for_verification
             let(:selector_1) { { latest: true, consumer_version_number: "1", tag: "prod" } }

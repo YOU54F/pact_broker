@@ -6,7 +6,7 @@ RSpec.describe "can i deploy" do
 
   let(:query) do
     {
-      pacticipant: "Foo",
+      application: "Foo",
       version: "1.2.3",
       to: "prod"
     }
@@ -22,7 +22,7 @@ RSpec.describe "can i deploy" do
   end
 
   context "using the URL format for tags" do
-    subject { get("/pacticipants/Foo/latest-version/dev/can-i-deploy/to/prod", nil, { "HTTP_ACCEPT" => "application/hal+json"}) }
+    subject { get("/applications/Foo/latest-version/dev/can-i-deploy/to/prod", nil, { "HTTP_ACCEPT" => "application/hal+json"}) }
 
     it "returns the matrix response" do
       expect(subject).to be_a_hal_json_success_response
@@ -30,7 +30,7 @@ RSpec.describe "can i deploy" do
     end
 
     context "the badge" do
-      subject { get("/pacticipants/Foo/latest-version/dev/can-i-deploy/to/prod/badge") }
+      subject { get("/applications/Foo/latest-version/dev/can-i-deploy/to/prod/badge") }
 
       it "returns a redirect URL" do
         expect(subject.status).to eq 307
@@ -42,7 +42,7 @@ RSpec.describe "can i deploy" do
   end
 
   context "using the URL format for branch/environment" do
-    subject { get("/pacticipants/Foo/branches/main/latest-version/can-i-deploy/to-environment/prod", nil, { "HTTP_ACCEPT" => "application/hal+json"}) }
+    subject { get("/applications/Foo/branches/main/latest-version/can-i-deploy/to-environment/prod", nil, { "HTTP_ACCEPT" => "application/hal+json"}) }
 
     it "returns the matrix response" do
       expect(subject).to be_a_hal_json_success_response
@@ -50,7 +50,7 @@ RSpec.describe "can i deploy" do
     end
 
     context "the badge" do
-      subject { get("/pacticipants/Foo/branches/main/latest-version/can-i-deploy/to-environment/prod/badge") }
+      subject { get("/applications/Foo/branches/main/latest-version/can-i-deploy/to-environment/prod/badge") }
 
       it "returns a redirect URL" do
         expect(subject.status).to eq 307

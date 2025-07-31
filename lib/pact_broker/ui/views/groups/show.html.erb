@@ -6,7 +6,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title><%= escape_html(pacticipant_name) %></title>
+<title><%= escape_html(application_name) %></title>
 <link rel='shortcut icon' href='<%= base_url %>/favicon.ico' type='image/x-icon'/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="">
@@ -48,10 +48,10 @@ svg{
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
     <li class="breadcrumb-item" style="margin:0;"><a href="<%= base_url %>/">Home</a></li>
-    <li class="breadcrumb-item active" aria-current="page"><%= escape_html(pacticipant_name) %></li>
+    <li class="breadcrumb-item active" aria-current="page"><%= escape_html(application_name) %></li>
   </ol>
 </nav>
-<h1 class="page-header"><%= escape_html(pacticipant_name) %></h1>
+<h1 class="page-header"><%= escape_html(application_name) %></h1>
 
 <ul class="nav nav-tabs">
   <li class="nav-item">
@@ -69,7 +69,7 @@ svg{
         Main branch:
       </div>
       <div class="col col-md-6">
-        <%= escape_html(pacticipant.main_branch) %>
+        <%= escape_html(application.main_branch) %>
       </div>
     </div>
     <div class="row">
@@ -106,33 +106,33 @@ var enlargeCanvasToFit = function (radius) {
 };
 
 var parseCSV = function (data) {
-    var pacticipants = [];
+    var applications = [];
     data.forEach(
         function(row) {
-            var pacticipant = {
+            var application = {
                 id: row[0],
-                pacticipantName: row[1],
+                applicationName: row[1],
                 order: parseInt(row[5]),
-                connectedPacticipantIds: row.slice(6).filter(function(e) {
+                connectedApplicationIds: row.slice(6).filter(function(e) {
                     if (parseInt(e) != NaN && parseInt(e) > 0) {
                         return e;
                     }
                 })
             };
 
-            pacticipants.push(pacticipant);
+            applications.push(application);
         });
-    pacticipants.sort(function(a, b) {
+    applications.sort(function(a, b) {
         return d3.ascending(a.order, b.order);
     });
-    return pacticipants;
+    return applications;
 };
 
-var getPacticipantNames = function (pacticipants) {
-    return pacticipants.map(function(p){ return p.pacticipantName });
+var getApplicationNames = function (applications) {
+    return applications.map(function(p){ return p.applicationName });
 };
 
-var relationshipPath = function(relationship, nodeLocations, pacticipants) {
+var relationshipPath = function(relationship, nodeLocations, applications) {
     var dx = nodeLocations[relationship.endId].x - nodeLocations[relationship.startId].x;
     var dy = nodeLocations[relationship.endId].y - nodeLocations[relationship.startId].y;
     var dr = Math.sqrt(dx * dx + dy * dy);
@@ -142,7 +142,7 @@ var relationshipPath = function(relationship, nodeLocations, pacticipants) {
     var differenceBetweenStartAndEndIndexes = Math.abs(nodeLocations[relationship.endId].i - nodeLocations[relationship.startId].i);
     var indexOfEndLessThanIndexOfStart = nodeLocations[relationship.endId].i < nodeLocations[relationship.startId].i
 
-    if ((indexOfEndGreaterThanIndexOfStart && differenceBetweenStartAndEndIndexes <= pacticipants.length / 2) || (indexOfEndLessThanIndexOfStart && differenceBetweenStartAndEndIndexes > pacticipants.length / 2)) {
+    if ((indexOfEndGreaterThanIndexOfStart && differenceBetweenStartAndEndIndexes <= applications.length / 2) || (indexOfEndLessThanIndexOfStart && differenceBetweenStartAndEndIndexes > applications.length / 2)) {
         inout = 0;
     }
     return "M" + 0 + "," + 0 + "A" + dr + ", " + dr + " 0 0," + inout + " " + dx + "," + dy;
@@ -153,13 +153,13 @@ var latestPactUrl = function (consumerName, providerName) {
     return '<%= base_url %>' + '/pacts/provider/' + encodeURIComponent(providerName) + '/consumer/' + encodeURIComponent(consumerName) + '/latest';
 };
 
-var relationshipData = function(pacticipant, relationships) {
-    var relationshipsInvolvingPacticipant = [];
+var relationshipData = function(application, relationships) {
+    var relationshipsInvolvingApplication = [];
     var relationshipLinks = [];
     relationships.forEach(function(relationship) {
         var dummyRelationship = {};
         dummyRelationship.id = relationship.id;
-        if (relationship.consumerId == pacticipant.id) {
+        if (relationship.consumerId == application.id) {
             dummyRelationship.startId = relationship.consumerId;
             dummyRelationship.endId = relationship.providerId;
             if (relationship.relationshipType) {
@@ -168,7 +168,7 @@ var relationshipData = function(pacticipant, relationships) {
                 dummyRelationship.relationshipType = 'consumer';
             }
             dummyRelationship.href = relationship.href;
-            relationshipsInvolvingPacticipant.push(dummyRelationship);
+            relationshipsInvolvingApplication.push(dummyRelationship);
             var relationshipLink = {};
             relationshipLink.startId = relationship.consumerId;
             relationshipLink.endId = relationship.providerId;
@@ -177,7 +177,7 @@ var relationshipData = function(pacticipant, relationships) {
             relationshipLink.id = relationship.id;
             relationshipLinks.push(relationshipLink);
         }
-        else if (relationship.providerId == pacticipant.id) {
+        else if (relationship.providerId == application.id) {
             dummyRelationship.startId = relationship.providerId;
             dummyRelationship.endId = relationship.consumerId;
             if (relationship.relationshipType) {
@@ -186,27 +186,27 @@ var relationshipData = function(pacticipant, relationships) {
                 dummyRelationship.relationshipType = 'provider';
             }
             dummyRelationship.href = relationship.href;
-            relationshipsInvolvingPacticipant.push(dummyRelationship);
+            relationshipsInvolvingApplication.push(dummyRelationship);
         }
     });
-    return relationshipLinks.concat(relationshipsInvolvingPacticipant);
+    return relationshipLinks.concat(relationshipsInvolvingApplication);
 };
 
-var createRelationships = function (pacticipants) {
+var createRelationships = function (applications) {
     var relationships = [];
-    var findPacticipantById = function (id) {
-        return pacticipants.filter(function (pacticipant) {
-            return pacticipant.id == id;
+    var findApplicationById = function (id) {
+        return applications.filter(function (application) {
+            return application.id == id;
         })[0];
     };
-    pacticipants.forEach(function(d) {
-        d.connectedPacticipantIds.forEach(function(connectedPacticipantId) {
+    applications.forEach(function(d) {
+        d.connectedApplicationIds.forEach(function(connectedApplicationId) {
             relationships.push(
             {
-                id: ['c', d.id, 'p', connectedPacticipantId].join(''),
+                id: ['c', d.id, 'p', connectedApplicationId].join(''),
                 consumerId: d.id,
-                providerId: connectedPacticipantId,
-                href: latestPactUrl(d.pacticipantName, findPacticipantById(connectedPacticipantId).pacticipantName)
+                providerId: connectedApplicationId,
+                href: latestPactUrl(d.applicationName, findApplicationById(connectedApplicationId).applicationName)
             }
             );
         });
@@ -219,10 +219,10 @@ var createRelationships = function (pacticipants) {
 
 };
 
-var transformPacticipantNode = function (d, i, radius, pacticipants, nodeLocations) {
+var transformApplicationNode = function (d, i, radius, applications, nodeLocations) {
     //Node locations - makes the big circle
-    var x = radius * Math.cos(2 * Math.PI * (i / pacticipants.length)) + windowWidth / 2;
-    var y = radius * Math.sin(2 * Math.PI * (i / pacticipants.length)) + windowHeight / 2;
+    var x = radius * Math.cos(2 * Math.PI * (i / applications.length)) + windowWidth / 2;
+    var y = radius * Math.sin(2 * Math.PI * (i / applications.length)) + windowHeight / 2;
     nodeLocations[d.id] = {
         x: x,
         y: y,
@@ -258,13 +258,13 @@ var normalizeRelationships = function() {
         .attr("opacity", OPACITY_NORMAL);
 };
 
-var pacticipantMouseover = function() {
+var applicationMouseover = function() {
     fadeAllRelationships();
     boldRelationships(
         d3.select(this.parentNode)
             .selectAll(".relationship.visible"));
 };
-var pacticipantMouseout = function() {
+var applicationMouseout = function() {
     normalizeRelationships();
 };
 
@@ -296,9 +296,9 @@ window.onload = function() {
     windowWidth = window.innerWidth - titleHeight;
     windowHeight = window.innerHeight;
     svg = d3.select("body").append("svg").attr("width", windowWidth).attr("height", windowHeight).attr("version", 1.1).attr("xmlns", "http://www.w3.org/2000/svg");
-    var pacticipants = [];
+    var applications = [];
     var maxrad = 0;
-    var pacticipantNameArray = [];
+    var applicationNameArray = [];
     var circleMinRadius = 200;
 
 
@@ -329,33 +329,33 @@ window.onload = function() {
         .attr("d","M 10 0 L 10 10 L 0 5 z")
         .attr("fill", "#A0A0A0");
 
-    const maxPacticipants = new URL(location).searchParams.get("maxPacticipants") || <%= max_pacticipants %>;
+    const maxApplications = new URL(location).searchParams.get("maxApplications") || <%= max_applications %>;
 
-    d3.text(`<%= csv_path %>?maxPacticipants=${maxPacticipants}`, "text/csv", function(unparsedData) {
+    d3.text(`<%= csv_path %>?maxApplications=${maxApplications}`, "text/csv", function(unparsedData) {
         var data=d3.csv.parseRows(unparsedData);
-        pacticipants = parseCSV(data);
-        pacticipantNameArray = getPacticipantNames(pacticipants);
+        applications = parseCSV(data);
+        applicationNameArray = getApplicationNames(applications);
 
         var nodeLocations = {};
-        var radius = Math.max(circleMinRadius, pacticipants.length * 2.5);
+        var radius = Math.max(circleMinRadius, applications.length * 2.5);
 
         enlargeCanvasToFit(radius, windowWidth, windowHeight, svg);
 
-        maxrad = (radius * Math.PI / pacticipants.length) + 2;
-        var g = svg.selectAll("g").data(pacticipants).enter().append("g").attr("transform", function(d, i) {
-            return transformPacticipantNode(d, i, radius, pacticipants, nodeLocations);
+        maxrad = (radius * Math.PI / applications.length) + 2;
+        var g = svg.selectAll("g").data(applications).enter().append("g").attr("transform", function(d, i) {
+            return transformApplicationNode(d, i, radius, applications, nodeLocations);
         }).attr("id", function(d, i) {
             return i;
-        }).attr("class", function(pacticipant) {
-            return pacticipant.pacticipantName;
+        }).attr("class", function(application) {
+            return application.applicationName;
         });
 
-        relationships = createRelationships(pacticipants);
+        relationships = createRelationships(applications);
 
         g.selectAll("path")
-            .data(function(pacticipant){ return relationshipData(pacticipant, relationships); }).enter()
+            .data(function(application){ return relationshipData(application, relationships); }).enter()
             .append("path")
-            .attr("d", function(relationship){ return relationshipPath(relationship, nodeLocations, pacticipants); })
+            .attr("d", function(relationship){ return relationshipPath(relationship, nodeLocations, applications); })
             .attr("class", function(relationship) {
                 var clazz = relationship.id + " " + relationship.relationshipType + " relationship";
                 if(relationship.relationshipType !== 'link') {
@@ -384,28 +384,28 @@ window.onload = function() {
         svg.selectAll(".consumer").attr("marker-end", "url(#arrowGrayStart)");
         svg.selectAll(".provider").attr("marker-start", "url(#arrowGrayEnd)");
 
-        var pacticipantColour = d3.scale.category10().domain([0, pacticipants.length]);
+        var applicationColour = d3.scale.category10().domain([0, applications.length]);
 
         var onRight = function (i) {
-            return i <= pacticipants.length / 4 || i >= pacticipants.length * 3 / 4;
+            return i <= applications.length / 4 || i >= applications.length * 3 / 4;
         };
 
-        var textFill = function(pacticipant) {
-            return pacticipantColour(pacticipant.order);
+        var textFill = function(application) {
+            return applicationColour(application.order);
         }
 
         var circleXOffset = function(d, i) {
             //controls the positioning in regards to the edge of the circle
-            return 6 * Math.cos(2 * Math.PI * i / pacticipants.length);
+            return 6 * Math.cos(2 * Math.PI * i / applications.length);
         };
 
         var circleYOffset = function(d, i) {
             //controls the positioning in regards to the edge of the circle
-            return 6 * Math.sin(2 * Math.PI * i / pacticipants.length);
+            return 6 * Math.sin(2 * Math.PI * i / applications.length);
         };
 
         var circles = g.append("circle")
-        .attr("r", function(pacticipant) { return 6; })
+        .attr("r", function(application) { return 6; })
         .attr("fill", textFill)
         .attr("stroke", textFill)
         .attr("stroke-width", 2)
@@ -422,7 +422,7 @@ window.onload = function() {
 
         var textXOffset = function(d, i) {
             //controls the positioning in regards to the edge of the circle
-            return 40 * Math.cos(2 * Math.PI * i / pacticipants.length);
+            return 40 * Math.cos(2 * Math.PI * i / applications.length);
         };
 
         var isFinite = function(num) {
@@ -431,7 +431,7 @@ window.onload = function() {
 
 
         var textYOffset = function(d, i) {
-            var thing = 4 * Math.PI * i / pacticipants.length;
+            var thing = 4 * Math.PI * i / applications.length;
             var counterOffset = 0;
 
             counterOffset = (0.2 / (20 * Math.tan(thing/2))) * 1000;
@@ -447,11 +447,11 @@ window.onload = function() {
                 }
             }
 
-            return (40 * Math.sin(2 * Math.PI * i / pacticipants.length)) - counterOffset;
+            return (40 * Math.sin(2 * Math.PI * i / applications.length)) - counterOffset;
         };
 
         var textYOffset2 = function(d, i) {
-            return (40 * Math.sin(2 * Math.PI * i / pacticipants.length));
+            return (40 * Math.sin(2 * Math.PI * i / applications.length));
         };
 
         var text = g.append("text").text(textContent)
@@ -462,8 +462,8 @@ window.onload = function() {
         // .attr("font-size", function(){ return 15; });
         .attr("class", function() { return "pacticpantLabel"; });
 
-        circles.on("mouseover", pacticipantMouseover).on("mouseout", pacticipantMouseout);
-        text.on("mouseover", pacticipantMouseover).on("mouseout", pacticipantMouseout);
+        circles.on("mouseover", applicationMouseover).on("mouseout", applicationMouseout);
+        text.on("mouseover", applicationMouseover).on("mouseout", applicationMouseout);
 
     });
 }</script>

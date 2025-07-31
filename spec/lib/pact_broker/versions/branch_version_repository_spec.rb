@@ -5,18 +5,18 @@ module PactBroker
     describe BranchVersionRepository do
       describe "add_branch" do
         before do
-          allow(repository).to receive(:pacticipant_service).and_return(pacticipant_service)
-          allow(pacticipant_service).to receive(:maybe_set_main_branch)
+          allow(repository).to receive(:application_service).and_return(application_service)
+          allow(application_service).to receive(:maybe_set_main_branch)
         end
         let!(:version) { td.create_consumer("Foo").create_consumer_version("1", branch: "original-branch").and_return(:consumer_version) }
         let(:new_branch_name) { "new-branch" }
-        let(:pacticipant_service) { class_double("PactBroker::Pacticipants::Service").as_stubbed_const }
+        let(:application_service) { class_double("PactBroker::Applications::Service").as_stubbed_const }
         let(:repository) { BranchVersionRepository.new }
 
         subject { repository.add_branch(version, new_branch_name).version.refresh }
 
-        it "calls the pacticipant_service.maybe_set_main_branch" do
-          expect(pacticipant_service).to receive(:maybe_set_main_branch).with(instance_of(PactBroker::Domain::Pacticipant), new_branch_name)
+        it "calls the application_service.maybe_set_main_branch" do
+          expect(application_service).to receive(:maybe_set_main_branch).with(instance_of(PactBroker::Domain::Application), new_branch_name)
           subject
         end
 
@@ -40,7 +40,7 @@ module PactBroker
           end
 
           it "updates the branch head" do
-            branch_head = subject.pacticipant.branch_head_for("new-branch")
+            branch_head = subject.application.branch_head_for("new-branch")
             expect(branch_head.version.id).to eq subject.refresh.id
           end
 
@@ -71,7 +71,7 @@ module PactBroker
           end
 
           it "does not change the branch head" do
-            branch_head = subject.pacticipant.branch_head_for("original-branch")
+            branch_head = subject.application.branch_head_for("original-branch")
             expect(branch_head.version).to eq subject
           end
         end

@@ -160,8 +160,8 @@ module PactBroker
           identifier_from_path[:consumer_version_number]
         end
 
-        def pacticipant_version_number
-          identifier_from_path[:pacticipant_version_number]
+        def application_version_number
+          identifier_from_path[:application_version_number]
         end
 
         def consumer_specified?
@@ -176,12 +176,12 @@ module PactBroker
           identifier_from_path[:provider_name]
         end
 
-        def pacticipant_name
-          identifier_from_path[:pacticipant_name]
+        def application_name
+          identifier_from_path[:application_name]
         end
 
-        def pacticipant_specified?
-          identifier_from_path.key?(:pacticipant_name)
+        def application_specified?
+          identifier_from_path.key?(:application_name)
         end
 
         def invalid_json?
@@ -204,24 +204,24 @@ module PactBroker
           end
         end
 
-        def find_pacticipant name, role
-          pacticipant_service.find_pacticipant_by_name(name).tap do | pacticipant |
-            if pacticipant.nil?
+        def find_application name, role
+          application_service.find_application_by_name(name).tap do | application |
+            if application.nil?
               set_json_error_message("No #{role} with name '#{name}' found", title: "Not found", type: "not-found", status: 404)
             end
           end
         end
 
         def consumer
-          @consumer ||= identifier_from_path[:consumer_name] && find_pacticipant(identifier_from_path[:consumer_name], "consumer")
+          @consumer ||= identifier_from_path[:consumer_name] && find_application(identifier_from_path[:consumer_name], "consumer")
         end
 
         def provider
-          @provider ||= identifier_from_path[:provider_name] && find_pacticipant(identifier_from_path[:provider_name], "provider")
+          @provider ||= identifier_from_path[:provider_name] && find_application(identifier_from_path[:provider_name], "provider")
         end
 
-        def pacticipant
-          @pacticipant ||= identifier_from_path[:pacticipant_name] && find_pacticipant(identifier_from_path[:pacticipant_name], "pacticipant")
+        def application
+          @application ||= identifier_from_path[:application_name] && find_application(identifier_from_path[:application_name], "application")
         end
 
         def pact

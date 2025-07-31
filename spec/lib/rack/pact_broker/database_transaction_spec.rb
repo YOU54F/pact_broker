@@ -16,7 +16,7 @@ module Rack
       let(:headers) { {} }
 
       let(:api) do
-        ->(_env) { ::PactBroker::Domain::Pacticipant.create(name: "Foo"); [500, headers, []] }
+        ->(_env) { ::PactBroker::Domain::Application.create(name: "Foo"); [500, headers, []] }
       end
 
       let(:app) do
@@ -51,7 +51,7 @@ module Rack
         let(:http_method) { :get }
 
         it "does not use a transaction" do
-          expect { subject }.to change { ::PactBroker::Domain::Pacticipant.count }.by(1)
+          expect { subject }.to change { ::PactBroker::Domain::Application.count }.by(1)
         end
       end
 
@@ -59,7 +59,7 @@ module Rack
         let(:http_method) { http_meth }
         context "for #{http_meth} requests" do
           it "uses a transaction and rollsback if there is a 500 error" do
-            expect { subject }.to change { ::PactBroker::Domain::Pacticipant.count }.by(0)
+            expect { subject }.to change { ::PactBroker::Domain::Application.count }.by(0)
           end
         end
       end
@@ -69,7 +69,7 @@ module Rack
         let(:http_method) { :post }
 
         it "does not roll back" do
-          expect { subject }.to change { ::PactBroker::Domain::Pacticipant.count }.by(1)
+          expect { subject }.to change { ::PactBroker::Domain::Application.count }.by(1)
         end
       end
     end

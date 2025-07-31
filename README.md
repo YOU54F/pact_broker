@@ -61,7 +61,7 @@ If you don't have a [Pact Broker CI Nerf Gun][nerf], you'll probably want to rea
 
 #### Step 3. Back to the Consumer CI build
 
-1. The Consumer CI determines if the pact has been verified by running `pact-broker can-i-deploy --pacticipant CONSUMER_NAME --version CONSUMER_VERSION ...` (see documentation [here](https://github.com/pact-foundation/pact_broker-client#can-i-deploy))
+1. The Consumer CI determines if the pact has been verified by running `pact-broker can-i-deploy --application CONSUMER_NAME --version CONSUMER_VERSION ...` (see documentation [here](https://github.com/pact-foundation/pact_broker-client#can-i-deploy))
 1. If the pact has been verified, the deployment can proceed.
 
 Read more about how to use the Pact Broker in the [overview][overview] on the wiki page.

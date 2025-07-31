@@ -10,13 +10,13 @@ module PactBroker
         using PactBroker::StringRefinements
 
         params do
-          required(:pacticipant).filled(:string)
+          required(:application).filled(:string)
           required(:version).filled(:string)
           optional(:to).filled(:string)
           optional(:environment).filled(:string)
         end
 
-        rule(:pacticipant).validate(:pacticipant_with_name_exists)
+        rule(:application).validate(:application_with_name_exists)
         rule(:environment).validate(:environment_with_name_exists)
 
         rule(:to, :environment) do

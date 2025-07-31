@@ -31,8 +31,8 @@ module PactBroker
       end
 
       def self.smart_default_view(consumer_name, provider_name)
-        consumer = pacticipant_repository.find_by_name(consumer_name)
-        provider = pacticipant_repository.find_by_name(provider_name)
+        consumer = application_repository.find_by_name(consumer_name)
+        provider = application_repository.find_by_name(provider_name)
         if consumer && provider
           pact_publications_with_branches = PactBroker::Pacts::PactPublication
                                             .for_consumer_name(consumer_name)
@@ -92,7 +92,7 @@ module PactBroker
             webhook ? [webhook]: [],
             pact_publication.integration.latest_triggered_webhooks,
             consumer_version_tags(pact_publication, options[:tags]).sort_by(&:created_at).collect(&:name),
-            options[:tags] && latest_verification ? latest_verification.provider_version.tags.select(&:latest_for_pacticipant?).sort_by(&:created_at) : [],
+            options[:tags] && latest_verification ? latest_verification.provider_version.tags.select(&:latest_for_application?).sort_by(&:created_at) : [],
             pact_publication.latest_for_branch?
           )
         end.sort
@@ -155,7 +155,7 @@ module PactBroker
             [],
             [],
             pact_publication.head_pact_tags.sort_by(&:created_at).collect(&:name),
-            pact_publication.latest_verification ? pact_publication.latest_verification.provider_version.tags.select(&:latest_for_pacticipant?).sort_by(&:created_at) : []
+            pact_publication.latest_verification ? pact_publication.latest_verification.provider_version.tags.select(&:latest_for_application?).sort_by(&:created_at) : []
           )
         end.sort
       end
@@ -176,14 +176,14 @@ module PactBroker
         base = base_query(options)
 
         if options[:search]
-          pacticipant_ids = pact_pacticipant_ids_by_name(options[:search])
+          application_ids = pact_application_ids_by_name(options[:search])
           base = base.where(Sequel.|(
-            { Sequel[:pact_publications][:consumer_id] => pacticipant_ids },
-            { Sequel[:pact_publications][:provider_id] => pacticipant_ids }
+            { Sequel[:pact_publications][:consumer_id] => application_ids },
+            { Sequel[:pact_publications][:provider_id] => application_ids }
           ))
 
-          # Return early if there is no pacticipant matches the input name
-          return base.paginate(options[:page_number] || DEFAULT_PAGE_NUMBER, options[:page_size] || DEFAULT_PAGE_SIZE) if pacticipant_ids.empty?
+          # Return early if there is no application matches the input name
+          return base.paginate(options[:page_number] || DEFAULT_PAGE_NUMBER, options[:page_size] || DEFAULT_PAGE_SIZE) if application_ids.empty?
         end
 
         ids_query = if options[:view]
@@ -237,12 +237,12 @@ module PactBroker
         query = PactBroker::Pacts::PactPublication.select(Sequel[:pact_publications][:id])
 
         if options[:consumer_name]
-          consumer = pacticipant_repository.find_by_name!(options[:consumer_name])
+          consumer = application_repository.find_by_name!(options[:consumer_name])
           query = query.for_consumer(consumer)
         end
 
         if options[:provider_name]
-          provider = pacticipant_repository.find_by_name!(options[:provider_name])
+          provider = application_repository.find_by_name!(options[:provider_name])
           query = query.for_provider(provider)
         end
 
@@ -250,8 +250,8 @@ module PactBroker
       end
 
 
-      def self.pact_pacticipant_ids_by_name(pacticipant_name)
-        pacticipant_repository.search_by_name(pacticipant_name).collect(&:id)
+      def self.pact_application_ids_by_name(application_name)
+        application_repository.search_by_name(application_name).collect(&:id)
       end
 
       def self.select_columns_and_order(ids_query, options)
@@ -274,7 +274,7 @@ module PactBroker
         query.order(*order_columns).paginate(pact_number, page_size)
       end
 
-      private_class_method :base_query, :query_pact_publication_ids_by_tags, :pact_pacticipant_ids_by_name, :select_columns_and_order
+      private_class_method :base_query, :query_pact_publication_ids_by_tags, :pact_application_ids_by_name, :select_columns_and_order
     end
   end
 end

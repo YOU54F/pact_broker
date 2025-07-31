@@ -68,7 +68,7 @@ module PactBroker
               name: "Consumer",
               _links: {
                 self: {
-                  href: "http://example.org/pacticipants/Consumer"
+                  href: "http://example.org/applications/Consumer"
                 }
               },
               version: {
@@ -98,7 +98,7 @@ module PactBroker
                 ],
                 _links: {
                   self: {
-                    href: "http://example.org/pacticipants/Consumer/versions/1.0.0"
+                    href: "http://example.org/applications/Consumer/versions/1.0.0"
                   }
                 },
                 tags: [
@@ -107,7 +107,7 @@ module PactBroker
                     latest: true,
                     _links: {
                       self: {
-                        href: "http://example.org/pacticipants/Consumer/versions/1.0.0/tags/prod"
+                        href: "http://example.org/applications/Consumer/versions/1.0.0/tags/prod"
                       }
                     }
                   }
@@ -121,7 +121,7 @@ module PactBroker
               name: "Provider",
               _links: {
                 self: {
-                  href: "http://example.org/pacticipants/Provider"
+                  href: "http://example.org/applications/Provider"
                 }
               },
               version: {
@@ -145,7 +145,7 @@ module PactBroker
                 ],
                 _links: {
                   self: {
-                    href: "http://example.org/pacticipants/Provider/versions/4.5.6"
+                    href: "http://example.org/applications/Provider/versions/4.5.6"
                   }
                 },
                 tags: [
@@ -154,7 +154,7 @@ module PactBroker
                     latest: false,
                     _links: {
                       self: {
-                        href: "http://example.org/pacticipants/Provider/versions/4.5.6/tags/master"
+                        href: "http://example.org/applications/Provider/versions/4.5.6/tags/master"
                       }
                     }
                   }
@@ -186,7 +186,7 @@ module PactBroker
             }
           end
 
-          let(:consumer_version) { double("consumer version", number: "1.0.0", pacticipant: double("consumer", name: "Consumer")) }
+          let(:consumer_version) { double("consumer version", number: "1.0.0", application: double("consumer", name: "Consumer")) }
 
           let(:consumer_version_branch_versions) do
             [ instance_double("PactBroker::Versions::BranchVersion", branch_name: "main", latest?: true) ]
@@ -218,7 +218,7 @@ module PactBroker
             ]
           end
 
-          let(:provider_version) { double("provider version", number: "4.5.6", pacticipant: double("provider", name: "Provider")) }
+          let(:provider_version) { double("provider version", number: "4.5.6", application: double("provider", name: "Provider")) }
 
           let(:provider_version_branch_versions) do
             [ instance_double("PactBroker::Versions::BranchVersion", branch_name: "feat/x", latest?: true) ]

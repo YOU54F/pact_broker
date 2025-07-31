@@ -39,7 +39,7 @@ describe "get latest matrix badge with tags" do
     expect(subject.body).to include "<svg/>"
   end
 
-  context "when one of the pacticipants does not exist" do
+  context "when one of the applications does not exist" do
     let(:path) { "/matrix/provider/provider/latest/master/consumer/consumer2/latest/prod/badge" }
 
     it "returns a 200 status as the badge content indicated the pact is not found" do

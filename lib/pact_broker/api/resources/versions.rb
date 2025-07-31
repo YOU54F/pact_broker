@@ -23,7 +23,7 @@ module PactBroker
         end
 
         def resource_exists?
-          !!pacticipant
+          !!application
         end
 
         def to_json
@@ -31,7 +31,7 @@ module PactBroker
         end
 
         def versions
-          @versions ||= version_service.find_pacticipant_versions_in_reverse_order(pacticipant_name, {}, pagination_options, decorator_class(:versions_decorator).eager_load_associations)
+          @versions ||= version_service.find_application_versions_in_reverse_order(application_name, {}, pagination_options, decorator_class(:versions_decorator).eager_load_associations)
         end
 
         def deployed_versions

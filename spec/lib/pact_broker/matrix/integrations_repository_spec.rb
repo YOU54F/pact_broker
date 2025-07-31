@@ -16,10 +16,10 @@ module PactBroker
           .create_pact_with_hierarchy("Foo", "1", "Frog")
       end
 
-      let(:foo) { td.find_pacticipant("Foo") }
-      let(:bar) { td.find_pacticipant("Bar") }
-      let(:waffle) { td.find_pacticipant("Waffle") }
-      let(:frog) { td.find_pacticipant("Frog") }
+      let(:foo) { td.find_application("Foo") }
+      let(:bar) { td.find_application("Bar") }
+      let(:waffle) { td.find_application("Waffle") }
+      let(:frog) { td.find_application("Frog") }
 
       let(:resolved_selectors) { PactBroker::Matrix::SelectorResolver.resolve_specified_selectors(unresolved_selectors, []) }
       let(:infer_selectors_for_integrations) { false }
@@ -27,7 +27,7 @@ module PactBroker
       subject { PactBroker::Matrix::IntegrationsRepository.new.find_integrations_for_specified_selectors(resolved_selectors, infer_selectors_for_integrations) }
 
       context "for one provider version" do
-        let(:unresolved_selectors) { [UnresolvedSelector.new(pacticipant_name: "Bar", pacticipant_version_number: "2")] }
+        let(:unresolved_selectors) { [UnresolvedSelector.new(application_name: "Bar", application_version_number: "2")] }
 
         context "when not inferring other integrations (having a single selector and not inferring integrations is supported by the code but is not a scenario accessible through the UI or CLI)" do
           it do
@@ -51,7 +51,7 @@ module PactBroker
       end
 
       context "for one provider" do
-        let(:unresolved_selectors) { [UnresolvedSelector.new(pacticipant_name: "Bar")] }
+        let(:unresolved_selectors) { [UnresolvedSelector.new(application_name: "Bar")] }
 
         context "when not inferring integrations" do
           it do
@@ -75,7 +75,7 @@ module PactBroker
       end
 
       context "for one consumer version" do
-        let(:unresolved_selectors) { [UnresolvedSelector.new(pacticipant_name: "Foo", pacticipant_version_number: "1")] }
+        let(:unresolved_selectors) { [UnresolvedSelector.new(application_name: "Foo", application_version_number: "1")] }
 
         context "when not inferring integrations" do
           it do
@@ -99,7 +99,7 @@ module PactBroker
       end
 
       context "for one consumer" do
-        let(:unresolved_selectors) { [UnresolvedSelector.new(pacticipant_name: "Foo")] }
+        let(:unresolved_selectors) { [UnresolvedSelector.new(application_name: "Foo")] }
 
         context "when not inferring integrations" do
           it do
@@ -125,8 +125,8 @@ module PactBroker
       context "with multiple selectors with versions" do
         let(:unresolved_selectors) do
           [
-            UnresolvedSelector.new(pacticipant_name: "Bar", pacticipant_version_number: "2"),
-            UnresolvedSelector.new(pacticipant_name: "Foo", pacticipant_version_number: "1")
+            UnresolvedSelector.new(application_name: "Bar", application_version_number: "2"),
+            UnresolvedSelector.new(application_name: "Foo", application_version_number: "1")
           ]
         end
 
@@ -154,8 +154,8 @@ module PactBroker
       context "with multiple selectors without versions (this is the default landing page for the pactflow integration matrix)" do
         let(:unresolved_selectors) do
           [
-            UnresolvedSelector.new(pacticipant_name: "Bar"),
-            UnresolvedSelector.new(pacticipant_name: "Foo")
+            UnresolvedSelector.new(application_name: "Bar"),
+            UnresolvedSelector.new(application_name: "Foo")
           ]
         end
 
@@ -188,8 +188,8 @@ module PactBroker
 
         let(:unresolved_selectors) do
           [
-            UnresolvedSelector.new(pacticipant_name: "Bar", pacticipant_version_number: "2"),
-            UnresolvedSelector.new(pacticipant_name: "Foo", pacticipant_version_number: "1")
+            UnresolvedSelector.new(application_name: "Bar", application_version_number: "2"),
+            UnresolvedSelector.new(application_name: "Foo", application_version_number: "1")
           ]
         end
 

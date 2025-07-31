@@ -38,7 +38,7 @@ module PactBroker
         create_or_update_integrations(pacts)
         notices = version_notices + pact_notices
         ContractsPublicationResults.from_hash(
-          pacticipant: version.pacticipant,
+          application: version.application,
           version: version,
           tags: tags,
           contracts: pacts,
@@ -49,7 +49,7 @@ module PactBroker
       def conflict_notices(parsed_contracts, base_url: )
         notices = []
         add_pact_conflict_notices(notices, parsed_contracts)
-        add_pacticipant_conflict_notices(notices, parsed_contracts, base_url)
+        add_application_conflict_notices(notices, parsed_contracts, base_url)
         notices
       end
 
@@ -68,7 +68,7 @@ module PactBroker
       def add_pact_conflict_notice(notices, parsed_contracts, contract_to_publish, existing_json_content, new_json_content)
         message_params = {
           consumer_name: contract_to_publish.consumer_name,
-          consumer_version_number: parsed_contracts.pacticipant_version_number,
+          consumer_version_number: parsed_contracts.application_version_number,
           provider_name: contract_to_publish.provider_name
         }
         notices << Notice.error(message("errors.validation.pact_content_modification_not_allowed", message_params))
@@ -77,16 +77,16 @@ module PactBroker
 
       private :add_pact_conflict_notice
 
-      def add_pacticipant_conflict_notices(notices, parsed_contracts, base_url)
-        if PactBroker.configuration.check_for_potential_duplicate_pacticipant_names
-          duplicate_pacticipant_messages = pacticipant_service.messages_for_potential_duplicate_pacticipants(parsed_contracts.pacticipant_names, base_url)
-          duplicate_pacticipant_messages.each do | message_text |
+      def add_application_conflict_notices(notices, parsed_contracts, base_url)
+        if PactBroker.configuration.check_for_potential_duplicate_application_names
+          duplicate_application_messages = application_service.messages_for_potential_duplicate_applications(parsed_contracts.application_names, base_url)
+          duplicate_application_messages.each do | message_text |
             notices << Notice.error(message_text)
           end
         end
       end
 
-      private :add_pacticipant_conflict_notices
+      private :add_application_conflict_notices
 
       def create_version(parsed_contracts)
         version_params = {
@@ -102,9 +102,9 @@ module PactBroker
       private :create_version
 
       def find_existing_version(parsed_contracts)
-        version_service.find_by_pacticipant_name_and_number(
-          pacticipant_name: parsed_contracts.pacticipant_name,
-          pacticipant_version_number: parsed_contracts.pacticipant_version_number
+        version_service.find_by_application_name_and_number(
+          application_name: parsed_contracts.application_name,
+          application_version_number: parsed_contracts.application_version_number
         )
       end
 
@@ -112,8 +112,8 @@ module PactBroker
 
       def create_or_update_version(parsed_contracts, version_params)
         version_service.create_or_update(
-          parsed_contracts.pacticipant_name,
-          parsed_contracts.pacticipant_version_number,
+          parsed_contracts.application_name,
+          parsed_contracts.application_version_number,
           OpenStruct.new(version_params)
         )
       end
@@ -122,7 +122,7 @@ module PactBroker
 
       def create_tags(parsed_contracts, version)
         (parsed_contracts.tags || []).collect do | tag_name |
-          tag_service.create(pacticipant_name: version.pacticipant.name, pacticipant_version_number: version.number, tag_name: tag_name)
+          tag_service.create(application_name: version.application.name, application_version_number: version.number, tag_name: tag_name)
         end
       end
 
@@ -145,9 +145,9 @@ module PactBroker
 
       def create_pact_params(parsed_contracts, contract_to_publish)
         PactBroker::Pacts::PactParams.new(
-          consumer_name: parsed_contracts.pacticipant_name,
+          consumer_name: parsed_contracts.application_name,
           provider_name: contract_to_publish.provider_name,
-          consumer_version_number: parsed_contracts.pacticipant_version_number,
+          consumer_version_number: parsed_contracts.application_version_number,
           json_content: contract_to_publish.decoded_content
         )
       end
@@ -211,8 +211,8 @@ module PactBroker
 
       def notice_for_pact_publication(parsed_contracts, merge, existing_pact, created_pact)
         message_params = {
-          consumer_name: parsed_contracts.pacticipant_name,
-          consumer_version_number: parsed_contracts.pacticipant_version_number,
+          consumer_name: parsed_contracts.application_name,
+          consumer_version_number: parsed_contracts.application_version_number,
           provider_name: created_pact.provider_name
         }
         if merge

@@ -44,8 +44,8 @@ module PactBroker
             "WARN: Although the verification was reported as successful, the results for #{reason.consumer_selector.description} and #{reason.provider_selector.description} may be missing tests for the following interactions: #{descriptions}"
           when PactBroker::Matrix::IgnoreSelectorDoesNotExist
             "WARN: Cannot ignore #{reason.selector.description}"
-          when PactBroker::Matrix::SelectorWithoutPacticipantVersionNumberSpecified
-            "WARN: It is recommended to specify the version number (rather than the tag or branch) of the pacticipant you wish to deploy to avoid race conditions. Without a version number, this result will not be reliable."
+          when PactBroker::Matrix::SelectorWithoutApplicationVersionNumberSpecified
+            "WARN: It is recommended to specify the version number (rather than the tag or branch) of the application you wish to deploy to avoid race conditions. Without a version number, this result will not be reliable."
           when PactBroker::Matrix::NoEnvironmentSpecified
             "WARN: It is recommended to specify the environment into which you are deploying. Without the environment, this result will not be reliable."
           else

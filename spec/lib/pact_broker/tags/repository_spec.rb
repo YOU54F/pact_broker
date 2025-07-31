@@ -5,7 +5,7 @@ module PactBroker
     describe Repository do
       describe ".create" do
         before do
-          td.create_pacticipant("foo")
+          td.create_application("foo")
             .create_version("1")
         end
 
@@ -21,7 +21,7 @@ module PactBroker
           expect(subject.name).to eq "prod"
           expect(subject.version.id).to eq td.version.id
           expect(subject.version_order).to eq td.version.order
-          expect(subject.pacticipant_id).to eq td.version.pacticipant_id
+          expect(subject.application_id).to eq td.version.application_id
         end
 
         context "when the tag already exists" do
@@ -41,20 +41,20 @@ module PactBroker
 
       describe ".find" do
 
-        let(:pacticipant_name) { "test_pacticipant" }
+        let(:application_name) { "test_application" }
         let(:version_number) { "1.2.3a" }
         let(:tag_name) { "prod" }
 
         subject { Repository.new }
-        let(:options) { {pacticipant_name: pacticipant_name, pacticipant_version_number: version_number, tag_name: tag_name} }
+        let(:options) { {application_name: application_name, application_version_number: version_number, tag_name: tag_name} }
         let(:find_tag) { subject.find options }
 
         let!(:test_data_builder) do
           td
-            .create_pacticipant("wrong_pacticipant")
+            .create_application("wrong_application")
             .create_version(version_number)
-            .create_tag(tag_name) #Tag with wrong pacticipant
-            .create_pacticipant(pacticipant_name)
+            .create_tag(tag_name) #Tag with wrong application
+            .create_application(application_name)
             .create_version("2.0.0")
             .create_tag(tag_name) # Tag with wrong version number
             .create_version(version_number)
@@ -70,7 +70,7 @@ module PactBroker
           it "returns the tag" do
             expect(find_tag.name).to eq tag_name
             expect(find_tag.version.number).to eq version_number
-            expect(find_tag.version.pacticipant.name).to eq pacticipant_name
+            expect(find_tag.version.application.name).to eq application_name
             expect(find_tag.created_at).to be_datey
             expect(find_tag.updated_at).to be_datey
           end
@@ -80,7 +80,7 @@ module PactBroker
               allow(PactBroker.configuration).to receive(:use_case_sensitive_resource_names).and_return(false)
             end
 
-            let(:options) { {pacticipant_name: pacticipant_name.upcase, pacticipant_version_number: version_number.upcase, tag_name: tag_name.upcase} }
+            let(:options) { {application_name: application_name.upcase, application_version_number: version_number.upcase, tag_name: tag_name.upcase} }
 
             it "returns the tag" do
               expect(find_tag).to_not be nil
@@ -116,7 +116,7 @@ module PactBroker
         end
       end
 
-      describe "find_all_tag_names_for_pacticipant" do
+      describe "find_all_tag_names_for_application" do
         before do
           td.create_consumer("Foo")
             .create_consumer_version("1")
@@ -130,14 +130,14 @@ module PactBroker
             .create_consumer_version_tag("ignore")
         end
 
-        subject { Repository.new.find_all_tag_names_for_pacticipant("Foo") }
+        subject { Repository.new.find_all_tag_names_for_application("Foo") }
 
-        it "returns all the tag names for the pacticipant" do
+        it "returns all the tag names for the application" do
           expect(subject).to eq ["dev", "master", "prod"]
         end
       end
 
-      describe ".find_all_by_pacticipant_name_and_tag" do 
+      describe ".find_all_by_application_name_and_tag" do 
         before do
           td.create_consumer("Boo")
             .create_version("1.0.0")
@@ -147,9 +147,9 @@ module PactBroker
             .create_tag("main")
         end
 
-        subject { Repository.new.find_all_by_pacticipant_name_and_tag("Boo", "prod") }
+        subject { Repository.new.find_all_by_application_name_and_tag("Boo", "prod") }
 
-        it "returns all the tags for that pacticipant" do
+        it "returns all the tags for that application" do
           expect(subject.collect(&:name)).to eq ["prod"]
         end
       end

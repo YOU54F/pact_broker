@@ -50,8 +50,8 @@ module PactBroker
           false
         end
 
-        def pacticipant_with_name_exists?(value)
-          PactBroker::Services.pacticipant_service.find_pacticipant_by_name(value)
+        def application_with_name_exists?(value)
+          PactBroker::Services.application_service.find_application_by_name(value)
         end
 
         def environment_with_name_exists?(value)

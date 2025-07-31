@@ -1,5 +1,5 @@
 require_relative "base_decorator"
-require_relative "pact_pacticipant_decorator"
+require_relative "pact_application_decorator"
 require_relative "timestamps"
 
 module PactBroker
@@ -27,11 +27,11 @@ module PactBroker
           }
         end
 
-        link :pacticipant do | options |
+        link :application do | options |
           {
-            title: "Pacticipant",
-            name: represented.version.pacticipant.name,
-            href: pacticipant_url(options.fetch(:base_url), represented.version.pacticipant)
+            title: "Application",
+            name: represented.version.application.name,
+            href: application_url(options.fetch(:base_url), represented.version.application)
           }
         end
 

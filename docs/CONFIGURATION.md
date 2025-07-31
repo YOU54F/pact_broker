@@ -573,29 +573,29 @@ Whether or not to enable the embedded HAL Browser.
 <hr/>
 
 
-### check_for_potential_duplicate_pacticipant_names
+### check_for_potential_duplicate_application_names
 
 When a pact is published, the consumer, provider and consumer version resources are automatically created.
 
-To prevent a pacticipant (consumer or provider) being created multiple times with slightly different name variants
-(eg. FooBar/foo-bar/foo bar/Foo Bar Service), a check is performed to determine if a new pacticipant name is likely to be a duplicate
+To prevent a application (consumer or provider) being created multiple times with slightly different name variants
+(eg. FooBar/foo-bar/foo bar/Foo Bar Service), a check is performed to determine if a new application name is likely to be a duplicate
 of any existing applications. If it is deemed similar enough to an existing name, a 409 will be returned.
 
-The response body will contain instructions indicating that the pacticipant name should be corrected if it was intended to be an existing one,
-or that the pacticipant should be created manually if it was intended to be a new one.
+The response body will contain instructions indicating that the application name should be corrected if it was intended to be an existing one,
+or that the application should be created manually if it was intended to be a new one.
 
-To turn this feature off, set `check_for_potential_duplicate_pacticipant_names` to `false`, and make sure everyone is very careful with their naming!
-The usefulness of the Broker depends on the integrity of the data, which in turn depends on the correctness of the pacticipant names.
+To turn this feature off, set `check_for_potential_duplicate_application_names` to `false`, and make sure everyone is very careful with their naming!
+The usefulness of the Broker depends on the integrity of the data, which in turn depends on the correctness of the application names.
 
-**Environment variable name:** `PACT_BROKER_CHECK_FOR_POTENTIAL_DUPLICATE_PACTICIPANT_NAMES`<br/>
-**YAML configuration key name:** `check_for_potential_duplicate_pacticipant_names`<br/>
+**Environment variable name:** `PACT_BROKER_CHECK_FOR_POTENTIAL_DUPLICATE_APPLICATION_NAMES`<br/>
+**YAML configuration key name:** `check_for_potential_duplicate_application_names`<br/>
 **Default:** `true`<br/>
 **Allowed values:** `true`, `false`<br/>
 
 ### create_deployed_versions_for_tags
 
 When `create_deployed_versions_for_tags` is `true` and a tag is created, if there is an environment with the name of the newly created tag, a deployed version is
-also created for the pacticipant version.
+also created for the application version.
 
 This is to assist in the migration from using tags to track deployments to using the deployed and released versions feature.
 
@@ -621,8 +621,8 @@ This is to assist in the migration from using tags to track branches to using th
 
 ### auto_detect_main_branch
 
-When `true` and a pacticipant version is created with a tag or a branch that matches one of the names in `main_branch_candidates`,
-the `mainBranch` property is set for that pacticipant if it is not already set.
+When `true` and a application version is created with a tag or a branch that matches one of the names in `main_branch_candidates`,
+the `mainBranch` property is set for that application if it is not already set.
 
 This is to assist in the migration from using tags to track branches to using the branches feature.
 
@@ -634,7 +634,7 @@ This is to assist in the migration from using tags to track branches to using th
 
 ### main_branch_candidates
 
-An array of potential main branch names used when automatically detecting the main branch for a pacticipant.
+An array of potential main branch names used when automatically detecting the main branch for a application.
 
 **Supported versions:** From v2.82.0<br/>
 **Environment variable name:** `PACT_BROKER_MAIN_BRANCH_CANDIDATES`<br/>
@@ -666,13 +666,13 @@ The maximum amount of time in seconds to attempt to generate the diff between tw
 **YAML configuration key name:** `pact_content_diff_timeout`<br/>
 **Default:** `15`<br/>
 
-### network_diagram_max_pacticipants
+### network_diagram_max_applications
 
-The maximum number of pacticipants to include in the network diagram. When too many pacticipants are included, the diagram becomes unreadable,
+The maximum number of applications to include in the network diagram. When too many applications are included, the diagram becomes unreadable,
 and at large numbers, the graph will not render due to browser performance issues.
 
-**Environment variable name:** `PACT_BROKER_NETWORK_DIAGRAM_MAX_PACTICIPANTS`<br/>
-**YAML configuration key name:** `network_diagram_max_pacticipants`<br/>
+**Environment variable name:** `PACT_BROKER_NETWORK_DIAGRAM_MAX_APPLICATIONS`<br/>
+**YAML configuration key name:** `network_diagram_max_applications`<br/>
 **Default:** `150`<br/>
 **Allowed values:** A positive integer<br/>
 

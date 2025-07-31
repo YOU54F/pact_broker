@@ -4,7 +4,7 @@ require "webmock/rspec"
 module PactBroker
   module Badges
     describe Service do
-      let(:pacticipant_name) { "Foo-Bar_Thing Service" }
+      let(:application_name) { "Foo-Bar_Thing Service" }
       let(:pact) { double("pact", consumer_name: "Foo-Bar", provider_name: "Thing_Blah") }
       let(:label) { nil }
       let(:initials) { false }

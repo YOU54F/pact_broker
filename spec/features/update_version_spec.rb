@@ -1,5 +1,5 @@
-describe "Updating a pacticipant version" do
-  let(:path) { "/pacticipants/Foo/versions/1234" }
+describe "Updating a application version" do
+  let(:path) { "/applications/Foo/versions/1234" }
   let(:headers) { { "CONTENT_TYPE" => content_type } }
   let(:content_type) { "application/merge-patch+json" }
   let(:response_body) { JSON.parse(subject.body, symbolize_names: true)}

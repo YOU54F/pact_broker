@@ -65,7 +65,7 @@ describe "Publishing a pact" do
 
   end
 
-  context "when the pacticipant names in the path do not match those in the pact" do
+  context "when the application names in the path do not match those in the pact" do
     let(:path) { "/pacts/provider/Another%20Provider/consumer/A%20Consumer/version/1.2.3" }
 
     it "returns a json error response" do
@@ -73,14 +73,14 @@ describe "Publishing a pact" do
     end
   end
 
-  context "when the pacticipant name is an almost duplicate of an existing pacticipant name" do
+  context "when the application name is an almost duplicate of an existing application name" do
     before do
-      td.create_pacticipant("A Provider Service")
+      td.create_application("A Provider Service")
     end
 
     context "when duplicate checking is on" do
       before do
-        PactBroker.configuration.check_for_potential_duplicate_pacticipant_names = true
+        PactBroker.configuration.check_for_potential_duplicate_application_names = true
       end
 
       it "returns a 409" do
@@ -90,7 +90,7 @@ describe "Publishing a pact" do
 
     context "when duplicate checking is off" do
       before do
-        PactBroker.configuration.check_for_potential_duplicate_pacticipant_names = false
+        PactBroker.configuration.check_for_potential_duplicate_application_names = false
       end
 
       it "returns a 201" do

@@ -24,8 +24,8 @@ RSpec.describe "error handling" do
     end
   end
 
-  context "when a pacticipant does not exist" do
-    subject { get("/pacticipants/foo", nil, rack_headers) }
+  context "when a application does not exist" do
+    subject { get("/applications/foo", nil, rack_headers) }
 
     it "returns application/problem+json" do
       expect(subject.status).to eq 404

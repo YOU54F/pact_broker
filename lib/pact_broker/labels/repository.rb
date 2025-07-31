@@ -9,15 +9,15 @@ module PactBroker
       end
 
       def create args
-        Domain::Label.new(name: args.fetch(:name), pacticipant: args.fetch(:pacticipant)).save
+        Domain::Label.new(name: args.fetch(:name), application: args.fetch(:application)).save
       end
 
       def find args
         PactBroker::Domain::Label
           .select_all_qualified
-          .join(:pacticipants, { id: :pacticipant_id })
+          .join(:applications, { id: :application_id })
           .where(Sequel.name_like(Sequel.qualify("labels", "name"), args.fetch(:label_name)))
-          .where(Sequel.name_like(Sequel.qualify("pacticipants", "name"), args.fetch(:pacticipant_name)))
+          .where(Sequel.name_like(Sequel.qualify("applications", "name"), args.fetch(:application_name)))
           .single_record
       end
 
@@ -25,8 +25,8 @@ module PactBroker
         find(args).delete
       end
 
-      def delete_by_pacticipant_id pacticipant_id
-        Sequel::Model.db[:labels].where(pacticipant_id: pacticipant_id).delete
+      def delete_by_application_id application_id
+        Sequel::Model.db[:labels].where(application_id: application_id).delete
       end
     end
   end

@@ -6,14 +6,14 @@ module PactBroker
       describe "#metrics" do
         subject { Service.metrics }
 
-        describe "pacticipants" do
+        describe "applications" do
           before do
             td.create_consumer("Foo")
               .create_consumer("Bar", main_branch: "foo")
           end
 
-          its([:pacticipants, :count]) { is_expected.to eq 2 }
-          its([:pacticipants, :withMainBranchSetCount]) { is_expected.to eq 1 }
+          its([:applications, :count]) { is_expected.to eq 2 }
+          its([:applications, :withMainBranchSetCount]) { is_expected.to eq 1 }
         end
 
         describe "integrations" do
@@ -28,16 +28,16 @@ module PactBroker
           its([:integrations, :count]) { is_expected.to eq 2 }
         end
 
-        describe "pacticipant versions" do
+        describe "application versions" do
           before do
             td.create_consumer("Foo")
               .create_consumer_version("2")
               .create_consumer_version("3", branch: "main")
           end
 
-          its([:pacticipantVersions, :count]) { is_expected.to eq 2 }
-          its([:pacticipantVersions, :withBranchCount]) { is_expected.to eq 1 }
-          its([:pacticipantVersions, :withUserCreatedBranchCount]) { is_expected.to eq 1 }
+          its([:applicationVersions, :count]) { is_expected.to eq 2 }
+          its([:applicationVersions, :withBranchCount]) { is_expected.to eq 1 }
+          its([:applicationVersions, :withUserCreatedBranchCount]) { is_expected.to eq 1 }
         end
 
         describe "environments, deployed versions, released versions" do

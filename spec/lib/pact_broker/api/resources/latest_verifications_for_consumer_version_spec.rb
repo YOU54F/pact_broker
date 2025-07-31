@@ -14,11 +14,11 @@ module PactBroker
           subject { get url; last_response }
 
           before do
-            allow(PactBroker::Versions::Service).to receive(:find_by_pacticipant_name_and_number).and_return(version)
+            allow(PactBroker::Versions::Service).to receive(:find_by_application_name_and_number).and_return(version)
           end
 
           it "looks up the consumer version" do
-            expect(PactBroker::Versions::Service).to receive(:find_by_pacticipant_name_and_number).with(hash_including(pacticipant_name: "Consumer", pacticipant_version_number: "1.2.3"))
+            expect(PactBroker::Versions::Service).to receive(:find_by_application_name_and_number).with(hash_including(application_name: "Consumer", application_version_number: "1.2.3"))
             subject
           end
 

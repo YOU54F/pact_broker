@@ -4,9 +4,9 @@ require "pact_broker/matrix/resolved_selector"
 module PactBroker
   module Matrix
     describe EveryRow do
-      let(:foo) { PactBroker::Domain::Pacticipant.where(name: "Foo").single_record }
-      let(:bar) { PactBroker::Domain::Pacticipant.where(name: "Bar").single_record }
-      let(:wiffle) { PactBroker::Domain::Pacticipant.where(name: "Wiffle").single_record }
+      let(:foo) { PactBroker::Domain::Application.where(name: "Foo").single_record }
+      let(:bar) { PactBroker::Domain::Application.where(name: "Bar").single_record }
+      let(:wiffle) { PactBroker::Domain::Application.where(name: "Wiffle").single_record }
 
       describe "matching_selectors" do
         before do
@@ -19,11 +19,11 @@ module PactBroker
         end
 
         let(:selector_1) do
-          PactBroker::Matrix::ResolvedSelector.for_pacticipant(foo, PactBroker::Matrix::UnresolvedSelector.new(pacticipant_name: "Foo"), :specified, false)
+          PactBroker::Matrix::ResolvedSelector.for_application(foo, PactBroker::Matrix::UnresolvedSelector.new(application_name: "Foo"), :specified, false)
         end
 
         let(:selector_2) do
-          PactBroker::Matrix::ResolvedSelector.for_pacticipant(bar, PactBroker::Matrix::UnresolvedSelector.new(pacticipant_name: "Bar"), :specified, false)
+          PactBroker::Matrix::ResolvedSelector.for_application(bar, PactBroker::Matrix::UnresolvedSelector.new(application_name: "Bar"), :specified, false)
         end
 
         let(:selectors) { [selector_1, selector_2] }

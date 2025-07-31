@@ -4,9 +4,9 @@ describe "add provider version relationship to verification (migrate 42-44)", mi
   end
 
   let(:now) { DateTime.new(2018, 2, 2) }
-  let!(:consumer) { create(:pacticipants, {name: "Consumer", created_at: now, updated_at: now}) }
-  let!(:provider) { create(:pacticipants, {name: "Provider", created_at: now, updated_at: now}) }
-  let!(:consumer_version) { create(:versions, {number: "1.2.3", order: 1, pacticipant_id: consumer[:id], created_at: now, updated_at: now}) }
+  let!(:consumer) { create(:applications, {name: "Consumer", created_at: now, updated_at: now}) }
+  let!(:provider) { create(:applications, {name: "Provider", created_at: now, updated_at: now}) }
+  let!(:consumer_version) { create(:versions, {number: "1.2.3", order: 1, application_id: consumer[:id], created_at: now, updated_at: now}) }
   let!(:pact_version) { create(:pact_versions, {content: {some: "json"}.to_json, sha: "1234", consumer_id: consumer[:id], provider_id: provider[:id], created_at: now}) }
   let!(:pact_publication) do
     create(:pact_publications, {
@@ -41,7 +41,7 @@ describe "add provider version relationship to verification (migrate 42-44)", mi
   end
 
   context "when the version already exists" do
-    let!(:provider_version) { create(:versions, {number: "1.2.3", order: 1, pacticipant_id: provider[:id], created_at: now, updated_at: now}) }
+    let!(:provider_version) { create(:versions, {number: "1.2.3", order: 1, application_id: provider[:id], created_at: now, updated_at: now}) }
 
     it "does not create a version object" do
       expect { subject }.to_not change { database[:versions].count }

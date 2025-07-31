@@ -15,8 +15,8 @@ module PactBroker
       REPOSITORY_FACTORIES[name].call
     end
 
-    def pacticipant_repository
-      get_repository(:pacticipant_repository)
+    def application_repository
+      get_repository(:application_repository)
     end
 
     def version_repository
@@ -61,9 +61,9 @@ module PactBroker
 
     # rubocop: disable Metrics/MethodLength
     def register_default_repositories
-      register_repository(:pacticipant_repository) do
-        require "pact_broker/pacticipants/repository"
-        Pacticipants::Repository.new
+      register_repository(:application_repository) do
+        require "pact_broker/applications/repository"
+        Applications::Repository.new
       end
 
       register_repository(:version_repository) do

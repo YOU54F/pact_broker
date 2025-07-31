@@ -18,8 +18,8 @@ module PactBroker
           .create_webhook(provider: nil, consumer: nil, consumer_label: "label2", provider_label: "label1")
       end
 
-      let(:consumer) { PactBroker::Domain::Pacticipant.find(name: "Foo") }
-      let(:provider) { PactBroker::Domain::Pacticipant.find(name: "Bar") }
+      let(:consumer) { PactBroker::Domain::Application.find(name: "Foo") }
+      let(:provider) { PactBroker::Domain::Application.find(name: "Bar") }
       let(:pact) { PactBroker::Pacts::PactPublication.find(id: td.pact.id) }
 
       describe "#is_for?" do

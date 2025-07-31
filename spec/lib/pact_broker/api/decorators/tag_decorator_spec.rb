@@ -28,7 +28,7 @@ module PactBroker
         end
 
         it "includes a link to itself" do
-          expect(subject[:_links][:self][:href]).to eq "http://example.org/pacticipants/Consumer/versions/1.2.3/tags/prod"
+          expect(subject[:_links][:self][:href]).to eq "http://example.org/applications/Consumer/versions/1.2.3/tags/prod"
         end
 
         it "includes the tag name" do
@@ -36,19 +36,19 @@ module PactBroker
         end
 
         it "includes a link to the version" do
-          expect(subject[:_links][:version][:href]).to eq "http://example.org/pacticipants/Consumer/versions/1.2.3"
+          expect(subject[:_links][:version][:href]).to eq "http://example.org/applications/Consumer/versions/1.2.3"
         end
 
         it "includes the version number" do
           expect(subject[:_links][:version][:name]).to eq "1.2.3"
         end
 
-        it "includes a link to the pacticipant" do
-          expect(subject[:_links][:pacticipant][:href]).to eq "http://example.org/pacticipants/Consumer"
+        it "includes a link to the application" do
+          expect(subject[:_links][:application][:href]).to eq "http://example.org/applications/Consumer"
         end
 
-        it "includes the pacticipant name" do
-          expect(subject[:_links][:pacticipant][:name]).to eq "Consumer"
+        it "includes the application name" do
+          expect(subject[:_links][:application][:name]).to eq "Consumer"
         end
 
       end

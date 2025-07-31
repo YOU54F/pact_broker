@@ -7,7 +7,7 @@ module PactBroker
       describe WebhookContract do
         include PactBroker::Test::ApiContractSupport
 
-        let(:json) { load_fixture "webhook_valid_with_pacticipants.json" }
+        let(:json) { load_fixture "webhook_valid_with_applications.json" }
         let(:hash) { JSON.parse(json) }
         let(:webhook) { PactBroker::Api::Decorators::WebhookDecorator.new(Domain::Webhook.new).from_json(json) }
         let(:matching_hosts) { ["foo"] }
@@ -17,7 +17,7 @@ module PactBroker
         subject { format_errors_the_old_way(WebhookContract.call(hash)) }
 
         def valid_webhook_with
-          hash = load_json_fixture "webhook_valid_with_pacticipants.json"
+          hash = load_json_fixture "webhook_valid_with_applications.json"
           yield hash
           hash.to_json
         end
@@ -27,8 +27,8 @@ module PactBroker
             PactBroker.configuration.webhook_http_method_whitelist = webhook_http_method_whitelist
             PactBroker.configuration.webhook_host_whitelist = webhook_host_whitelist
             allow(PactBroker::Webhooks::CheckHostWhitelist).to receive(:call).and_return(whitelist_matches)
-            allow(PactBroker::Pacticipants::Service).to receive(:find_pacticipant_by_name).with("Foo").and_return(consumer)
-            allow(PactBroker::Pacticipants::Service).to receive(:find_pacticipant_by_name).with("Bar").and_return(provider)
+            allow(PactBroker::Applications::Service).to receive(:find_application_by_name).with("Foo").and_return(consumer)
+            allow(PactBroker::Applications::Service).to receive(:find_application_by_name).with("Bar").and_return(provider)
           end
 
           let(:webhook_http_method_whitelist) { ["POST"] }
@@ -83,7 +83,7 @@ module PactBroker
             let(:consumer) { nil }
 
             it "contains no errors" do
-              expect(subject[:'consumer.name']).to eq ["does not match an existing pacticipant"]
+              expect(subject[:'consumer.name']).to eq ["does not match an existing application"]
             end
           end
 
@@ -154,7 +154,7 @@ module PactBroker
             let(:provider) { nil }
 
             it "contains no errors" do
-              expect(subject[:'provider.name']).to eq ["does not match an existing pacticipant"]
+              expect(subject[:'provider.name']).to eq ["does not match an existing application"]
             end
           end
 

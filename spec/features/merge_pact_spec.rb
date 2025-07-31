@@ -53,7 +53,7 @@ describe "Merging a pact" do
     end
   end
 
-  context "when the pacticipant names in the path do not match those in the pact" do
+  context "when the application names in the path do not match those in the pact" do
     let(:path) { "/pacts/provider/Another%20Provider/consumer/A%20Consumer/version/1.2.3" }
 
     it "returns a json error response" do

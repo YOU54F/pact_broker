@@ -52,7 +52,7 @@ module PactBroker
         attr_reader :deployed_version, :existing_deployed_version
 
         def version
-          @version ||= version_service.find_by_pacticipant_name_and_number(identifier_from_path)
+          @version ||= version_service.find_by_application_name_and_number(identifier_from_path)
         end
 
         def environment
@@ -78,7 +78,7 @@ module PactBroker
         end
 
         def title
-          "Deployed versions for #{pacticipant_name} version #{pacticipant_version_number} in environment #{environment.display_name}"
+          "Deployed versions for #{application_name} version #{application_version_number} in environment #{environment.display_name}"
         end
       end
     end

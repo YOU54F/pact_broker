@@ -21,7 +21,7 @@ module PactBroker
               .create_pact
           end
 
-          let(:provider) { td.find_pacticipant("Bar") }
+          let(:provider) { td.find_application("Bar") }
           let(:consumer_version_selector) { Selector.all_for_tag("prod") }
 
           it "returns all the pacts for the specified consumer version tag" do
@@ -34,7 +34,7 @@ module PactBroker
 
         context "for main branch" do
           let(:consumer_version_selector) { Selector.for_main_branch }
-          let(:provider) { td.find_pacticipant("Bar") }
+          let(:provider) { td.find_application("Bar") }
 
           before do
             td.create_provider("Bar")
@@ -85,7 +85,7 @@ module PactBroker
               .create_released_version_for_consumer_version
           end
 
-          let(:provider) { td.find_pacticipant("Bar") }
+          let(:provider) { td.find_application("Bar") }
           let(:consumer_version_selector) { Selector.for_environment("test") }
 
           context "when a version is deployed and released" do
@@ -112,7 +112,7 @@ module PactBroker
               .create_deployed_version_for_consumer_version(target: "customer-1")
           end
 
-          let(:provider) { td.find_pacticipant("Bar") }
+          let(:provider) { td.find_application("Bar") }
           let(:consumer_version_selector) { PactBroker::Pacts::Selector.for_currently_deployed }
 
           context "when there is a version deployed to multiple targets" do
@@ -126,7 +126,7 @@ module PactBroker
         end
 
         context "for currently supported releases" do
-          let(:provider) { td.find_pacticipant("Bar") }
+          let(:provider) { td.find_application("Bar") }
           let(:consumer_version_selector) { PactBroker::Pacts::Selector.for_currently_supported }
 
           context "when there are releases that are not currently supported" do

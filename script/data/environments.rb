@@ -22,9 +22,9 @@ begin
       provider_version: "1",
       success: true
     )
-    .record_deployment(pacticipant: "bar-provider", version: "1", environment_name: "test")
-    .record_deployment(pacticipant: "bar-provider", version: "1", environment_name: "prod")
-    .record_release(pacticipant: "foo-consumer", version: "1", environment_name: "prod")
+    .record_deployment(application: "bar-provider", version: "1", environment_name: "test")
+    .record_deployment(application: "bar-provider", version: "1", environment_name: "prod")
+    .record_release(application: "foo-consumer", version: "1", environment_name: "prod")
     .get_pacts_for_verification(
       enable_pending: true,
       provider_version_tag: "main",
@@ -36,7 +36,7 @@ begin
       provider_version: "2",
       success: true
     )
-    .record_deployment(pacticipant: "bar-provider", version: "2", environment_name: "test")
+    .record_deployment(application: "bar-provider", version: "2", environment_name: "test")
 
 rescue StandardError => e
   puts "#{e.class} #{e.message}"

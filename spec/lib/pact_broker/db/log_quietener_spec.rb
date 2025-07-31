@@ -25,7 +25,7 @@ module PactBroker
 
         context "when the error is a foreign key constraint violation" do
           before do
-            subject.error("SQLite3::ConstraintException: FOREIGN KEY constraint failed: delete from pacticipants where id = 1")
+            subject.error("SQLite3::ConstraintException: FOREIGN KEY constraint failed: delete from applications where id = 1")
           end
 
           it "logs the message at warn level" do

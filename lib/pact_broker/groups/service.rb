@@ -8,18 +8,18 @@ module PactBroker
       extend PactBroker::Repositories
       extend PactBroker::Services
 
-      # Returns a list of all the integrations (PactBroker::Domain::IndexItem) that are connected to the given pacticipant.
-      # @param pacticipant [PactBroker::Domain::Pacticipant] the pacticipant for which to return the connected pacticipants
-      # @option max_pacticipants [Integer] the maximum number of pacticipants to return, or nil for no maximum. 40 is about the most applications you can meaningfully show in the circle network diagram.
+      # Returns a list of all the integrations (PactBroker::Domain::IndexItem) that are connected to the given application.
+      # @param application [PactBroker::Domain::Application] the application for which to return the connected applications
+      # @option max_applications [Integer] the maximum number of applications to return, or nil for no maximum. 40 is about the most applications you can meaningfully show in the circle network diagram.
       # @return [PactBroker::Domain::Group]
-      def find_group_containing(pacticipant, max_pacticipants: nil)
-        PactBroker::Domain::Group.new(build_index_items(integrations_connected_to(pacticipant, max_pacticipants)))
+      def find_group_containing(application, max_applications: nil)
+        PactBroker::Domain::Group.new(build_index_items(integrations_connected_to(application, max_applications)))
       end
 
-      def integrations_connected_to(pacticipant, max_pacticipants)
+      def integrations_connected_to(application, max_applications)
         PactBroker::Integrations::Integration
           .eager(:consumer, :provider)
-          .where(id: ids_of_integrations_connected_to(pacticipant, max_pacticipants))
+          .where(id: ids_of_integrations_connected_to(application, max_applications))
           .all
       end
       private_class_method :integrations_connected_to
@@ -31,18 +31,18 @@ module PactBroker
       end
       private_class_method :build_index_items
 
-      def ids_of_integrations_connected_to(pacticipant, max_pacticipants)
+      def ids_of_integrations_connected_to(application, max_applications)
         integrations = []
-        connected_pacticipants = Set.new([pacticipant.id])
-        new_connected_pacticipants = Set.new([pacticipant.id])
+        connected_applications = Set.new([application.id])
+        new_connected_applications = Set.new([application.id])
 
         loop do
-          new_integrations = PactBroker::Integrations::Integration.including_pacticipant_id(new_connected_pacticipants.to_a).exclude(id: integrations.collect(&:id)).all
+          new_integrations = PactBroker::Integrations::Integration.including_application_id(new_connected_applications.to_a).exclude(id: integrations.collect(&:id)).all
           integrations.concat(new_integrations)
-          pacticipant_ids_for_new_integrations = Set.new(new_integrations.flat_map(&:pacticipant_ids))
-          new_connected_pacticipants = pacticipant_ids_for_new_integrations - connected_pacticipants
-          connected_pacticipants.merge(pacticipant_ids_for_new_integrations)
-          break if new_connected_pacticipants.empty? || (max_pacticipants && connected_pacticipants.size >= max_pacticipants)
+          application_ids_for_new_integrations = Set.new(new_integrations.flat_map(&:application_ids))
+          new_connected_applications = application_ids_for_new_integrations - connected_applications
+          connected_applications.merge(application_ids_for_new_integrations)
+          break if new_connected_applications.empty? || (max_applications && connected_applications.size >= max_applications)
         end
 
         integrations.collect(&:id).uniq

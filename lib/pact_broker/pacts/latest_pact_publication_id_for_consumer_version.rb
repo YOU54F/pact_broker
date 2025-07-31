@@ -30,5 +30,5 @@ end
 #  latest_pact_publication_ids_for_consum_consumer_version_id_fkey | (consumer_version_id) REFERENCES versions(id) ON DELETE CASCADE
 #  latest_pact_publication_ids_for_consum_pact_publication_id_fkey | (pact_publication_id) REFERENCES pact_publications(id) ON DELETE CASCADE
 #  latest_pact_publication_ids_for_consumer_v_pact_version_id_fkey | (pact_version_id) REFERENCES pact_versions(id) ON DELETE CASCADE
-#  latest_pact_publication_ids_for_consumer_versi_consumer_id_fkey | (consumer_id) REFERENCES pacticipants(id) ON DELETE CASCADE
-#  latest_pact_publication_ids_for_consumer_versi_provider_id_fkey | (provider_id) REFERENCES pacticipants(id) ON DELETE CASCADE
+#  latest_pact_publication_ids_for_consumer_versi_consumer_id_fkey | (consumer_id) REFERENCES applications(id) ON DELETE CASCADE
+#  latest_pact_publication_ids_for_consumer_versi_provider_id_fkey | (provider_id) REFERENCES applications(id) ON DELETE CASCADE

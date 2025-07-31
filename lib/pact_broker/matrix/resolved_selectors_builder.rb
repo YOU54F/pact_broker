@@ -22,7 +22,7 @@ module PactBroker
 
       # Use the given Integrations to work out what the selectors are for the versions that the versions for the specified
       # selectors should be deployed with.
-      # eg. For `can-i-deploy --pacticipant Foo --version adfjkwejr --to-environment prod`, work out the selectors for the integrated application
+      # eg. For `can-i-deploy --application Foo --version adfjkwejr --to-environment prod`, work out the selectors for the integrated application
       # versions in the prod environment.
       # @param [Array<PactBroker::Matrix::Integration>] integrations
       def resolve_inferred_selectors(integrations, options)

@@ -45,7 +45,7 @@ module PactBroker
         )
       end
 
-      def pacticipant_names
+      def application_names
         [consumer_name, provider_name]
       end
 

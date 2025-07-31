@@ -31,7 +31,7 @@ module PactBroker
             .create_verification(number: 1, provider_version: "6", tag_names: ["staging"])
         end
 
-        let(:path) { "/matrix?q[][pacticipant]=Foo&q[][version]=1&tag=staging&latestby=cvp&limit=2" }
+        let(:path) { "/matrix?q[][application]=Foo&q[][version]=1&tag=staging&latestby=cvp&limit=2" }
 
         subject { get(path) }
 
@@ -53,8 +53,8 @@ module PactBroker
         end
         let(:selectors) do
           [
-            UnresolvedSelector.new(pacticipant_name: "Foo"),
-            UnresolvedSelector.new(pacticipant_name: "Bar")
+            UnresolvedSelector.new(application_name: "Foo"),
+            UnresolvedSelector.new(application_name: "Bar")
           ]
         end
         let(:options) { { limit: 4 } }

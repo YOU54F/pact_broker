@@ -22,9 +22,9 @@ begin
       provider_version: "1",
       success: true
     )
-    .record_deployment(pacticipant: "bar-provider", version: "1", environment_name: "test")
-    .record_deployment(pacticipant: "bar-provider", version: "1", environment_name: "prod")
-    .record_deployment(pacticipant: "foo-consumer", version: "1", environment_name: "prod")
+    .record_deployment(application: "bar-provider", version: "1", environment_name: "test")
+    .record_deployment(application: "bar-provider", version: "1", environment_name: "prod")
+    .record_deployment(application: "foo-consumer", version: "1", environment_name: "prod")
     .get_pacts_for_verification(
       enable_pending: true,
       provider_version_tag: "main",
@@ -36,7 +36,7 @@ begin
       provider_version: "2",
       success: true
     )
-    .record_deployment(pacticipant: "bar-provider", version: "2", environment_name: "test")
+    .record_deployment(application: "bar-provider", version: "2", environment_name: "test")
     .create_global_webhook_for_contract_changed(uuid: "7a5da39c-8e50-4cc9-ae16-dfa5be043e8c")
     .publish_pact_the_old_way(consumer: "foo-consumer", consumer_version: "2", provider: "bar-provider", content_id: "222", tag: "main")
 

@@ -1,4 +1,4 @@
-UPDATE pacticipants SET name = 'pacticipant-' || id;
+UPDATE applications SET name = 'application-' || id;
 UPDATE versions SET number = 'version-' || id;
 UPDATE pact_versions SET content = '{}';
 UPDATE verifications SET test_results = null;

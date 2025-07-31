@@ -54,8 +54,8 @@ module PactBroker
         webhook_repository.update_by_uuid uuid, webhook
       end
 
-      def delete_all_webhhook_related_objects_by_pacticipant pacticipant
-        webhook_repository.delete_by_pacticipant(pacticipant)
+      def delete_all_webhhook_related_objects_by_application application
+        webhook_repository.delete_by_application(application)
       end
 
       def delete_all_webhook_related_objects_by_pact_publication_ids pact_publication_ids

@@ -36,7 +36,7 @@ RSpec.describe "the pending lifecycle of a pact (with tags)" do
   end
 
   def publish_verification_results(verification_results_url, results)
-    put("/pacticipants/Bar/branches/main/versions/#{JSON.parse(results)["providerApplicationVersion"]}", nil, { "CONTENT_TYPE" => "application/json" })
+    put("/applications/Bar/branches/main/versions/#{JSON.parse(results)["providerApplicationVersion"]}", nil, { "CONTENT_TYPE" => "application/json" })
     post(verification_results_url, results, request_headers)
   end
 

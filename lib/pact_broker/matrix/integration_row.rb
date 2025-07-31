@@ -7,17 +7,17 @@ module PactBroker
   module Matrix
     class IntegrationRow < Sequel::Model(Sequel.as(:latest_pact_publication_ids_for_consumer_versions, :p))
       dataset_module do
-        select(:select_pacticipant_ids, Sequel[:p][:consumer_id], Sequel[:p][:provider_id])
+        select(:select_application_ids, Sequel[:p][:consumer_id], Sequel[:p][:provider_id])
 
         # Return the distinct consumer/provider ids and names for the integrations which involve the given resolved selector
-        # in the role of consumer. The resolved selector must have a pacticipant_id, and may or may not have a pacticipant_version_id.
+        # in the role of consumer. The resolved selector must have a application_id, and may or may not have a application_version_id.
         # @public
         # @param [PactBroker::Matrix::ResolvedSelector] resolved_selector
         # @return [Sequel::Dataset] for rows with consumer_id, consumer_name, provider_id and provider_name
         def integrations_for_selector_as_consumer(resolved_selector)
           select(:consumer_id, :provider_id)
             .distinct
-            .where({ consumer_id: resolved_selector.pacticipant_id, consumer_version_id: resolved_selector.pacticipant_version_id }.compact)
+            .where({ consumer_id: resolved_selector.application_id, consumer_version_id: resolved_selector.application_version_id }.compact)
             .from_self(alias: :integrations)
             .select(:consumer_id, :provider_id, Sequel[:consumers][:name].as(:consumer_name), Sequel[:providers][:name].as(:provider_name))
             .join_consumers(:integrations, :consumers)
@@ -33,24 +33,24 @@ module PactBroker
             raise ArgumentError.new("Expected multiple selectors to be provided, but only received one #{selectors}")
           end
           query = pact_publications_matching_selectors_as_consumer(resolved_selectors)
-                    .select_pacticipant_ids
+                    .select_application_ids
                     .distinct
 
-          query.from_self(alias: :pacticipant_ids)
+          query.from_self(alias: :application_ids)
             .select(
               :consumer_id,
               Sequel[:c][:name].as(:consumer_name),
               :provider_id,
               Sequel[:p][:name].as(:provider_name)
             )
-            .join_consumers(:pacticipant_ids, :c)
-            .join_providers(:pacticipant_ids, :p)
+            .join_consumers(:application_ids, :c)
+            .join_providers(:application_ids, :p)
         end
 
         # @public
         def join_consumers qualifier = :p, table_alias = :consumers
           join(
-            :pacticipants,
+            :applications,
             { Sequel[qualifier][:consumer_id] => Sequel[table_alias][:id] },
             { table_alias: table_alias }
           )
@@ -59,7 +59,7 @@ module PactBroker
         # @public
         def join_providers qualifier = :p, table_alias = :providers
           join(
-            :pacticipants,
+            :applications,
             { Sequel[qualifier][:provider_id] => Sequel[table_alias][:id] },
             { table_alias: table_alias }
           )
@@ -67,13 +67,13 @@ module PactBroker
 
         # @private
         def pact_publications_matching_selectors_as_consumer(resolved_selectors)
-          pacticipant_ids = resolved_selectors.collect(&:pacticipant_id).uniq
+          application_ids = resolved_selectors.collect(&:application_id).uniq
 
           self
-            .select_pacticipant_ids
+            .select_application_ids
             .distinct
             .inner_join_versions_for_selectors_as_consumer(resolved_selectors)
-            .where(provider_id: pacticipant_ids)
+            .where(provider_id: application_ids)
         end
 
         # @private

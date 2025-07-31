@@ -21,8 +21,8 @@ begin
   PROVIDER = "bar"
 
   td = PactBroker::Test::HttpTestDataBuilder.new(base_url)
-  td.delete_pacticipant(CONSUMER)
-    .delete_pacticipant(PROVIDER)
+  td.delete_application(CONSUMER)
+    .delete_application(PROVIDER)
     .publish_contract(consumer: CONSUMER, consumer_version: "1", provider: PROVIDER, content_id: "111", branch: "main")
     .get_pacts_for_verification(
       provider: PROVIDER,
@@ -38,10 +38,10 @@ begin
       provider_version: "1",
       success: true
     )
-    .can_i_deploy(pacticipant: PROVIDER, version: "1", to_environment: "production")
-    .record_deployment(pacticipant: PROVIDER, version: "1", environment_name: "production")
-    .can_i_deploy(pacticipant: CONSUMER, version: "1", to_environment: "production")
-    .record_deployment(pacticipant: CONSUMER, version: "1", environment_name: "production")
+    .can_i_deploy(application: PROVIDER, version: "1", to_environment: "production")
+    .record_deployment(application: PROVIDER, version: "1", environment_name: "production")
+    .can_i_deploy(application: CONSUMER, version: "1", to_environment: "production")
+    .record_deployment(application: CONSUMER, version: "1", environment_name: "production")
 
 rescue StandardError => e
   puts "#{e.class} #{e.message}"

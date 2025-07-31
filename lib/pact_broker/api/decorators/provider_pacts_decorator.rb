@@ -15,7 +15,7 @@ module PactBroker
 
         link :'pb:provider' do | context |
           {
-            href: pacticipant_url(context[:base_url], OpenStruct.new(name: context[:provider_name])),
+            href: application_url(context[:base_url], OpenStruct.new(name: context[:provider_name])),
             name: context[:provider_name]
           }
         end
@@ -33,7 +33,7 @@ module PactBroker
 
         link :provider do | context |
           {
-            href: pacticipant_url(context[:base_url], OpenStruct.new(name: context[:provider_name])),
+            href: application_url(context[:base_url], OpenStruct.new(name: context[:provider_name])),
             title: context[:provider_name],
             name: "DEPRECATED - please use the pb:provider relation"
           }

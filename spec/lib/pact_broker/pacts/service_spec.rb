@@ -9,9 +9,9 @@ module PactBroker
         include_context "stubbed repositories"
 
         before do
-          allow(pacticipant_repository).to receive(:find_by_name_or_create).with(params[:consumer_name]).and_return(consumer)
-          allow(pacticipant_repository).to receive(:find_by_name_or_create).with(params[:provider_name]).and_return(provider)
-          allow(version_repository).to receive(:find_by_pacticipant_id_and_number_or_create).and_return(version)
+          allow(application_repository).to receive(:find_by_name_or_create).with(params[:consumer_name]).and_return(consumer)
+          allow(application_repository).to receive(:find_by_name_or_create).with(params[:provider_name]).and_return(provider)
+          allow(version_repository).to receive(:find_by_application_id_and_number_or_create).and_return(version)
           allow(pact_repository).to receive(:find_by_version_and_provider).and_return(existing_pact)
           allow(pact_repository).to receive(:create).and_return(new_pact)
           allow(pact_repository).to receive(:update).and_return(new_pact)
@@ -20,7 +20,7 @@ module PactBroker
 
         let(:consumer) { double("consumer", id: 1) }
         let(:provider) { double("provider", id: 2) }
-        let(:version) { double("version", id: 3, pacticipant_id: 1) }
+        let(:version) { double("version", id: 3, application_id: 1) }
         let(:existing_pact) { nil }
         let(:new_pact) { double("new_pact", consumer_version_tag_names: %w[dev], json_content: json_content, pact_version_sha: "1", consumer_name: "Foo", consumer_version_number: "2") }
         let(:json_content) { { the: "contract" }.to_json }

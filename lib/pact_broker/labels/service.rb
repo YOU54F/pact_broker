@@ -14,8 +14,8 @@ module PactBroker
       end
 
       def create args
-        pacticipant = pacticipant_repository.find_by_name_or_create args.fetch(:pacticipant_name)
-        label_repository.create pacticipant: pacticipant, name: args.fetch(:label_name)
+        application = application_repository.find_by_name_or_create args.fetch(:application_name)
+        label_repository.create application: application, name: args.fetch(:label_name)
       end
 
       def find args

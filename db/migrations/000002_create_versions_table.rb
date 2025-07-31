@@ -5,8 +5,8 @@ Sequel.migration do
       primary_key :id
       String :number
       String :repository_ref
-      foreign_key :pacticipant_id, :pacticipants, :null=>false
-      index [:pacticipant_id, :number], :unique => true
+      foreign_key :application_id, :applications, :null=>false
+      index [:application_id, :number], :unique => true
     end
   end
 
