@@ -41,7 +41,11 @@ Pact.service_provider "Pact Broker" do
 
   app { HalRelationProxyApp.new(app_to_verify) }
   app_version ENV["GIT_SHA"] if ENV["GIT_SHA"]
-  app_version_branch `git reflog | awk '$3=="checkout:" {print $NF; exit}'`.strip
+  branch = `git rev-parse --abbrev-ref HEAD`.strip
+  if branch.start_with?("refs/pull/") || branch.start_with?("HEAD")
+    branch = ENV["GITHUB_HEAD_REF"] || branch.split("/").last
+  end
+  app_version_branch branch
   publish_verification_results ENV["CI"] == "true"
 
   if ENV.fetch("PACT_BROKER_TOKEN", "") != ""
@@ -55,7 +59,7 @@ Pact.service_provider "Pact Broker" do
     end
   end
 
-  # honours_pact_with "Pact Broker Client" do
-  #   pact_uri "https://raw.githubusercontent.com/pact-foundation/pact_broker-client/master/spec/pacts/pact_broker_client-pact_broker.json"
-  # end
+  honours_pact_with "Pact Broker Client" do
+    pact_uri "https://raw.githubusercontent.com/pact-foundation/pact_broker-client/master/spec/pacts/pact_broker_client-pact_broker.json"
+  end
 end
