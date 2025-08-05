@@ -41,7 +41,7 @@ Pact.service_provider "Pact Broker" do
 
   app { HalRelationProxyApp.new(app_to_verify) }
   app_version ENV["GIT_SHA"] if ENV["GIT_SHA"]
-  app_version_branch ENV["GIT_BRANCH"] if ENV["GIT_BRANCH"]
+  app_version_branch `git rev-parse --abbrev-ref HEAD`.strip
   publish_verification_results ENV["CI"] == "true"
 
   if ENV.fetch("PACT_BROKER_TOKEN", "") != ""
