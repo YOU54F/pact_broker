@@ -23,7 +23,8 @@ env:
   # Python
   PYTHONUNBUFFERED: "1"
   STABLE_PYTHON_VERSION: "3.13"
-
+  GIT_REF: ${{ github.ref }}
+  
 jobs:
   complete:
     name: Test completion check
@@ -107,7 +108,7 @@ jobs:
         with:
           bundler-cache: true
       - name: Verify pacts
-        run: "GIT_SHA=${GITHUB_SHA} GIT_BRANCH=${GITHUB_REF##*/} bundle exec rake pact:verify"
+        run: "GIT_SHA=${GITHUB_SHA} GIT_BRANCH=${GIT_REF:11} bundle exec rake pact:verify"
         env:
           PACT_BROKER_BASE_URL: ${{ secrets.PACT_BROKER_BASE_URL }}
           PACT_BROKER_TOKEN: ${{ secrets.PACT_BROKER_TOKEN }}
