@@ -20,6 +20,10 @@ Pact.provider_states_for "pact_broker_cli" do
   #   no_op
   # end
 
+  provider_state "the pb:latest-pact-versions relation exists in the index resource" do
+    no_op
+  end
+
   # provider_state "'Condor' exists in the pact-broker with the latest version 1.2.3" do
   #   set_up do
   #     TestDataBuilder.new
@@ -145,15 +149,15 @@ Pact.provider_states_for "pact_broker_cli" do
   #   end
   # end
 
-  # provider_state "a pact between Condor and the Pricing Service exists" do
-  #   set_up do
-  #     TestDataBuilder.new
-  #       .create_condor
-  #       .create_consumer_version("1.3.0")
-  #       .create_pricing_service
-  #       .create_pact
-  #   end
-  # end
+  provider_state "a pact between Condor and the Pricing Service exists" do
+    set_up do
+      TestDataBuilder.new
+        .create_condor
+        .create_consumer_version("1.3.0")
+        .create_pricing_service
+        .create_pact
+    end
+  end
 
   # provider_state "no pact between Condor and the Pricing Service exists" do
   #   no_op
