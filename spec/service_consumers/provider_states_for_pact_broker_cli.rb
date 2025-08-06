@@ -307,14 +307,14 @@ Pact.provider_states_for "pact_broker_cli" do
     end
   end
 
-  # provider_state "version 5556b8149bf8bac76bc30f50a8a2dd4c22c85f30 of pacticipant Foo exists with a test environment available for release" do
-  #   set_up do
-  #     TestDataBuilder.new
-  #       .create_environment("test", uuid: "cb632df3-0a0d-4227-aac3-60114dd36479")
-  #       .create_consumer("Foo")
-  #       .create_consumer_version("5556b8149bf8bac76bc30f50a8a2dd4c22c85f30")
-  #   end
-  # end
+  provider_state "version 5556b8149bf8bac76bc30f50a8a2dd4c22c85f30 of pacticipant Foo exists with a test environment available for release" do
+    set_up do
+      TestDataBuilder.new
+        .create_environment("test", uuid: "16926ef3-590f-4e3f-838e-719717aa88c9")
+        .create_consumer("Foo")
+        .create_consumer_version("5556b8149bf8bac76bc30f50a8a2dd4c22c85f30")
+    end
+  end
 
   provider_state "an environment with name test and UUID 16926ef3-590f-4e3f-838e-719717aa88c9 exists" do
     set_up do
@@ -336,7 +336,7 @@ Pact.provider_states_for "pact_broker_cli" do
   provider_state "a currently deployed version exists" do
     set_up do
       TestDataBuilder.new
-        .create_environment("test", uuid: "cb632df3-0a0d-4227-aac3-60114dd36479")
+        .create_environment("test", uuid: "16926ef3-590f-4e3f-838e-719717aa88c9")
         .create_consumer("Foo")
         .create_consumer_version("5556b8149bf8bac76bc30f50a8a2dd4c22c85f30")
         .create_deployed_version_for_consumer_version(uuid: "ff3adecf-cfc5-4653-a4e3-f1861092f8e0")
