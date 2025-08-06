@@ -276,9 +276,9 @@ Pact.provider_states_for "pact_broker_cli" do
   #   no_op
   # end
 
-  # provider_state "the pb:environments relation exists in the index resource" do
-  #   no_op
-  # end
+  provider_state "the pb:environments relation exists in the index resource" do
+    no_op
+  end
 
   # provider_state "provider Bar version 4.5.6 has a successful verification for Foo version 1.2.3 tagged prod and a failed verification for version 3.4.5 tagged prod" do
   #   set_up do
@@ -296,12 +296,12 @@ Pact.provider_states_for "pact_broker_cli" do
   #   end
   # end
 
-  # provider_state "an environment exists" do
-  #   set_up do
-  #     TestDataBuilder.new
-  #       .create_environment("test", contacts: [ { name: "foo", details: { emailAddress: "foo@bar.com" } }])
-  #   end
-  # end
+  provider_state "an environment exists" do
+    set_up do
+      TestDataBuilder.new
+        .create_environment("test", contacts: [ { name: "foo", details: { emailAddress: "foo@bar.com" } }])
+    end
+  end
 
   # provider_state "version 5556b8149bf8bac76bc30f50a8a2dd4c22c85f30 of pacticipant Foo exists with a test environment available for release" do
   #   set_up do
