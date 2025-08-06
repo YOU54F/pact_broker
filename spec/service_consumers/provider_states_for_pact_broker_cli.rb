@@ -354,4 +354,23 @@ Pact.provider_states_for "pact_broker_cli" do
         .create_consumer_version("1", branch: "main")
     end
   end
+
+  provider_state "version 5556b8149bf8bac76bc30f50a8a2dd4c22c85f30 of pacticipant Foo exists with 2 environments that aren't test available for deployment" do
+    set_up do
+      TestDataBuilder.new
+        .create_consumer("Foo")
+        .create_consumer_version("5556b8149bf8bac76bc30f50a8a2dd4c22c85f30")
+        .create_environment("prod")
+        .create_environment("dev")
+    end
+  end
+
+  provider_state "version 5556b8149bf8bac76bc30f50a8a2dd4c22c85f30 of pacticipant Foo exists with a test environment available for deployment" do
+    set_up do
+      TestDataBuilder.new
+        .create_consumer("Foo")
+        .create_consumer_version("5556b8149bf8bac76bc30f50a8a2dd4c22c85f30")
+        .create_environment("test", uuid: "16926ef3-590f-4e3f-838e-719717aa88c9")
+    end
+  end
 end
