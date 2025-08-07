@@ -179,24 +179,24 @@ Pact.provider_states_for "pact_broker_cli" do
   #   end
   # end
 
-  # provider_state "'Condor' exists in the pact-broker" do
-  #   set_up do
-  #     TestDataBuilder.new.create_condor.create_consumer_version("1.3.0")
-  #   end
-  # end
+  provider_state "'Condor' exists in the pact-broker" do
+    set_up do
+      TestDataBuilder.new.create_condor.create_consumer_version("1.3.0")
+    end
+  end
 
-  # provider_state "'Condor' exists in the pact-broker with version 1.3.0, tagged with 'prod'" do
-  #   set_up do
-  #     TestDataBuilder.new
-  #       .create_pacticipant("Condor")
-  #       .create_version("1.3.0")
-  #       .create_tag("prod")
-  #   end
-  # end
+  provider_state "'Condor' exists in the pact-broker with version 1.3.0, tagged with 'prod'" do
+    set_up do
+      TestDataBuilder.new
+        .create_pacticipant("Condor")
+        .create_version("1.3.0")
+        .create_tag("prod")
+    end
+  end
 
-  # provider_state "'Condor' does not exist in the pact-broker" do
-  #   no_op
-  # end
+  provider_state "'Condor' does not exist in the pact-broker" do
+    no_op
+  end
 
   #  provider_state "a pact between Condor and the Pricing Service exists for the production version of Condor" do
   #    set_up do
