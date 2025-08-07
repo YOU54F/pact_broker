@@ -52,7 +52,7 @@ Pact.service_provider "Pact Broker" do
     honours_pacts_from_pact_broker do
       pact_broker_base_url ENV.fetch("PACT_BROKER_BASE_URL", ""), token: ENV["PACT_BROKER_TOKEN"]
       consumer_version_selectors [
-          { branch: "pact-broker-cli", latest: true }
+          { mainBranch: true }, { deployedOrReleased: true },
         ]
       enable_pending true
       include_wip_pacts_since "2000-01-01"
