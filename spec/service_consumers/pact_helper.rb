@@ -45,6 +45,9 @@ Pact.service_provider "Pact Broker" do
   if branch.start_with?("refs/pull/") || branch.start_with?("HEAD")
     branch = ENV["GITHUB_HEAD_REF"] || branch.split("/").last
   end
+  if branch.nil? || branch.empty?
+    branch = ENV["GIT_BRANCH"]
+  end
   app_version_branch branch
   publish_verification_results ENV["CI"] == "true"
 

@@ -28,7 +28,7 @@ jobs:
           bundler-cache: true
       - name: ${{env.DESCRIPTION}}
         run: |
-          GIT_SHA=${GITHUB_SHA} bundle exec rake pact:verify:at"['${PACT_URL}']"
+          GIT_SHA=${{env.GIT_COMMIT}} bundle exec rake pact:verify:at"['${PACT_URL}']"
         env:
           PACT_BROKER_BASE_URL: ${{ secrets.PACT_BROKER_BASE_URL }}
           PACT_BROKER_TOKEN: ${{ secrets.PACT_BROKER_TOKEN }}
