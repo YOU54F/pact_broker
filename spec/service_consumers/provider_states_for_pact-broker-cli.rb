@@ -1,6 +1,6 @@
 require "spec/support/test_data_builder"
 
-Pact.provider_states_for "pact_broker_cli" do
+Pact.provider_states_for "pact-broker-cli" do
 
   # provider_state "the pb:latest-tagged-version relation exists in the index resource" do
   #   no_op
