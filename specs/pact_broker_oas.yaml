@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   version: "2"
-  title: "PactBroker API"
+  title: "Pact Broker API"
   description: The API for the Pact Broker application
 servers:
   - url: "http://{hostname}"
