@@ -3,6 +3,31 @@ GITHUB_REPO := you54f/pact_broker
 CONTRACT_REQUIRING_VERIFICATION_PUBLISHED_WEBHOOK_UUID := "7feab4e2-cad2-4ef2-b5d2-0fd5676e3d45"
 PACT_CLI="docker run --rm -v ${PWD}:${PWD} -e PACT_BROKER_BASE_URL -e PACT_BROKER_TOKEN pactfoundation/pact-cli"
 
+
+## =====================
+## Arazzo
+## =====================
+
+OAS_FILE?=specs/pact_broker_openapi.yaml
+ARAZZO_FILE?=specs/pact_broker_arazzo.yaml
+INPUT_FILE=specs/inputs-publish-contracts.json
+HOSTNAME?=localhost:9292
+WORKFLOW_ID?=publish-consumer-contract
+
+lint_openapi:
+	npx @stoplight/spectral-cli lint "${OAS_FILE}"
+
+lint_arazzo:
+	npx @stoplight/spectral-cli lint "${ARAZZO_FILE}"
+
+test_arazzo:
+	uvx arazzo-runner execute-workflow \
+		specs/pact_broker_arazzo.yaml \
+		--workflow-id ${WORKFLOW_ID} \
+		--server-variables '{"PACTBROKER_RUNNER_SERVER_HOSTNAME": "${HOSTNAME}"}' \
+		--inputs '$(shell cat ${INPUT_FILE})'
+
+
 ## =====================
 ## Pactflow set up tasks
 ## =====================
@@ -36,3 +61,4 @@ create_or_update_contract_requiring_verification_published_webhook:
 
 test_contract_requiring_verification_published_webhook:
 	@curl -v -X POST ${PACT_BROKER_BASE_URL}/webhooks/${CONTRACT_REQUIRING_VERIFICATION_PUBLISHED_WEBHOOK_UUID}/execute -H "Authorization: Bearer ${PACT_BROKER_TOKEN}"
+

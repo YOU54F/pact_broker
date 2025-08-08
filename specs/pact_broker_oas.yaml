@@ -1,12 +1,92 @@
 openapi: 3.0.0
 info:
   version: "2"
-  title: Pact Broker API
+  title: "Pact Broker API"
   description: The API for the Pact Broker application
+servers:
+  - url: "http://{hostname}"
+    variables:
+      hostname:
+        default: "localhost:9292"
+        description: "The API instance name."
 paths:
+  /:
+    get:
+      description: "Retrieve the index of available resources"
+      operationId: indexResource
+      responses:
+        "200":
+          description: OK
+          content:
+            application/hal+json:
+              schema:
+                type: object
+                properties:
+                  _links:
+                    type: object
+                    properties:
+                      self:
+                        $ref: '#/components/schemas/EmbeddedLink'
+                      pb:publish-pact:
+                        $ref: '#/components/schemas/EmbeddedLinkTemplated'
+                      pb:publish-contracts:
+                        $ref: '#/components/schemas/EmbeddedLink'
+                      pb:latest-pact-versions:
+                        $ref: '#/components/schemas/EmbeddedLink'
+                      pb:tagged-pact-versions:
+                        $ref: '#/components/schemas/EmbeddedLink'
+                      pb:pacticipants:
+                        $ref: '#/components/schemas/EmbeddedLink'
+                      pb:pacticipant:
+                        $ref: '#/components/schemas/EmbeddedLinkTemplated'
+                      pb:latest-provider-pacts:
+                        $ref: '#/components/schemas/EmbeddedLinkTemplated'
+                      pb:latest-provider-pacts-with-tag:
+                        $ref: '#/components/schemas/EmbeddedLinkTemplated'
+                      pb:provider-pacts-with-tag:
+                        $ref: '#/components/schemas/EmbeddedLinkTemplated'
+                      pb:provider-pacts:
+                        $ref: '#/components/schemas/EmbeddedLinkTemplated'
+                      pb:latest-version:
+                        $ref: '#/components/schemas/EmbeddedLinkTemplated'
+                      pb:latest-tagged-version:
+                        $ref: '#/components/schemas/EmbeddedLinkTemplated'
+                      pb:webhooks:
+                        $ref: '#/components/schemas/EmbeddedLink'
+                      pb:webhook:
+                        $ref: '#/components/schemas/EmbeddedLinkTemplated'
+                      pb:integrations:
+                        $ref: '#/components/schemas/EmbeddedLink'
+                      pb:pacticipant-version-tag:
+                        $ref: '#/components/schemas/EmbeddedLinkTemplated'
+                      pb:pacticipant-branch:
+                        $ref: '#/components/schemas/EmbeddedLinkTemplated'
+                      pb:pacticipant-branch-version:
+                        $ref: '#/components/schemas/EmbeddedLinkTemplated'
+                      pb:pacticipant-version:
+                        $ref: '#/components/schemas/EmbeddedLinkTemplated'
+                      pb:metrics:
+                        $ref: '#/components/schemas/EmbeddedLink'
+                      pb:can-i-deploy-pacticipant-version-to-tag:
+                        $ref: '#/components/schemas/EmbeddedLinkTemplated'
+                      pb:can-i-deploy-pacticipant-version-to-environment:
+                        $ref: '#/components/schemas/EmbeddedLinkTemplated'
+                      pb:provider-pacts-for-verification:
+                        $ref: '#/components/schemas/EmbeddedLinkTemplated'
+                      beta:provider-pacts-for-verification:
+                        $ref: '#/components/schemas/EmbeddedLinkTemplated'
+                      curies:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/EmbeddedLinkTemplated'
+                      pb:environments:
+                        $ref: '#/components/schemas/EmbeddedLink'
+                      pb:environment:
+                        $ref: '#/components/schemas/EmbeddedLinkTemplated'
   /contracts/publish:
     post:
       description: "Publish consumer contracts with branch, tags and build URL"
+      operationId: consumerContractPublish
       requestBody:
         required: true
         description: The consumer contracts, branch, tags and build URL
@@ -92,7 +172,6 @@ components:
       description: The number of the page to return
       schema:
         type: number
-
   schemas:
     Notice:
       type: object
@@ -115,8 +194,8 @@ components:
     EmbeddedLink:
       type: object
       required:
-        - href
-        - title
+      - href
+      - title
       properties:
         href:
           type: string
@@ -126,6 +205,13 @@ components:
           type: string
         templated:
           type: boolean
+
+    EmbeddedLinkTemplated:
+      allOf:
+      - $ref: '#/components/schemas/EmbeddedLink'
+      - type: object
+        required:
+        - templated
 
     ConsumerContractToPublish:
       type: object
