@@ -17,27 +17,27 @@ require "sucker_punch/testing/inline"
 require "webmock/rspec"
 require "pact_broker/policies"
 
-Dir.glob("./spec/support/**/*.rb") { |file| require file  }
-
-WebMock.disable_net_connect!(allow_localhost: true)
-
-I18n.config.enforce_available_locales = false
-
-require "openapi_first"
-OpenapiFirst::Test.setup do |test|
-  test.register("pact_broker_oas.yaml")
-end
-
 if ENV["OAS_COVERAGE_CHECK_ENABLED"] == "true"
+  require "openapi_first"
+  OpenapiFirst::Test.setup do |test|
+    test.register("pact_broker_oas.yaml")
+  end
+
   at_exit do
     oas_coverage = OpenapiFirst::Test::Coverage.result.coverage
-    OpenapiFirst::Test.report_coverage
     if oas_coverage < 100
       puts "Exiting with status 2 (failure), because API coverage was #{oas_coverage}% instead of 100%!"
       exit 2
     end
   end
 end
+
+Dir.glob("./spec/support/**/*.rb") { |file| require file  }
+
+WebMock.disable_net_connect!(allow_localhost: true)
+
+I18n.config.enforce_available_locales = false
+
 
 RSpec.configure do | config |
   config.before :each do

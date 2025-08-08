@@ -47,6 +47,8 @@ module PactBroker
         # Provider states
 
         add ["pacts", "provider", :provider_name, "provider-states"], Api::Resources::ProviderStates, { resource_name: "provider_states" }
+        add ["pacts", "provider", :provider_name, "provider-states", "branch", :branch_name], Api::Resources::ProviderStates, { resource_name: "provider_states_for_branch" }
+        add ["pacts", "provider", :provider_name, "provider-states", "environment", :environment_uuid], Api::Resources::ProviderStates, { resource_name: "provider_states_for_environment" }
 
 
         # Verifications
@@ -152,6 +154,8 @@ module PactBroker
         add ["integrations", "provider", :provider_name, "consumer", :consumer_name], Api::Resources::Integration, {resource_name: "integration"}
         add ["metrics"], Api::Resources::Metrics, {resource_name: "metrics"}
         add [], Api::Resources::Index, {resource_name: "index"}
+
+        add ["pacticipants", :pacticipant_name, "tags", :tag_name, "versions"], Api::Resources::TagVersions, {resource_name: "pacticipant_tag_versions"}
       end
     end
   end
