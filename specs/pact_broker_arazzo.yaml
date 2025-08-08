@@ -1,0 +1,178 @@
+arazzo: 1.0.0
+info:
+  title: Pact Broker - Publish a pact consumer contract
+  version: 1.0.0
+  description: >-
+    Illustrates a workflow whereby a client wants to publish a consumer contract
+    a) call the pact broker index to ensure connectivity
+    b) find the "pb:publish-contracts" link
+    c) call the "pb:publish-contracts" link with a post request containing the
+      contract payload and associated metadata
+sourceDescriptions:
+  - name: pact_broker
+    url: ./pact_broker_oas.yaml
+    type: openapi
+
+
+workflows:
+  - workflowId: publish-consumer-contract
+    summary: Publish a pact consumer contract to a Pact Broker 
+    description: >-
+      This is how you can publish a consumer contract to a Pact Broker
+    inputs:
+      type: object
+      properties:
+        pacticipantName:
+          # $ref: "#/components/inputs/pacticipantName" # cant get refs to work
+          type: string
+          description: foo
+          minLength: 1
+      pacticipantVersionNumber:
+        type: string
+        minLength: 1
+      tags:
+        description: foo
+        type: array
+        nullable: true
+        items:
+            type: string
+      branch:
+        description: foo
+        type: string
+        nullable: true
+      buildUrl:
+        description: foo
+        type: string
+        nullable: true
+      contracts:
+        type: array
+        description: foo
+        items:
+          type: object
+          properties:
+            consumerName:
+              type: string
+              minLength: 1
+            providerName:
+              type: string
+              minLength: 1
+            content:
+              type: string
+              minLength: 1
+            contentType:
+              enum:
+              - application/json
+            specification:
+              enum:
+              - pact
+            onConflict:
+              default: overwrite
+              enum:
+              - overwrite
+              - merge
+          required:
+          - consumerName
+          - providerName
+          - content
+          - contentType
+          - specification
+    steps:
+      - stepId: index-resource
+        description: Fetch the Pact Broker index resource
+        operationId: indexResource
+        successCriteria:
+          - condition: $statusCode == 200
+        outputs: # check jsonpath https://jsonpath.com/
+          publish_contract_link: $response.body # need to access the body here, think we need xml path, or iterazzo needs to read hal json
+      # - stepId: publish-contract
+      #   description: Publish the consumer contract, to the publish_contract_link
+      #   operationId: consumerContractPublish
+      #   requestBody:
+      #     contentType: application/json
+      #     payload: 
+      #       pacticipantName: $inputs.pacticipantName
+      #       pacticipantVersionNumber: $inputs.pacticipantVersionNumber
+      #       contracts: 
+      #         $inputs.contracts
+      #   successCriteria:
+      #     - condition: $statusCode == 200
+
+  #       pacticipantName: "Zoo App"
+  #       pacticipantVersionNumber: "37d2a8a06de28f9d01f07e2b8856fccd08295dcf"
+  #       tags:
+  #         - "foo"
+  #       branch: "bugsnag"
+  #       contracts:
+  #         - consumerName: "Zoo App"
+  #           providerName: "Animal Service"
+  #           specification: "pact"
+  #           contentType: "application/json"
+  #           content: "eyJwcm92aWRlciI6eyJuYW1lIjoiQW5pbWFsIFNlcnZpY2UifSwiY29uc3VtZXIiOnsibmFtZSI6IlpvbyBBcHAifSwiaW50ZXJhY3Rpb25zIjpbeyJkZXNjcmlwdGlvbiI6ImEgcmVxdWVzdCBmb3IgYW4gYWxsaWdhdG9yIiwicHJvdmlkZXJfc3RhdGUiOiJ0aGVyZSBpcyBhbiBhbGxpZ2F0b3IgbmFtZWQgTWFyeSIsInJlcXVlc3QiOnsibWV0aG9kIjoiZ2V0IiwicGF0aCI6Ii9hbGxpZ2F0b3JzL01hcnkiLCJoZWFkZXJzIjp7IkFjY2VwdCI6ImFwcGxpY2F0aW9uL2pzb24ifX0sInJlc3BvbnNlIjp7InN0YXR1cyI6MjAwLCJoZWFkZXJzIjp7IkNvbnRlbnQtVHlwZSI6ImFwcGxpY2F0aW9uL2pzb247Y2hhcnNldD11dGYtOCJ9LCJib2R5Ijp7Im5hbWUiOiJNYXJ5In19fSx7ImRlc2NyaXB0aW9uIjoiYSByZXF1ZXN0IGZvciBhbiBhbGxpZ2F0b3IiLCJwcm92aWRlcl9zdGF0ZSI6InRoZXJlIGlzIG5vdCBhbiBhbGxpZ2F0b3IgbmFtZWQgTWFyeSIsInJlcXVlc3QiOnsibWV0aG9kIjoiZ2V0IiwicGF0aCI6Ii9hbGxpZ2F0b3JzL01hcnkiLCJoZWFkZXJzIjp7IkFjY2VwdCI6ImFwcGxpY2F0aW9uL2pzb24ifX0sInJlc3BvbnNlIjp7InN0YXR1cyI6NDA0fX0seyJkZXNjcmlwdGlvbiI6ImEgcmVxdWVzdCBmb3IgYW4gYWxsaWdhdG9yIiwicHJvdmlkZXJfc3RhdGUiOiJhbiBlcnJvciBvY2N1cnMgcmV0cmlldmluZyBhbiBhbGxpZ2F0b3IiLCJyZXF1ZXN0Ijp7Im1ldGhvZCI6ImdldCIsInBhdGgiOiIvYWxsaWdhdG9ycy9NYXJ5IiwiaGVhZGVycyI6eyJBY2NlcHQiOiJhcHBsaWNhdGlvbi9qc29uIn19LCJyZXNwb25zZSI6eyJzdGF0dXMiOjUwMCwiaGVhZGVycyI6eyJDb250ZW50LVR5cGUiOiJhcHBsaWNhdGlvbi9qc29uO2NoYXJzZXQ9dXRmLTgifSwiYm9keSI6eyJlcnJvciI6IkFyZ2ghISEifX19XSwibWV0YWRhdGEiOnsicGFjdFNwZWNpZmljYXRpb25WZXJzaW9uIjoiMS4wLjAifX0="
+
+components:
+  inputs:
+    publish_contract_input:
+      type: object
+      properties:
+        pacticipantName:
+          $ref: "#/components/inputs/pacticipantName"
+        pacticipantVersionNumber:
+          $ref: "#/components/inputs/pacticipantVersionNumber"
+        tags:
+          $ref: "#/components/inputs/tags"
+        branch:
+          $ref: "#/components/inputs/branch"
+        buildUrl:
+          $ref: "#/components/inputs/buildUrl"
+        contracts:
+          $ref: "#/components/inputs/contracts"
+    pacticipantName:
+      type: string
+      minLength: 1
+      description: foo
+    pacticipantVersionNumber:
+      type: string
+      minLength: 1
+    tags:
+      type: array
+      nullable: true
+      items:
+          type: string
+    branch:
+      type: string
+      nullable: true
+    buildUrl:
+      type: string
+      nullable: true
+    contracts:
+      type: array
+      items:
+        type: object
+        properties:
+          consumerName:
+            type: string
+            minLength: 1
+          providerName:
+            type: string
+            minLength: 1
+          content:
+            type: string
+            minLength: 1
+          contentType:
+            enum:
+            - application/json
+          specification:
+            enum:
+            - pact
+          onConflict:
+            default: overwrite
+            enum:
+            - overwrite
+            - merge
+        required:
+        - consumerName
+        - providerName
+        - content
+        - contentType
+        - specification
+        # $ref: $sourceDescriptions.pact_broker.components.schemas.ConsumerContractToPublish
