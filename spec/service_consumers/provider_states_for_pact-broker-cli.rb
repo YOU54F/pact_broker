@@ -33,13 +33,13 @@ Pact.provider_states_for "pact-broker-cli" do
   #   end
   # end
 
-  # provider_state "the 'Pricing Service' and 'Condor' already exist in the pact-broker" do
-  #   set_up do
-  #     TestDataBuilder.new
-  #       .create_consumer("Condor")
-  #       .create_provider("Pricing Service")
-  #   end
-  # end
+  provider_state "the 'Pricing Service' and 'Condor' already exist in the pact-broker" do
+    set_up do
+      TestDataBuilder.new
+        .create_consumer("Condor")
+        .create_provider("Pricing Service")
+    end
+  end
 
   # provider_state "the pact for Foo Thing version 1.2.3 has been verified by Bar version 4.5.6" do
   #   set_up do
@@ -240,25 +240,25 @@ Pact.provider_states_for "pact-broker-cli" do
   #   end
   # end
 
-  # provider_state "a webhook with the uuid 696c5f93-1b7f-44bc-8d03-59440fcaa9a0 exists" do
-  #   set_up do
-  #     TestDataBuilder.new
-  #         .create_consumer("Condor")
-  #         .create_provider("Pricing Service")
-  #         .create_webhook(uuid: "696c5f93-1b7f-44bc-8d03-59440fcaa9a0")
-  #   end
-  # end
+  provider_state "a webhook with the uuid 696c5f93-1b7f-44bc-8d03-59440fcaa9a0 exists" do
+    set_up do
+      TestDataBuilder.new
+          .create_consumer("Condor")
+          .create_provider("Pricing Service")
+          .create_webhook(uuid: "696c5f93-1b7f-44bc-8d03-59440fcaa9a0")
+    end
+  end
 
-  # provider_state "the pacticipant relations are present" do
-  #   no_op
-  # end
+  provider_state "the pacticipant relations are present" do
+    no_op
+  end
 
-  # provider_state "a pacticipant with name Foo exists" do
-  #   set_up do
-  #     TestDataBuilder.new
-  #       .create_consumer("Foo")
-  #   end
-  # end
+  provider_state "a pacticipant with name Foo exists" do
+    set_up do
+      TestDataBuilder.new
+        .create_consumer("Foo")
+    end
+  end
 
   # provider_state "the pb:pacticipant-version relation exists in the index resource" do
   #   no_op
