@@ -276,9 +276,9 @@ Pact.provider_states_for "pact-broker-cli" do
   #   end
   # end
 
-  # provider_state "the pb:publish-contracts relations exists in the index resource" do
-  #   no_op
-  # end
+  provider_state "the pb:publish-contracts relations exists in the index resource" do
+    no_op
+  end
 
   provider_state "the pb:environments relation exists in the index resource" do
     no_op
