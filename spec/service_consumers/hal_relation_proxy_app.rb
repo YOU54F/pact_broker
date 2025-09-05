@@ -37,7 +37,12 @@ class HalRelationProxyApp
 
   QUERY_STRING_REPLACEMENTS = {
    "latestby=cvpv&q[][latest]=true&q[][pacticipant]=Foo&q[][tag]=prod&q[][version]=1%2e2%2e3&q[][pacticipant]=Bar" => "q[][pacticipant]=Foo&q[][version]=1%2e2%2e3&q[][pacticipant]=Bar&q[][latest]=true&q[][tag]=prod&latestby=cvpv",
-   "latestby=cvpv&q[][latest]=true&q[][pacticipant]=Foo&q[][version]=1%2e2%2e4&q[][pacticipant]=Bar" => "q[][pacticipant]=Foo&q[][version]=1%2e2%2e4&q[][pacticipant]=Bar&q[][latest]=true&latestby=cvpv"
+   "latestby=cvpv&q[][latest]=true&q[][pacticipant]=Foo&q[][version]=1%2e2%2e4&q[][pacticipant]=Bar" => "q[][pacticipant]=Foo&q[][version]=1%2e2%2e4&q[][pacticipant]=Bar&q[][latest]=true&latestby=cvpv",
+   "latestby=cvpv&q[][pacticipant]=Foo+Thing&q[][pacticipant]=Bar&q[][version]=1%2e2%2e3&q[][version]=4%2e5%2e6" => "q[][pacticipant]=Foo+Thing&q[][version]=1%2e2%2e3&q[][pacticipant]=Bar&q[][version]=4%2e5%2e6&latestby=cvpv",
+   "latestby=cvpv&q[][pacticipant]=Foo&q[][pacticipant]=Bar&q[][version]=1%2e2%2e3&q[][version]=4%2e5%2e6" => "q[][pacticipant]=Foo&q[][version]=1%2e2%2e3&q[][pacticipant]=Bar&q[][version]=4%2e5%2e6&latestby=cvpv",
+   "latestby=cvpv&q[][latest]=true&q[][pacticipant]=Foo&q[][pacticipant]=Bar&q[][tag]=prod&q[][version]=1%2e2%2e3" => "q[][pacticipant]=Foo&q[][version]=1%2e2%2e3&q[][pacticipant]=Bar&q[][latest]=true&q[][tag]=prod&latestby=cvpv",
+   "latestby=cvpv&q[][latest]=true&q[][pacticipant]=Foo&q[][pacticipant]=Bar&q[][version]=1%2e2%2e4" => "q[][pacticipant]=Foo&q[][version]=1%2e2%2e4&q[][pacticipant]=Bar&q[][latest]=true&latestby=cvpv",
+   "latestby=cvpv&q[][pacticipant]=Foo&q[][pacticipant]=Bar&q[][version]=1%2e2%2e3&q[][version]=9%2e9%2e9" => "q[][pacticipant]=Foo&q[][version]=1%2e2%2e3&q[][pacticipant]=Bar&q[][version]=9%2e9%2e9&latestby=cvpv"
   }
 
   def initialize(app)
