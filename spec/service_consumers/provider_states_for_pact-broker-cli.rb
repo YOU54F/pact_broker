@@ -24,14 +24,14 @@ Pact.provider_states_for "pact-broker-cli" do
     no_op
   end
 
-  # provider_state "'Condor' exists in the pact-broker with the latest version 1.2.3" do
-  #   set_up do
-  #     TestDataBuilder.new
-  #       .create_consumer("Condor")
-  #       .create_consumer_version("1.0.0")
-  #       .create_consumer_version("1.2.3")
-  #   end
-  # end
+  provider_state "'Condor' exists in the pact-broker with the latest version 1.2.3" do
+    set_up do
+      TestDataBuilder.new
+        .create_consumer("Condor")
+        .create_consumer_version("1.0.0")
+        .create_consumer_version("1.2.3")
+    end
+  end
 
   provider_state "the 'Pricing Service' and 'Condor' already exist in the pact-broker" do
     set_up do
@@ -41,96 +41,96 @@ Pact.provider_states_for "pact-broker-cli" do
     end
   end
 
-  # provider_state "the pact for Foo Thing version 1.2.3 has been verified by Bar version 4.5.6" do
-  #   set_up do
-  #     TestDataBuilder.new
-  #       .create_pact_with_hierarchy("Foo Thing", "1.2.3", "Bar")
-  #       .revise_pact
-  #       .create_verification(provider_version: "4.5.6")
-  #       .create_verification(provider_version: "7.8.9", number: 2)
-  #       .create_consumer_version("2.0.0")
-  #       .create_pact
-  #       .revise_pact
-  #       .create_verification(provider_version: "4.5.6")
-  #   end
-  # end
+  provider_state "the pact for Foo Thing version 1.2.3 has been verified by Bar version 4.5.6" do
+    set_up do
+      TestDataBuilder.new
+        .create_pact_with_hierarchy("Foo Thing", "1.2.3", "Bar")
+        .revise_pact
+        .create_verification(provider_version: "4.5.6")
+        .create_verification(provider_version: "7.8.9", number: 2)
+        .create_consumer_version("2.0.0")
+        .create_pact
+        .revise_pact
+        .create_verification(provider_version: "4.5.6")
+    end
+  end
 
-  # provider_state "the pact for Foo version 1.2.3 has been verified by Bar version 4.5.6" do
-  #   set_up do
-  #     TestDataBuilder.new
-  #       .create_pact_with_hierarchy("Foo", "1.2.3", "Bar")
-  #       .revise_pact
-  #       .create_verification(provider_version: "4.5.6")
-  #       .create_verification(provider_version: "7.8.9", number: 2)
-  #       .create_consumer_version("2.0.0")
-  #       .create_pact
-  #       .revise_pact
-  #       .create_verification(provider_version: "4.5.6")
-  #   end
-  # end
+  provider_state "the pact for Foo version 1.2.3 has been verified by Bar version 4.5.6" do
+    set_up do
+      TestDataBuilder.new
+        .create_pact_with_hierarchy("Foo", "1.2.3", "Bar")
+        .revise_pact
+        .create_verification(provider_version: "4.5.6")
+        .create_verification(provider_version: "7.8.9", number: 2)
+        .create_consumer_version("2.0.0")
+        .create_pact
+        .revise_pact
+        .create_verification(provider_version: "4.5.6")
+    end
+  end
 
-  # provider_state "the pact for Foo version 1.2.3 and 1.2.4 has been verified by Bar version 4.5.6" do
-  #   set_up do
-  #     TestDataBuilder.new
-  #       .create_pact_with_hierarchy("Foo", "1.2.3", "Bar")
-  #       .revise_pact
-  #       .create_verification(provider_version: "4.5.6")
-  #       .create_consumer_version("1.2.4")
-  #       .create_pact
-  #       .revise_pact
-  #       .create_verification(provider_version: "4.5.6")
-  #   end
-  # end
+  provider_state "the pact for Foo version 1.2.3 and 1.2.4 has been verified by Bar version 4.5.6" do
+    set_up do
+      TestDataBuilder.new
+        .create_pact_with_hierarchy("Foo", "1.2.3", "Bar")
+        .revise_pact
+        .create_verification(provider_version: "4.5.6")
+        .create_consumer_version("1.2.4")
+        .create_pact
+        .revise_pact
+        .create_verification(provider_version: "4.5.6")
+    end
+  end
 
-  # provider_state "the pact for Foo version 1.2.3 has been successfully verified by Bar version 4.5.6, and 1.2.4 unsuccessfully by 9.9.9" do
-  #   set_up do
-  #     TestDataBuilder.new
-  #       .create_pact_with_hierarchy("Foo", "1.2.3", "Bar")
-  #       .revise_pact
-  #       .create_verification(provider_version: "4.5.6")
-  #       .create_consumer_version("1.2.4")
-  #       .create_pact
-  #       .revise_pact
-  #       .create_verification(provider_version: "9.9.9", success: false)
-  #   end
-  # end
+  provider_state "the pact for Foo version 1.2.3 has been successfully verified by Bar version 4.5.6, and 1.2.4 unsuccessfully by 9.9.9" do
+    set_up do
+      TestDataBuilder.new
+        .create_pact_with_hierarchy("Foo", "1.2.3", "Bar")
+        .revise_pact
+        .create_verification(provider_version: "4.5.6")
+        .create_consumer_version("1.2.4")
+        .create_pact
+        .revise_pact
+        .create_verification(provider_version: "9.9.9", success: false)
+    end
+  end
 
-  # provider_state "the pact for Foo version 1.2.3 has been successfully verified by Bar version 4.5.6 with tag prod, and 1.2.4 unsuccessfully by 9.9.9" do
-  #   set_up do
-  #     TestDataBuilder.new
-  #       .create_pact_with_hierarchy("Foo", "1.2.3", "Bar")
-  #       .revise_pact
-  #       .create_verification(provider_version: "4.5.6")
-  #       .use_provider("Bar")
-  #       .use_provider_version("4.5.6")
-  #       .create_provider_version_tag("prod")
-  #       .create_consumer_version("1.2.4")
-  #       .create_pact
-  #       .revise_pact
-  #       .create_verification(provider_version: "9.9.9", success: false)
-  #   end
-  # end
+  provider_state "the pact for Foo version 1.2.3 has been successfully verified by Bar version 4.5.6 with tag prod, and 1.2.4 unsuccessfully by 9.9.9" do
+    set_up do
+      TestDataBuilder.new
+        .create_pact_with_hierarchy("Foo", "1.2.3", "Bar")
+        .revise_pact
+        .create_verification(provider_version: "4.5.6")
+        .use_provider("Bar")
+        .use_provider_version("4.5.6")
+        .create_provider_version_tag("prod")
+        .create_consumer_version("1.2.4")
+        .create_pact
+        .revise_pact
+        .create_verification(provider_version: "9.9.9", success: false)
+    end
+  end
 
-  # provider_state "the pact for Foo version 1.2.3 has been verified by Bar version 4.5.6 and version 5.6.7" do
-  #   set_up do
-  #     TestDataBuilder.new
-  #       .create_pact_with_hierarchy("Foo", "1.2.3", "Bar")
-  #       .revise_pact
-  #       .create_verification(provider_version: "4.5.6")
-  #       .create_verification(provider_version: "5.6.7", number: 2)
-  #   end
-  # end
+  provider_state "the pact for Foo version 1.2.3 has been verified by Bar version 4.5.6 and version 5.6.7" do
+    set_up do
+      TestDataBuilder.new
+        .create_pact_with_hierarchy("Foo", "1.2.3", "Bar")
+        .revise_pact
+        .create_verification(provider_version: "4.5.6")
+        .create_verification(provider_version: "5.6.7", number: 2)
+    end
+  end
 
-  # provider_state "the pact for Foo version 1.2.3 has been successfully verified by Bar version 4.5.6 (tagged prod) and version 5.6.7" do
-  #   set_up do
-  #     TestDataBuilder.new
-  #       .create_pact_with_hierarchy("Foo", "1.2.3", "Bar")
-  #       .create_verification(provider_version: "4.5.6")
-  #       .use_provider_version("4.5.6")
-  #       .create_provider_version_tag("prod")
-  #       .create_verification(provider_version: "5.6.7", number: 2)
-  #   end
-  # end
+  provider_state "the pact for Foo version 1.2.3 has been successfully verified by Bar version 4.5.6 (tagged prod) and version 5.6.7" do
+    set_up do
+      TestDataBuilder.new
+        .create_pact_with_hierarchy("Foo", "1.2.3", "Bar")
+        .create_verification(provider_version: "4.5.6")
+        .use_provider_version("4.5.6")
+        .create_provider_version_tag("prod")
+        .create_verification(provider_version: "5.6.7", number: 2)
+    end
+  end
 
   # provider_state "the 'Pricing Service' does not exist in the pact-broker" do
   #   no_op
@@ -260,9 +260,9 @@ Pact.provider_states_for "pact-broker-cli" do
     end
   end
 
-  # provider_state "the pb:pacticipant-version relation exists in the index resource" do
-  #   no_op
-  # end
+  provider_state "the pb:pacticipant-version relation exists in the index resource" do
+    no_op
+  end
 
   # provider_state "version 26f353580936ad3b9baddb17b00e84f33c69e7cb of pacticipant Foo does not exist" do
   #   no_op
@@ -276,9 +276,9 @@ Pact.provider_states_for "pact-broker-cli" do
   #   end
   # end
 
-  # provider_state "the pb:publish-contracts relations exists in the index resource" do
-  #   no_op
-  # end
+  provider_state "the pb:publish-contracts relations exists in the index resource" do
+    no_op
+  end
 
   provider_state "the pb:environments relation exists in the index resource" do
     no_op
@@ -316,6 +316,16 @@ Pact.provider_states_for "pact-broker-cli" do
     end
   end
 
+  provider_state "version 5556b8149bf8bac76bc30f50a8a2dd4c22c85f30 of pacticipant Foo exists with a test environment is released with id ff3adecf-cfc5-4653-a4e3-f1861092f8e0" do
+    set_up do
+      TestDataBuilder.new
+        .create_environment("test", uuid: "16926ef3-590f-4e3f-838e-719717aa88c9")
+        .create_consumer("Foo")
+        .create_consumer_version("5556b8149bf8bac76bc30f50a8a2dd4c22c85f30")
+        .create_released_version_for_consumer_version(uuid: "ff3adecf-cfc5-4653-a4e3-f1861092f8e0", environment_name: "test")
+    end
+  end
+
   provider_state "an environment with name test and UUID 16926ef3-590f-4e3f-838e-719717aa88c9 exists" do
     set_up do
       TestDataBuilder.new
@@ -344,6 +354,10 @@ Pact.provider_states_for "pact-broker-cli" do
   end
 
   provider_state "the pb:pacticipant-branch relation exists in the index resource" do
+    no_op
+  end
+
+  provider_state "the pb:pacticipants relation exists in the index resource" do
     no_op
   end
 
