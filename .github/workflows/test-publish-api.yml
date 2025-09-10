@@ -1,0 +1,68 @@
+name: publish_pacts api test
+
+on:
+  push:
+    branches:
+      - issue/publish_pacts_using_old_api
+  workflow_dispatch:
+    inputs:
+      git_commit:
+        description: 'Git commit hash to checkout'
+        required: false
+        type: string
+
+jobs:
+  publish_pact_old_api:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest ]
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.git_commit || github.sha }}
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+      - run: gem install pact_broker-client
+      - run: bundle install
+      - run: bundle exec rackup &
+      - run: wget -qO- https://raw.githubusercontent.com/eficode/wait-for/v2.2.3/wait-for | sh -s -- localhost:9292 -t 120 -- echo broker is up
+      - run: |
+          curl -L https://raw.githubusercontent.com/pact-foundation/pact_broker/refs/heads/master/script/foo-bar.json -o foo-bar.json
+          pact-broker publish foo-bar.json --consumer-app-version 1.2.26
+        name: Publish pacts using old API
+        shell: bash
+        env:
+          PACT_BROKER_FEATURES: publish_pacts_using_old_api
+          PACT_BROKER_BASE_URL: http://localhost:9292
+
+  publish_pact_new_api:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest ]
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.git_commit || github.sha }}
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+      - run: gem install pact_broker-client
+      - run: bundle install
+      - run: bundle exec rackup &
+      - run: wget -qO- https://raw.githubusercontent.com/eficode/wait-for/v2.2.3/wait-for | sh -s -- localhost:9292 -t 120 -- echo broker is up
+      - run: |
+          curl -L https://raw.githubusercontent.com/pact-foundation/pact_broker/refs/heads/master/script/foo-bar.json -o foo-bar.json
+          pact-broker publish foo-bar.json --consumer-app-version 1.2.26
+        name: Publish pacts using new API
+        shell: bash
+        env:
+          PACT_BROKER_BASE_URL: http://localhost:9292
