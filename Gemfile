@@ -10,6 +10,8 @@ gem "bump", "~> 0.5"
 gem "padrino-core", ">= 0.16.0.pre3", require: false
 gem "rackup", "~> 2.2"
 gem "thor", "~> 1.4" # thor is secondary dependency but bumping here to avoid CVEs
+gem "mutex_m"
+gem "csv"
 
 group :development do
   gem "pry-byebug"
