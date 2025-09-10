@@ -45,4 +45,5 @@ jobs:
       - name: Verify pacts
         env:
           PACT_URL: ${{ matrix.pact_url }}
+          CI: false
         run: "bundle exec rake pact:verify:at[${PACT_URL}]"
