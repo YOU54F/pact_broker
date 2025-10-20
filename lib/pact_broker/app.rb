@@ -18,6 +18,7 @@ require "rack/pact_broker/no_auth"
 require "rack/pact_broker/reset_thread_data"
 require "rack/pact_broker/add_cache_header"
 require "rack/pact_broker/add_vary_header"
+require "rack/pact_broker/opentelemetry"
 require "rack/pact_broker/use_when"
 require "rack/pact_broker/application_context"
 require "sucker_punch"
@@ -196,6 +197,7 @@ module PactBroker
       @app_builder.use Rack::PactBroker::ResetThreadData
       @app_builder.use Rack::PactBroker::AddPactBrokerVersionHeader
       @app_builder.use Rack::PactBroker::AddVaryHeader
+      Rack::PactBroker::OpenTelemetry.setup(@app_builder, configuration) if configuration.otel_enabled
       @app_builder.use Rack::Static, :urls => ["/stylesheets", "/css", "/fonts", "/js", "/javascripts", "/images"], :root => PactBroker.project_root.join("public")
       @app_builder.use Rack::Static, :urls => ["/favicon.ico"], :root => PactBroker.project_root.join("public/images"), header_rules: [[:all, {"content-type" => "image/x-icon"}]]
       @app_builder.use Rack::PactBroker::AddCacheHeader

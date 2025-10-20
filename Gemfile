@@ -24,7 +24,7 @@ group :test do
   if ENV["X_PACT_DEVELOPMENT"]
     gem "pact", path: "../pact-ruby"
   else
-    gem "pact", git: "https://github.com/safdotdev/pact-ruby.git", branch: "feat/pact-ruby-v2-conditional-install"
+    gem "pact-v2", "~> 2.0.0.pre-preview3"
   end
   gem "rspec-pact-matchers", "~>0.1"
   gem "bundler-audit", "~>0.4"
@@ -52,3 +52,11 @@ end
 if ENV["X_PACT_DEVELOPMENT"] == "true"
   gem "pact-support", path: "../pact-support"
 end
+
+# OpenTelemetry gems
+gem "opentelemetry-api"
+gem "opentelemetry-common"
+gem "opentelemetry-sdk"
+gem "opentelemetry-instrumentation-rack"
+gem "opentelemetry-instrumentation-all"
+gem "opentelemetry-exporter-otlp"

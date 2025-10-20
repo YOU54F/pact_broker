@@ -40,6 +40,20 @@ groups:
           - true
           - false
         supported_versions: From v2.98.0
+      otel_enabled:
+        description: |-
+          Enable this setting to have OpenTelemetry tracing enabled for the Pact Broker application.
+          Ensure that an OpenTelemetry collector is available to receive the traces.
+          OTLP_* environment variables can be used to configure the OpenTelemetry exporter.
+        default_value: false
+        allowed_values:
+          - true
+          - false
+        supported_versions: From v2.117.0
+      otel_service_name:
+        description: "The service name to use for OpenTelemetry tracing. Only used if `otel_enabled` is `true`."
+        default_value: "pact_broker"
+        supported_versions: From v2.117.0
       hide_pactflow_messages:
         description: "Set to `true` to hide the messages in the logs about PactFlow"
         default_value: true

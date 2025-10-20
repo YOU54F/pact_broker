@@ -42,7 +42,9 @@ module PactBroker
         warning_error_class_names: ["Sequel::ForeignKeyConstraintViolation"],
         hide_pactflow_messages: false,
         log_configuration_on_startup: true,
-        http_debug_logging_enabled: false
+        http_debug_logging_enabled: false,
+        otel_enabled: false,
+        otel_service_name: "pact_broker"
       )
 
       on_load :validate_logging_attributes!

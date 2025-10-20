@@ -60,10 +60,34 @@ Do not leave this on permanently, as it will have performance and security issue
 Ensure the application [`log_level`](#log_level) is set to `debug` when this setting is enabled.
 
 **Supported versions:** From v2.98.0<br/>
-**Environment variable name:** `PACT_BROKER_HTTP_DEBUG_LOGGING_ENABLED`<br/>
+**Environment variable name:** `PACT_BROKER_OTEL_ENABLED`<br/>
 **YAML configuration key name:** `http_debug_logging_enabled`<br/>
 **Default:** `false`<br/>
 **Allowed values:** `true`, `false`<br/>
+
+### otel_enabled
+
+Enable this setting to have OpenTelemetry tracing enabled for the Pact Broker application.
+Ensure that an OpenTelemetry collector is available to receive the traces.
+OTLP_* environment variables can be used to configure the OpenTelemetry exporter.
+
+**Supported versions:** From v2.98.0<br/>
+**Environment variable name:** `PACT_BROKER_OTEL_ENABLED`<br/>
+**YAML configuration key name:** `pact_broker_otel_enabled`<br/>
+**Default:** `false`<br/>
+**Allowed values:** `true`, `false`<br/>
+
+### otel_service_name
+
+"The service name to use for OpenTelemetry tracing. Only used if `otel_enabled` is `true`."
+
+Note:- The standard OTEL_SERVICE_NAME env var is not supported.
+
+**Supported versions:** From v2.98.0<br/>
+**Environment variable name:** `PACT_BROKER_OTEL_SERVICE_NAME`<br/>
+**YAML configuration key name:** `pact_broker_otel_service_name`<br/>
+**Default:** `false`<br/>
+
 
 ### hide_pactflow_messages
 
