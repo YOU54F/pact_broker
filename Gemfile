@@ -21,7 +21,13 @@ end
 
 group :test do
   gem "simplecov", :require => false
-  gem "pact", "~>1.14"
+  if ENV["X_PACT_DEVELOPMENT"] == "true"
+    gem "pact", path: "../pact-ruby"
+    gem "pact-ffi", path: "../pact-ffi"
+  else
+    gem "pact"
+    gem "pact-ffi"
+  end
   gem "rspec-pact-matchers", "~>0.1"
   gem "bundler-audit", "~>0.4"
   gem "webmock", "~>3.9"
