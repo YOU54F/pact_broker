@@ -158,6 +158,24 @@ Pact.provider_states_for "pact-broker-cli" do
         .create_pact
     end
   end
+  provider_state "a pact between Condor and the Pricing Service exists with branch main" do
+    set_up do
+      TestDataBuilder.new
+        .create_condor
+        .create_consumer_version("1.3.0", branch: "main")
+        .create_pricing_service
+        .create_pact
+    end
+  end
+  provider_state "a pact between Condor and the Pricing Service exists with branch feature" do
+    set_up do
+      TestDataBuilder.new
+        .create_condor
+        .create_consumer_version("1.3.0", branch: "feature")
+        .create_pricing_service
+        .create_pact
+    end
+  end
 
   # provider_state "no pact between Condor and the Pricing Service exists" do
   #   no_op
@@ -358,6 +376,14 @@ Pact.provider_states_for "pact-broker-cli" do
   end
 
   provider_state "the pb:pacticipants relation exists in the index resource" do
+    no_op
+  end
+
+  provider_state "the pb:pacticipant relation exists in the index resource" do
+    no_op
+  end
+  
+  provider_state "a webhook with uuid non-existent-uuid does not exist" do
     no_op
   end
 
