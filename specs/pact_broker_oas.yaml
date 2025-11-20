@@ -26,63 +26,63 @@ paths:
                     type: object
                     properties:
                       self:
-                        $ref: '#/components/schemas/EmbeddedLink'
+                        $ref: "#/components/schemas/EmbeddedLink"
                       pb:publish-pact:
-                        $ref: '#/components/schemas/EmbeddedLinkTemplated'
+                        $ref: "#/components/schemas/EmbeddedLinkTemplated"
                       pb:publish-contracts:
-                        $ref: '#/components/schemas/EmbeddedLink'
+                        $ref: "#/components/schemas/EmbeddedLink"
                       pb:latest-pact-versions:
-                        $ref: '#/components/schemas/EmbeddedLink'
+                        $ref: "#/components/schemas/EmbeddedLink"
                       pb:tagged-pact-versions:
-                        $ref: '#/components/schemas/EmbeddedLink'
+                        $ref: "#/components/schemas/EmbeddedLink"
                       pb:pacticipants:
-                        $ref: '#/components/schemas/EmbeddedLink'
+                        $ref: "#/components/schemas/EmbeddedLink"
                       pb:pacticipant:
-                        $ref: '#/components/schemas/EmbeddedLinkTemplated'
+                        $ref: "#/components/schemas/EmbeddedLinkTemplated"
                       pb:latest-provider-pacts:
-                        $ref: '#/components/schemas/EmbeddedLinkTemplated'
+                        $ref: "#/components/schemas/EmbeddedLinkTemplated"
                       pb:latest-provider-pacts-with-tag:
-                        $ref: '#/components/schemas/EmbeddedLinkTemplated'
+                        $ref: "#/components/schemas/EmbeddedLinkTemplated"
                       pb:provider-pacts-with-tag:
-                        $ref: '#/components/schemas/EmbeddedLinkTemplated'
+                        $ref: "#/components/schemas/EmbeddedLinkTemplated"
                       pb:provider-pacts:
-                        $ref: '#/components/schemas/EmbeddedLinkTemplated'
+                        $ref: "#/components/schemas/EmbeddedLinkTemplated"
                       pb:latest-version:
-                        $ref: '#/components/schemas/EmbeddedLinkTemplated'
+                        $ref: "#/components/schemas/EmbeddedLinkTemplated"
                       pb:latest-tagged-version:
-                        $ref: '#/components/schemas/EmbeddedLinkTemplated'
+                        $ref: "#/components/schemas/EmbeddedLinkTemplated"
                       pb:webhooks:
-                        $ref: '#/components/schemas/EmbeddedLink'
+                        $ref: "#/components/schemas/EmbeddedLink"
                       pb:webhook:
-                        $ref: '#/components/schemas/EmbeddedLinkTemplated'
+                        $ref: "#/components/schemas/EmbeddedLinkTemplated"
                       pb:integrations:
-                        $ref: '#/components/schemas/EmbeddedLink'
+                        $ref: "#/components/schemas/EmbeddedLink"
                       pb:pacticipant-version-tag:
-                        $ref: '#/components/schemas/EmbeddedLinkTemplated'
+                        $ref: "#/components/schemas/EmbeddedLinkTemplated"
                       pb:pacticipant-branch:
-                        $ref: '#/components/schemas/EmbeddedLinkTemplated'
+                        $ref: "#/components/schemas/EmbeddedLinkTemplated"
                       pb:pacticipant-branch-version:
-                        $ref: '#/components/schemas/EmbeddedLinkTemplated'
+                        $ref: "#/components/schemas/EmbeddedLinkTemplated"
                       pb:pacticipant-version:
-                        $ref: '#/components/schemas/EmbeddedLinkTemplated'
+                        $ref: "#/components/schemas/EmbeddedLinkTemplated"
                       pb:metrics:
-                        $ref: '#/components/schemas/EmbeddedLink'
+                        $ref: "#/components/schemas/EmbeddedLink"
                       pb:can-i-deploy-pacticipant-version-to-tag:
-                        $ref: '#/components/schemas/EmbeddedLinkTemplated'
+                        $ref: "#/components/schemas/EmbeddedLinkTemplated"
                       pb:can-i-deploy-pacticipant-version-to-environment:
-                        $ref: '#/components/schemas/EmbeddedLinkTemplated'
+                        $ref: "#/components/schemas/EmbeddedLinkTemplated"
                       pb:provider-pacts-for-verification:
-                        $ref: '#/components/schemas/EmbeddedLinkTemplated'
+                        $ref: "#/components/schemas/EmbeddedLinkTemplated"
                       beta:provider-pacts-for-verification:
-                        $ref: '#/components/schemas/EmbeddedLinkTemplated'
+                        $ref: "#/components/schemas/EmbeddedLinkTemplated"
                       curies:
                         type: array
                         items:
-                          $ref: '#/components/schemas/CurieLinkTemplated'
+                          $ref: "#/components/schemas/CurieLinkTemplated"
                       pb:environments:
-                        $ref: '#/components/schemas/EmbeddedLink'
+                        $ref: "#/components/schemas/EmbeddedLink"
                       pb:environment:
-                        $ref: '#/components/schemas/EmbeddedLinkTemplated'
+                        $ref: "#/components/schemas/EmbeddedLinkTemplated"
   /contracts/publish:
     post:
       description: "Publish consumer contracts with branch, tags and build URL"
@@ -105,7 +105,7 @@ paths:
                   type: array
                   nullable: true
                   items:
-                      type: string
+                    type: string
                 branch:
                   type: string
                   nullable: true
@@ -115,11 +115,11 @@ paths:
                 contracts:
                   type: array
                   items:
-                    $ref: '#/components/schemas/ConsumerContractToPublish'
+                    $ref: "#/components/schemas/ConsumerContractToPublish"
               required:
-              - pacticipantName
-              - pacticipantVersionNumber
-              - contracts
+                - pacticipantName
+                - pacticipantVersionNumber
+                - contracts
       responses:
         "200":
           description: OK
@@ -133,13 +133,13 @@ paths:
                   notices:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Notice'
+                      $ref: "#/components/schemas/Notice"
         "400":
           description: Validation errror
           content:
             application/problem+json:
               schema:
-                $ref: '#/components/schemas/ProblemJson'
+                $ref: "#/components/schemas/ProblemJson"
             application/hal+json:
               schema:
                 type: object
@@ -147,17 +147,17 @@ paths:
                   notices:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Notice'
+                      $ref: "#/components/schemas/Notice"
 
         "409":
           description: Conflict
           content:
-            # application/problem+json:
-            #   schema:
-            #     $ref: '#/components/schemas/ProblemJson'
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemJson"
             application/json:
               schema:
-                $ref: '#/components/schemas/PublishConsumerContractConflictResponse'
+                $ref: "#/components/schemas/PublishConsumerContractConflictResponse"
 components:
   parameters:
     PageSize:
@@ -194,8 +194,8 @@ components:
     EmbeddedLink:
       type: object
       required:
-      - href
-      - title
+        - href
+        - title
       properties:
         href:
           type: string
@@ -208,14 +208,14 @@ components:
 
     EmbeddedLinkTemplated:
       allOf:
-      - $ref: '#/components/schemas/EmbeddedLink'
-      - type: object
-        required:
-        - templated
+        - $ref: "#/components/schemas/EmbeddedLink"
+        - type: object
+          required:
+            - templated
     CurieLink:
       type: object
       required:
-      - href
+        - href
       properties:
         href:
           type: string
@@ -226,10 +226,10 @@ components:
 
     CurieLinkTemplated:
       allOf:
-      - $ref: '#/components/schemas/CurieLink'
-      - type: object
-        required:
-        - templated
+        - $ref: "#/components/schemas/CurieLink"
+        - type: object
+          required:
+            - templated
 
     ConsumerContractToPublish:
       type: object
@@ -245,21 +245,21 @@ components:
           minLength: 1
         contentType:
           enum:
-          - application/json
+            - application/json
         specification:
           enum:
-          - pact
+            - pact
         onConflict:
           default: overwrite
           enum:
-          - overwrite
-          - merge
+            - overwrite
+            - merge
       required:
-      - consumerName
-      - providerName
-      - content
-      - contentType
-      - specification
+        - consumerName
+        - providerName
+        - content
+        - contentType
+        - specification
 
     PublishConsumerContractConflictResponse:
       description: The custom response when there is a 409 Conflict
@@ -268,7 +268,7 @@ components:
         notices:
           type: array
           items:
-            $ref: '#/components/schemas/Notice'
+            $ref: "#/components/schemas/Notice"
       required:
         - notices
 
@@ -293,27 +293,31 @@ components:
           description: an array of error details to accompany a problem details response
           items:
             type: object
-            description: an error object to provide explicit details on a problem towards
+            description:
+              an error object to provide explicit details on a problem towards
               an API consumer
             properties:
               detail:
                 type: string
-                description: a granular description on the specific error related to a body
+                description:
+                  a granular description on the specific error related to a body
                   property, query parameter, path parameters, and/or header
               pointer:
                 type: string
-                description: a JSON Pointer to a specific request body property that is
+                description:
+                  a JSON Pointer to a specific request body property that is
                   the source of error
               parameter:
                 type: string
-                description: the name of the query or path parameter that is the source
+                description:
+                  the name of the query or path parameter that is the source
                   of error
               header:
                 type: string
                 description: the name of the header that is the source of error
             required:
-            - detail
+              - detail
       required:
-      - type
-      - title
-      - status
+        - type
+        - title
+        - status

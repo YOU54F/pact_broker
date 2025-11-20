@@ -67,6 +67,18 @@ ensure
   Rake::Task[:stop_pact_server].invoke
 end
 
+desc "Run Quilt workflow tests"
+task :test_quilt => [:start_pact_server] do
+  quilt_file = ENV["QUILT_FILE"] || "spec/quilt/pact-broker.quilt.yaml"
+  hostname = ENV["HOSTNAME"] || "http://localhost:9292"
+  sh "verifier-cli " \
+     "-u #{hostname} " \
+     "-f #{quilt_file} "
+ensure
+  Rake::Task[:stop_pact_server].invoke
+end
+
+
 desc "Start the Pact server"
 task :start_pact_server do
   FileUtils.mkdir_p("log")
