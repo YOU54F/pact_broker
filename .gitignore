@@ -43,3 +43,4 @@ spec/examples.txt
 regression/fixtures/approvals
 config/pact_broker.local.yml
 docs/matrix-optimisation/baseline-*.md
+drift/output

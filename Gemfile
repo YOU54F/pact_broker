@@ -10,6 +10,7 @@ gem "rackup", "~> 2.2"
 gem "thor", "~> 1.4" # thor is secondary dependency but bumping here to avoid CVEs
 
 group :development do
+  gem "puma", "~> 6.4" # serves drift/config.ru; WEBrick mangles bodyless and re-read requests
   gem "pry-byebug"
   gem "rubocop", "~>1.7"
   gem "rubocop-performance", "~> 1.23"

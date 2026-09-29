@@ -1,0 +1,1355 @@
+# yaml-language-server: $schema=https://download.pactflow.io/drift/schemas/drift.testcases.v1.schema.json
+
+# Drift test case definitions.
+#
+# This file defines the test operations that Drift will execute against the
+# running API server (started in-process by tests/drift.rs). For each
+# operation, Drift will:
+#   1. Fire an `operation:started` event — pact_broker.lua calls
+#      POST /test/setup/{operationId} (a test-only route tests/drift.rs
+#      mounts alongside the real app), which seeds the DB via the same
+#      TestDataBuilder helpers the rest of the test suite uses, and returns
+#      whatever it generated (UUIDs, a pact-version SHA) as JSON.
+#   2. Send the HTTP request described by the target OAS operationId. Any
+#      generated value from step 1 that a request needs is read back out of
+#      pact_broker.lua via ${functions:...}, since it can't be hardcoded here.
+#   3. Validate the response against the OAS (status code, schema, headers).
+#   4. Fire an `operation:finished` event — pact_broker.lua calls
+#      POST /test/reset, truncating the DB so operations don't see each
+#      other's state.
+#
+# Sources:
+#   oas-pb-rs — the OpenAPI spec (mounted by the app itself) that Drift
+#               validates responses against
+#   functions — pact_broker.lua, providing the lifecycle hooks above and the
+#               ${functions:...} accessors used below
+#
+# The operation key (left-hand side under `operations:`) is passed verbatim
+# to POST /test/setup/{operationId}, so it must match a `match` arm in
+# tests/drift.rs's `seed_state`, not the OAS operationId (see `target:`).
+# Fixed values below (consumer/provider names, version numbers, branch, tag,
+# label, environment) are chosen by seed_state's `fixtures` module, not
+# generated — see tests/drift.rs.
+
+drift-testcase-file: v1
+title: "Pact Broker API Tests"
+
+sources:
+  - name: oas-pb-rs
+    # The spec is copied in from the Rust broker's repo, where it lives at the
+    # repo root; here it sits beside this file.
+    path: openapi.json
+  - name: functions
+    path: pact_broker.lua
+
+plugins:
+  - name: oas           # validates responses against the OpenAPI spec
+  - name: json          # JSON request/response handling
+  - name: junit-output  # writes a JUnit XML report to output/reports/junit/
+
+operations:
+  getIndex_Success:
+    target: oas-pb-rs:get_index
+    description: "Gets the index successfully"
+    expected:
+      response:
+        statusCode: 200
+
+  dependencies:
+    target: oas-pb-rs:dependencies
+    description: "Reports dependency health"
+    expected:
+      response:
+        statusCode: 200
+
+  heartbeat:
+    target: oas-pb-rs:heartbeat
+    description: "Heartbeat check"
+    expected:
+      response:
+        statusCode: 200
+
+  list_groups:
+    target: oas-pb-rs:get_group
+    description: "Describes a pacticipant's integration group as CSV"
+    parameters:
+      path:
+        name: Foo
+    expected:
+      response:
+        statusCode: 200
+
+  get_relationships:
+    target: oas-pb-rs:get_relationships
+    description: "Lists relationships"
+    expected:
+      response:
+        statusCode: 200
+
+  metrics_handler:
+    target: oas-pb-rs:metrics_handler
+    description: "Reports metrics"
+    expected:
+      response:
+        statusCode: 200
+
+  list_pacticipants:
+    target: oas-pb-rs:list_pacticipants
+    description: "Lists pacticipants"
+    expected:
+      response:
+        statusCode: 200
+
+  get_pacticipant:
+    target: oas-pb-rs:get_pacticipant
+    description: "Gets a pacticipant"
+    parameters:
+      path:
+        pacticipant_name: Foo
+    expected:
+      response:
+        statusCode: 200
+
+  list_versions:
+    target: oas-pb-rs:list_versions
+    description: "Lists a pacticipant's versions"
+    parameters:
+      path:
+        pacticipant_name: Foo
+    expected:
+      response:
+        statusCode: 200
+
+  list_branches:
+    target: oas-pb-rs:list_branches
+    description: "Lists a pacticipant's branches"
+    parameters:
+      path:
+        pacticipant_name: Foo
+    expected:
+      response:
+        statusCode: 200
+
+  get_branch:
+    target: oas-pb-rs:get_branch
+    description: "Gets a branch"
+    parameters:
+      path:
+        pacticipant_name: Foo
+        branch: main
+    expected:
+      response:
+        statusCode: 200
+
+  list_branch_versions:
+    target: oas-pb-rs:list_branch_versions
+    description: "Lists a branch's versions"
+    parameters:
+      path:
+        pacticipant_name: Foo
+        branch: main
+    expected:
+      response:
+        statusCode: 200
+
+  list_labels:
+    target: oas-pb-rs:list_all_labels
+    description: "Lists every label"
+    expected:
+      response:
+        statusCode: 200
+
+  get_tag:
+    target: oas-pb-rs:get_tag
+    description: "Gets a tag"
+    parameters:
+      path:
+        pacticipant_name: Foo
+        version: 1.0.0
+        tag: prod
+    expected:
+      response:
+        statusCode: 200
+
+  list_versions_for_tag:
+    target: oas-pb-rs:list_versions_for_tag
+    description: "Lists versions for a tag"
+    parameters:
+      path:
+        name: Foo
+        tag_name: prod
+    expected:
+      response:
+        statusCode: 200
+
+  get_latest_version:
+    target: oas-pb-rs:get_latest_version
+    description: "Gets the latest version"
+    parameters:
+      path:
+        name: Foo
+    expected:
+      response:
+        statusCode: 200
+
+  get_latest_version_for_tag:
+    target: oas-pb-rs:get_latest_version_for_tag
+    description: "Gets the latest version for a tag"
+    parameters:
+      path:
+        name: Foo
+        tag: prod
+    expected:
+      response:
+        statusCode: 200
+
+  can_i_deploy_by_tag_to_tag:
+    target: oas-pb-rs:can_i_deploy_by_tag_to_tag
+    description: "Can-i-deploy by tag to tag"
+    parameters:
+      path:
+        pacticipant_name: Foo
+        tag: prod
+        to: prod
+    expected:
+      response:
+        statusCode: 200
+
+  can_i_deploy_by_branch_to_environment:
+    target: oas-pb-rs:can_i_deploy_by_branch_to_environment
+    description: "Can-i-deploy by branch to environment"
+    parameters:
+      path:
+        pacticipant_name: Foo
+        branch_name: main
+        environment_name: test
+    expected:
+      response:
+        statusCode: 200
+
+  get_pacticipants_by_label:
+    target: oas-pb-rs:get_pacticipants_by_label
+    description: "Gets pacticipants by label"
+    parameters:
+      path:
+        label_name: keep
+    expected:
+      response:
+        statusCode: 200
+
+  list_environments:
+    target: oas-pb-rs:list_environments
+    description: "Lists environments"
+    expected:
+      response:
+        statusCode: 200
+
+  get_environment:
+    target: oas-pb-rs:get_environment
+    description: "Gets an environment"
+    parameters:
+      path:
+        uuid: ${functions:environment_uuid}
+    expected:
+      response:
+        statusCode: 200
+
+  list_currently_deployed_versions:
+    target: oas-pb-rs:list_currently_deployed_versions
+    description: "Lists currently deployed versions for an environment"
+    parameters:
+      path:
+        uuid: ${functions:environment_uuid}
+    expected:
+      response:
+        statusCode: 200
+
+  list_currently_supported_versions:
+    target: oas-pb-rs:list_currently_supported_versions
+    description: "Lists currently supported versions for an environment"
+    parameters:
+      path:
+        uuid: ${functions:environment_uuid}
+    expected:
+      response:
+        statusCode: 200
+
+  get_deployed_version:
+    target: oas-pb-rs:get_deployed_version
+    description: "Gets a deployed version"
+    parameters:
+      path:
+        uuid: ${functions:deployed_version_uuid}
+    expected:
+      response:
+        statusCode: 200
+
+  get_released_version:
+    target: oas-pb-rs:get_released_version
+    description: "Gets a released version"
+    parameters:
+      path:
+        uuid: ${functions:released_version_uuid}
+    expected:
+      response:
+        statusCode: 200
+
+  record_deployment_for_version:
+    target: oas-pb-rs:record_deployment_for_version
+    description: "Records a deployment for a version"
+    parameters:
+      path:
+        pacticipant_name: Foo
+        version: 1.0.0
+        environment_uuid: ${functions:environment_uuid}
+      request:
+        body:
+          applicationInstanceId: ci-drift
+    expected:
+      response:
+        statusCode: 201
+
+  record_release_for_version:
+    target: oas-pb-rs:record_release_for_version
+    description: "Records a release for a version"
+    parameters:
+      path:
+        pacticipant_name: Foo
+        version: 1.0.0
+        environment_uuid: ${functions:environment_uuid}
+      request:
+        body: {}
+    expected:
+      response:
+        statusCode: 201
+
+  record_undeployment:
+    target: oas-pb-rs:record_undeployment
+    description: "Records an undeployment"
+    parameters:
+      path:
+        uuid: ${functions:deployed_version_uuid}
+      request:
+        body:
+          currentlyDeployed: false
+    expected:
+      response:
+        statusCode: 200
+
+  end_support:
+    target: oas-pb-rs:end_support
+    description: "Ends support for a released version"
+    parameters:
+      path:
+        uuid: ${functions:released_version_uuid}
+      request:
+        body:
+          currentlySupported: false
+    expected:
+      response:
+        statusCode: 200
+
+  create_pacticipant:
+    target: oas-pb-rs:create_pacticipant
+    description: "Creates a pacticipant"
+    parameters:
+      request:
+        body:
+          name: Foo
+    expected:
+      response:
+        statusCode: 201
+
+  put_pacticipant:
+    target: oas-pb-rs:put_pacticipant
+    description: "Creates/updates a pacticipant by name"
+    parameters:
+      path:
+        pacticipant_name: Foo
+      request:
+        body:
+          name: Foo
+    expected:
+      response:
+        statusCode: 200
+
+  put_version:
+    target: oas-pb-rs:put_version
+    description: "Creates/updates a version by number"
+    parameters:
+      path:
+        pacticipant_name: Foo
+        version: 1.0.0
+      request:
+        body:
+          buildUrl: https://ci.example.org/builds/1
+    expected:
+      response:
+        statusCode: 200
+
+  create_version:
+    target: oas-pb-rs:put_version
+    description: "Creates a version that did not exist"
+    parameters:
+      path:
+        pacticipant_name: Foo
+        version: 1.0.0
+      request:
+        body: {}
+    expected:
+      response:
+        statusCode: 201
+
+  create_branch:
+    target: oas-pb-rs:create_branch_version
+    description: "Puts a version onto a branch"
+    parameters:
+      path:
+        pacticipant_name: Foo
+        branch_name: main
+        version: 1.0.0
+      request:
+        body: {}
+    expected:
+      response:
+        statusCode: 201
+
+  create_tag:
+    target: oas-pb-rs:create_tag
+    description: "Creates a tag"
+    parameters:
+      path:
+        pacticipant_name: Foo
+        version: 1.0.0
+        tag: prod
+      request:
+        body: {}
+    expected:
+      response:
+        statusCode: 201
+
+  create_label:
+    target: oas-pb-rs:create_label
+    description: "Creates a label"
+    parameters:
+      path:
+        pacticipant_name: Foo
+        label: keep
+      request:
+        body: {}
+    expected:
+      response:
+        statusCode: 201
+
+  create_environment_op:
+    target: oas-pb-rs:create_environment
+    description: "Creates an environment"
+    parameters:
+      request:
+        body:
+          name: test
+          displayName: Test
+          production: false
+    expected:
+      response:
+        statusCode: 201
+
+  delete_pacticipant:
+    target: oas-pb-rs:delete_pacticipant
+    description: "Deletes a pacticipant"
+    parameters:
+      path:
+        pacticipant_name: Foo
+    expected:
+      response:
+        statusCode: 204
+
+  patch_pacticipant:
+    target: oas-pb-rs:patch_pacticipant
+    description: "Patches a pacticipant"
+    parameters:
+      path:
+        pacticipant_name: Foo
+      request:
+        body:
+          displayName: Foo Renamed
+    expected:
+      response:
+        statusCode: 200
+
+  delete_branch:
+    target: oas-pb-rs:delete_branch
+    description: "Deletes a branch"
+    parameters:
+      path:
+        name: Foo
+        branch: main
+    expected:
+      response:
+        statusCode: 204
+
+  delete_label:
+    target: oas-pb-rs:delete_label
+    description: "Deletes a label"
+    parameters:
+      path:
+        pacticipant_name: Foo
+        label: keep
+    expected:
+      response:
+        statusCode: 204
+
+  delete_tag:
+    target: oas-pb-rs:delete_tag
+    description: "Deletes a tag"
+    parameters:
+      path:
+        pacticipant_name: Foo
+        version: 1.0.0
+        tag: prod
+    expected:
+      response:
+        statusCode: 204
+
+  delete_version:
+    target: oas-pb-rs:delete_version
+    description: "Deletes a version"
+    parameters:
+      path:
+        pacticipant_name: Foo
+        version: 1.0.0
+    expected:
+      response:
+        statusCode: 204
+
+  delete_environment:
+    target: oas-pb-rs:delete_environment
+    description: "Deletes an environment"
+    parameters:
+      path:
+        uuid: ${functions:environment_uuid}
+    expected:
+      response:
+        statusCode: 204
+
+  get_version:
+    target: oas-pb-rs:get_version
+    description: "Gets a version"
+    parameters:
+      path:
+        pacticipant_name: Foo
+        version: 1.0.0
+    expected:
+      response:
+        statusCode: 200
+
+  list_deployed_versions_for_version_and_environment:
+    target: oas-pb-rs:list_deployed_versions_for_version_and_environment
+    description: "Lists deployed versions for a version and environment"
+    parameters:
+      path:
+        pacticipant_name: Foo
+        version: 1.0.0
+        environment_uuid: ${functions:environment_uuid}
+    expected:
+      response:
+        statusCode: 200
+
+  publish_pact:
+    target: oas-pb-rs:publish_pact
+    description: "Publishes a pact"
+    parameters:
+      path:
+        provider: Bar
+        consumer: Foo
+        version: 1.0.0
+      request:
+        body:
+          consumer:
+            name: Foo
+          provider:
+            name: Bar
+          interactions: []
+    expected:
+      response:
+        # Nothing is seeded, so this publication creates the pact rather than
+        # overwriting one; the OAS documents both outcomes.
+        statusCode: 201
+
+  publish_contracts:
+    target: oas-pb-rs:publish_contracts
+    description: "Publishes contracts"
+    parameters:
+      request:
+        body:
+          pacticipantName: Foo
+          pacticipantVersionNumber: 1.0.0
+          contracts:
+            - consumerName: Foo
+              providerName: Bar
+              specification: pact
+              contentType: application/json
+              # base64 of {"consumer":{"name":"Foo"},"provider":{"name":"Bar"},"interactions":[]}
+              content: eyJjb25zdW1lciI6eyJuYW1lIjoiRm9vIn0sInByb3ZpZGVyIjp7Im5hbWUiOiJCYXIifSwiaW50ZXJhY3Rpb25zIjpbXX0=
+    expected:
+      response:
+        statusCode: 200
+
+  fetch_pact:
+    target: oas-pb-rs:fetch_pact
+    description: "Fetches a pact"
+    parameters:
+      path:
+        provider: Bar
+        consumer: Foo
+        version: 1.0.0
+    expected:
+      response:
+        statusCode: 200
+
+  fetch_latest_pact:
+    target: oas-pb-rs:fetch_latest_pact
+    description: "Fetches the latest pact"
+    parameters:
+      path:
+        provider: Bar
+        consumer: Foo
+    expected:
+      response:
+        statusCode: 200
+
+  fetch_latest_untagged_pact:
+    target: oas-pb-rs:fetch_latest_untagged_pact
+    description: "Fetches the latest untagged pact"
+    parameters:
+      path:
+        provider: Bar
+        consumer: Foo
+    expected:
+      response:
+        statusCode: 200
+
+  fetch_latest_tagged_pact:
+    target: oas-pb-rs:fetch_latest_tagged_pact
+    description: "Fetches the latest tagged pact"
+    parameters:
+      path:
+        provider: Bar
+        consumer: Foo
+        tag: prod
+    expected:
+      response:
+        statusCode: 200
+
+  latest_pact_badge:
+    target: oas-pb-rs:latest_pact_badge
+    description: "Latest pact badge"
+    parameters:
+      path:
+        provider: Bar
+        consumer: Foo
+    expected:
+      response:
+        statusCode: 200
+
+  latest_untagged_pact_badge:
+    target: oas-pb-rs:latest_untagged_pact_badge
+    description: "Latest untagged pact badge"
+    parameters:
+      path:
+        provider: Bar
+        consumer: Foo
+    expected:
+      response:
+        statusCode: 200
+
+  latest_tagged_pact_badge:
+    target: oas-pb-rs:latest_tagged_pact_badge
+    description: "Latest tagged pact badge"
+    parameters:
+      path:
+        provider: Bar
+        consumer: Foo
+        tag: prod
+    expected:
+      response:
+        statusCode: 200
+
+  get_latest_pacts:
+    target: oas-pb-rs:get_latest_pacts
+    description: "Gets the latest pacts"
+    expected:
+      response:
+        statusCode: 200
+
+  fetch_provider_pacts:
+    target: oas-pb-rs:fetch_provider_pacts
+    description: "Fetches a provider's pacts"
+    parameters:
+      path:
+        provider: Bar
+    expected:
+      response:
+        statusCode: 200
+
+  fetch_provider_pacts_for_tag:
+    target: oas-pb-rs:fetch_provider_pacts_for_tag
+    description: "Fetches a provider's pacts for a tag"
+    parameters:
+      path:
+        provider: Bar
+        tag: prod
+    expected:
+      response:
+        statusCode: 200
+
+  latest_provider_pacts:
+    target: oas-pb-rs:latest_provider_pacts
+    description: "Latest provider pacts"
+    parameters:
+      path:
+        provider: Bar
+    expected:
+      response:
+        statusCode: 200
+
+  latest_tagged_provider_pacts:
+    target: oas-pb-rs:latest_tagged_provider_pacts
+    description: "Latest tagged provider pacts"
+    parameters:
+      path:
+        provider: Bar
+        tag: prod
+    expected:
+      response:
+        statusCode: 200
+
+  fetch_tagged_pact_versions:
+    target: oas-pb-rs:fetch_tagged_pact_versions
+    description: "Fetches tagged pact versions"
+    parameters:
+      path:
+        provider: Bar
+        consumer: Foo
+        tag: prod
+    expected:
+      response:
+        statusCode: 200
+
+  get_pact_versions:
+    target: oas-pb-rs:get_pact_versions
+    description: "Gets pact versions"
+    parameters:
+      path:
+        provider_name: Bar
+        consumer_name: Foo
+    expected:
+      response:
+        statusCode: 200
+
+  fetch_pact_webhooks_status:
+    target: oas-pb-rs:fetch_pact_webhooks_status
+    description: "Fetches a pact's webhook status"
+    parameters:
+      path:
+        provider: Bar
+        consumer: Foo
+    expected:
+      response:
+        statusCode: 200
+
+  list_provider_states:
+    target: oas-pb-rs:list_provider_states
+    description: "Lists provider states"
+    parameters:
+      path:
+        provider: Bar
+    expected:
+      response:
+        statusCode: 200
+
+  pacts_for_verification:
+    target: oas-pb-rs:pacts_for_verification
+    description: "Lists pacts for verification"
+    parameters:
+      path:
+        provider: Bar
+      body: {}
+    expected:
+      response:
+        statusCode: 200
+
+  fetch_provider_pacts_for_main_branch:
+    target: oas-pb-rs:fetch_provider_pacts_for_main_branch
+    description: "Fetches a provider's pacts for the main branch"
+    parameters:
+      path:
+        provider: Bar
+    expected:
+      response:
+        statusCode: 200
+
+  fetch_latest_provider_pacts_for_main_branch:
+    target: oas-pb-rs:fetch_latest_provider_pacts_for_main_branch
+    description: "Fetches a provider's latest pacts for the main branch"
+    parameters:
+      path:
+        provider: Bar
+    expected:
+      response:
+        statusCode: 200
+
+  fetch_provider_pacts_for_named_branch:
+    target: oas-pb-rs:fetch_provider_pacts_for_named_branch
+    description: "Fetches a provider's pacts for a named branch"
+    parameters:
+      path:
+        provider: Bar
+        branch: main
+    expected:
+      response:
+        statusCode: 200
+
+  fetch_latest_provider_pacts_for_named_branch:
+    target: oas-pb-rs:fetch_latest_provider_pacts_for_named_branch
+    description: "Fetches a provider's latest pacts for a named branch"
+    parameters:
+      path:
+        provider: Bar
+        branch: main
+    expected:
+      response:
+        statusCode: 200
+
+  fetch_pact_versions_for_main_branch:
+    target: oas-pb-rs:fetch_pact_versions_for_main_branch
+    description: "Fetches pact versions for the main branch"
+    parameters:
+      path:
+        provider: Bar
+        consumer: Foo
+    expected:
+      response:
+        statusCode: 200
+
+  fetch_latest_pact_versions_for_main_branch:
+    target: oas-pb-rs:fetch_latest_pact_versions_for_main_branch
+    description: "Fetches latest pact versions for the main branch"
+    parameters:
+      path:
+        provider: Bar
+        consumer: Foo
+    expected:
+      response:
+        statusCode: 200
+
+  fetch_pact_versions_for_named_branch:
+    target: oas-pb-rs:fetch_pact_versions_for_named_branch
+    description: "Fetches pact versions for a named branch"
+    parameters:
+      path:
+        provider: Bar
+        consumer: Foo
+        branch: main
+    expected:
+      response:
+        statusCode: 200
+
+  fetch_latest_pact_versions_for_named_branch:
+    target: oas-pb-rs:fetch_latest_pact_versions_for_named_branch
+    description: "Fetches latest pact versions for a named branch"
+    parameters:
+      path:
+        provider: Bar
+        consumer: Foo
+        branch: main
+    expected:
+      response:
+        statusCode: 200
+
+  fetch_latest_branch_pact:
+    target: oas-pb-rs:fetch_latest_branch_pact
+    description: "Fetches the latest branch pact"
+    parameters:
+      path:
+        provider: Bar
+        consumer: Foo
+        branch: main
+    expected:
+      response:
+        statusCode: 200
+
+  get_latest_verification_for_publication:
+    target: oas-pb-rs:get_latest_verification_for_publication
+    description: "Gets the latest verification for a publication"
+    parameters:
+      path:
+        provider: Bar
+        consumer: Foo
+        version: 1.0.0
+    expected:
+      response:
+        statusCode: 200
+
+  fetch_diff_previous_distinct:
+    target: oas-pb-rs:fetch_diff_previous_distinct
+    description: "Fetches the diff against the previous distinct pact"
+    parameters:
+      path:
+        provider: Bar
+        consumer: Foo
+        version: 1.0.0
+    expected:
+      response:
+        statusCode: 200
+
+  fetch_previous_distinct_pact_version:
+    target: oas-pb-rs:fetch_previous_distinct_pact_version
+    description: "Fetches the previous distinct pact version"
+    parameters:
+      path:
+        provider: Bar
+        consumer: Foo
+        version: 1.0.0
+    expected:
+      response:
+        statusCode: 200
+
+  list_triggered_webhooks_for_pact:
+    target: oas-pb-rs:list_triggered_webhooks_for_pact
+    description: "Lists triggered webhooks for a pact"
+    parameters:
+      path:
+        provider: Bar
+        consumer: Foo
+        version: 1.0.0
+    expected:
+      response:
+        statusCode: 200
+
+  matrix_tag_badge:
+    target: oas-pb-rs:matrix_tag_badge
+    description: "Matrix tag badge"
+    parameters:
+      path:
+        provider: Bar
+        provider_tag: prod
+        consumer: Foo
+        tag: prod
+    expected:
+      response:
+        statusCode: 200
+
+  fetch_matrix:
+    target: oas-pb-rs:fetch_matrix
+    description: "Fetches the matrix"
+    parameters:
+      query:
+        q[][pacticipant]: Foo
+        latestby: cvp
+    expected:
+      response:
+        statusCode: 200
+
+  fetch_matrix_for_pair:
+    target: oas-pb-rs:fetch_matrix_for_pair
+    description: "Fetches the matrix for a pair"
+    parameters:
+      path:
+        provider: Bar
+        consumer: Foo
+    expected:
+      response:
+        statusCode: 200
+
+  can_i_deploy:
+    target: oas-pb-rs:can_i_deploy
+    description: "Can-i-deploy"
+    parameters:
+      query:
+        pacticipant: Foo
+        version: 1.0.0
+        to: prod
+    expected:
+      response:
+        statusCode: 200
+
+  can_i_merge_badge_route:
+    target: oas-pb-rs:can_i_merge_badge_route
+    description: "Can-i-merge badge"
+    parameters:
+      path:
+        name: Foo
+    expected:
+      response:
+        # 200 is shields.io's answer, not ours: the badge routes reply 307 and
+        # redirect there, and Drift's HTTP client follows redirects with no way
+        # to turn that off (no `drift verify` flag, nothing in the testcase
+        # schema). So this operation only asserts that the route exists and
+        # redirects somewhere reachable — the 307, its Location header and the
+        # badge text are covered by the unit tests in src/api/resources/badges.rs.
+        statusCode: 200
+
+  can_i_deploy_by_tag_to_tag_badge:
+    target: oas-pb-rs:can_i_deploy_by_tag_to_tag_badge
+    description: "Can-i-deploy by tag to tag badge"
+    parameters:
+      path:
+        pacticipant_name: Foo
+        tag: prod
+        to: prod
+    expected:
+      response:
+        # 200 is shields.io's answer, not ours: the badge routes reply 307 and
+        # redirect there, and Drift's HTTP client follows redirects with no way
+        # to turn that off (no `drift verify` flag, nothing in the testcase
+        # schema). So this operation only asserts that the route exists and
+        # redirects somewhere reachable — the 307, its Location header and the
+        # badge text are covered by the unit tests in src/api/resources/badges.rs.
+        statusCode: 200
+
+  can_i_deploy_by_branch_to_environment_badge:
+    target: oas-pb-rs:can_i_deploy_by_branch_to_environment_badge
+    description: "Can-i-deploy by branch to environment badge"
+    parameters:
+      path:
+        pacticipant_name: Foo
+        branch_name: main
+        environment_name: test
+    expected:
+      response:
+        # 200 is shields.io's answer, not ours: the badge routes reply 307 and
+        # redirect there, and Drift's HTTP client follows redirects with no way
+        # to turn that off (no `drift verify` flag, nothing in the testcase
+        # schema). So this operation only asserts that the route exists and
+        # redirects somewhere reachable — the 307, its Location header and the
+        # badge text are covered by the unit tests in src/api/resources/badges.rs.
+        statusCode: 200
+
+  get_dashboard:
+    target: oas-pb-rs:get_dashboard
+    description: "Gets the dashboard"
+    expected:
+      response:
+        statusCode: 200
+
+  get_dashboard_for_pair:
+    target: oas-pb-rs:get_dashboard_for_pair
+    description: "Gets the dashboard for a pair"
+    parameters:
+      path:
+        provider: Bar
+        consumer: Foo
+    expected:
+      response:
+        statusCode: 200
+
+  list_integrations:
+    target: oas-pb-rs:list_integrations
+    description: "Lists integrations"
+    # Content negotiation, not a schema difference: this broker defaults
+    # GET /integrations to `text/vnd.graphviz` and renders the documented HAL
+    # body only when asked for it, where pact_broker-rs serves HAL either way.
+    # Asking explicitly is the only way to exercise the documented response;
+    # the default-representation divergence is recorded in README.md.
+    parameters:
+      headers:
+        Accept: application/hal+json
+    expected:
+      response:
+        statusCode: 200
+
+  get_integration:
+    target: oas-pb-rs:delete_integration
+    description: "Deletes an integration"
+    parameters:
+      path:
+        provider: Bar
+        consumer: Foo
+    expected:
+      response:
+        statusCode: 204
+
+  get_latest_verification:
+    target: oas-pb-rs:get_latest_verification
+    description: "Gets the latest verification"
+    parameters:
+      path:
+        provider: Bar
+        consumer: Foo
+        pact_version: ${functions:pact_version_sha}
+    expected:
+      response:
+        statusCode: 200
+
+  get_latest_verification_for_latest_pact:
+    target: oas-pb-rs:get_latest_verification_for_latest_pact
+    description: "Gets the latest verification for the latest pact"
+    parameters:
+      path:
+        provider: Bar
+        consumer: Foo
+    expected:
+      response:
+        statusCode: 200
+
+  get_latest_verification_for_latest_tagged_pact:
+    target: oas-pb-rs:get_latest_verification_for_latest_tagged_pact
+    description: "Gets the latest verification for the latest tagged pact"
+    parameters:
+      path:
+        provider: Bar
+        consumer: Foo
+        tag: prod
+    expected:
+      response:
+        statusCode: 200
+
+  get_verification:
+    target: oas-pb-rs:get_verification
+    description: "Gets a verification"
+    parameters:
+      path:
+        provider: Bar
+        consumer: Foo
+        pact_version: ${functions:pact_version_sha}
+        verification_number: 1
+    expected:
+      response:
+        statusCode: 200
+
+  delete_verification:
+    target: oas-pb-rs:delete_verification
+    description: "Deletes a verification"
+    parameters:
+      path:
+        provider: Bar
+        consumer: Foo
+        pact_version: ${functions:pact_version_sha}
+        verification_number: 1
+    expected:
+      response:
+        statusCode: 204
+
+  list_triggered_webhooks_for_verification:
+    target: oas-pb-rs:list_triggered_webhooks_for_verification
+    description: "Lists triggered webhooks for a verification"
+    parameters:
+      path:
+        provider: Bar
+        consumer: Foo
+        pact_version: ${functions:pact_version_sha}
+        verification_number: 1
+    expected:
+      response:
+        statusCode: 200
+
+  get_latest_verifications_for_consumer_version:
+    target: oas-pb-rs:get_latest_verifications_for_consumer_version
+    description: "Gets the latest verifications for a consumer version"
+    parameters:
+      path:
+        consumer_name: Foo
+        consumer_version: 1.0.0
+    expected:
+      response:
+        statusCode: 200
+
+  publish_verification:
+    target: oas-pb-rs:publish_verification
+    description: "Publishes a verification"
+    parameters:
+      path:
+        provider: Bar
+        consumer: Foo
+        pact_version: ${functions:pact_version_sha}
+      request:
+        body:
+          success: true
+          providerApplicationVersion: 4.5.6
+    expected:
+      response:
+        statusCode: 201
+
+  list_webhooks:
+    target: oas-pb-rs:list_webhooks
+    description: "Lists webhooks"
+    expected:
+      response:
+        statusCode: 200
+
+  list_consumer_webhooks:
+    target: oas-pb-rs:list_consumer_webhooks
+    description: "Lists a consumer's webhooks"
+    parameters:
+      path:
+        consumer: Foo
+    expected:
+      response:
+        statusCode: 200
+
+  list_provider_webhooks:
+    target: oas-pb-rs:list_provider_webhooks
+    description: "Lists a provider's webhooks"
+    parameters:
+      path:
+        provider: Bar
+    expected:
+      response:
+        statusCode: 200
+
+  list_pact_webhooks:
+    target: oas-pb-rs:list_pact_webhooks
+    description: "Lists a pact's webhooks"
+    parameters:
+      path:
+        provider: Bar
+        consumer: Foo
+    expected:
+      response:
+        statusCode: 200
+
+  get_webhook:
+    target: oas-pb-rs:get_webhook
+    description: "Gets a webhook"
+    parameters:
+      path:
+        uuid: ${functions:webhook_uuid}
+    expected:
+      response:
+        statusCode: 200
+
+  update_webhook:
+    target: oas-pb-rs:update_webhook
+    description: "Updates a webhook"
+    parameters:
+      path:
+        uuid: ${functions:webhook_uuid}
+      request:
+        body:
+          request:
+            method: POST
+            url: https://example.org/hook
+          events:
+            - name: contract_content_changed
+    expected:
+      response:
+        statusCode: 200
+
+  delete_webhook:
+    target: oas-pb-rs:delete_webhook
+    description: "Deletes a webhook"
+    parameters:
+      path:
+        uuid: ${functions:webhook_uuid}
+    expected:
+      response:
+        statusCode: 204
+
+  execute_saved_webhook:
+    target: oas-pb-rs:execute_saved_webhook
+    description: "Executes a saved webhook"
+    parameters:
+      path:
+        uuid: ${functions:webhook_uuid}
+      request:
+        body: {}
+    expected:
+      response:
+        statusCode: 200
+
+  create_webhook:
+    target: oas-pb-rs:create_webhook
+    description: "Creates a webhook"
+    parameters:
+      request:
+        body:
+          request:
+            method: POST
+            url: https://example.org/hook
+          events:
+            - name: contract_content_changed
+    expected:
+      response:
+        statusCode: 201
+
+  create_consumer_scoped_webhook:
+    target: oas-pb-rs:create_consumer_scoped_webhook
+    description: "Creates a consumer-scoped webhook"
+    parameters:
+      path:
+        consumer: Foo
+      request:
+        body:
+          request:
+            method: POST
+            url: https://example.org/hook
+          events:
+            - name: contract_content_changed
+    expected:
+      response:
+        statusCode: 201
+
+  create_provider_scoped_webhook:
+    target: oas-pb-rs:create_provider_scoped_webhook
+    description: "Creates a provider-scoped webhook"
+    parameters:
+      path:
+        provider: Bar
+      request:
+        body:
+          request:
+            method: POST
+            url: https://example.org/hook
+          events:
+            - name: contract_content_changed
+    expected:
+      response:
+        statusCode: 201
+
+  create_pact_scoped_webhook:
+    target: oas-pb-rs:create_pact_scoped_webhook
+    description: "Creates a pact-scoped webhook"
+    parameters:
+      path:
+        provider: Bar
+        consumer: Foo
+      request:
+        body:
+          request:
+            method: POST
+            url: https://example.org/hook
+          events:
+            - name: contract_content_changed
+    expected:
+      response:
+        statusCode: 201
+
+  execute_unsaved_webhook:
+    target: oas-pb-rs:execute_unsaved_webhook
+    description: "Executes an unsaved webhook"
+    parameters:
+      request:
+        body:
+          request:
+            method: POST
+            url: https://example.org/hook
+          events:
+            - name: contract_content_changed
+    expected:
+      response:
+        statusCode: 200
+
+  test_error_get:
+    target: oas-pb-rs:test_error_get
+    description: "Test-only error route (GET)"
+    expected:
+      response:
+        statusCode: 500
+
+  test_error_post:
+    target: oas-pb-rs:test_error_post
+    description: "Test-only error route (POST)"
+    expected:
+      response:
+        statusCode: 500
